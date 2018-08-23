@@ -62,8 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
+    <Compile Include="AgentObject.cs" />
     <Compile Include="AgentServer.cs" />
     <Compile Include="AgentServerList.cs" />
+    <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
