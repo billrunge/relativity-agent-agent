@@ -5,14 +5,15 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Relativity.API;
 
 namespace AgentAgent.Agent
 {
     class ServerInformation
     {
-        private readonly Relativity.API.IDBContext _eddsDBContext;
+        private readonly IDBContext _eddsDBContext;
 
-        public ServerInformation(Relativity.API.IDBContext eddsDBContext)
+        public ServerInformation(IDBContext eddsDBContext)
         {
             _eddsDBContext = eddsDBContext;
         }
@@ -82,6 +83,9 @@ namespace AgentAgent.Agent
 
         }
 
-                   
+        
+        
+        
+
     }
 }

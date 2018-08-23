@@ -8,7 +8,7 @@ namespace AgentAgent.Agent
 {
     [kCura.Agent.CustomAttributes.Name("Agent Agent Agent")]
     [System.Runtime.InteropServices.Guid("0c1f7839-e571-497f-ba87-32bdd899953b")]
-    public class Agent : AgentBase
+    public class AgentAgentAgent : AgentBase
     {
         /// <summary>
         /// Agent logic goes here
@@ -39,7 +39,7 @@ namespace AgentAgent.Agent
                 //Display a message in Agents Tab and Windows Event Viewer
 
 
-                RaiseMessage("Server hostname is " + serverList.OutputList[0].Hostname, 1);
+                RaiseMessage("Server ArtifactID is " + serverList.OutputList[0].ArtifactID, 1);
 
                 ////The Object Manager is the newest and preferred way to interact with Relativity instead of the Relativity Services API(RSAPI). 
                 ////The RSAPI will be scheduled for depreciation after the Object Manager reaches feature party with it.
