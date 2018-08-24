@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Relativity.API;
 
 namespace AgentAgent.Agent
@@ -37,7 +32,7 @@ namespace AgentAgent.Agent
 
             if (agentServerDataTable == null)
             {
-                throw new Exception("This environment contains no agent servers");
+                throw new Exception("This environment contains no agent servers or retrieval from DB failed");
             }
             else
             {
@@ -81,10 +76,7 @@ namespace AgentAgent.Agent
 
 
 
-        }
-
-        
-        
+        }     
         
 
     }

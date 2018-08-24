@@ -11,7 +11,7 @@ namespace AgentAgent.Agent
     public class AgentAgentAgent : AgentBase
     {
         /// <summary>
-        /// Agent logic goes here
+        /// Main entry point for agent logic
         /// </summary>
         public override void Execute()
         {
@@ -22,34 +22,15 @@ namespace AgentAgent.Agent
                 //Get a dbContext for the EDDS database
                 IDBContext eddsDbContext = Helper.GetDBContext(-1);
 
+                //Temporary test code to create an OCR worker
+                //All we need at this point to create an agent is EDDS db context,
+                //The agent type GUID, and a server artifact ID
                 CreateAgent agentCreator = new CreateAgent(eddsDbContext, "9541B7E8-569E-4995-B826-65437AAC26B9", 1016713);
 
                 agentCreator.Create();
 
-                //Get GUID for an artifact
-                //int testArtifactId = 10101010;
-                //Guid guidForTestArtifactId = Helper.GetGuid(workspaceArtifactId, testArtifactId);
 
-                //Display a message in Agents Tab and Windows Event Viewer
-
-
-                ////The Object Manager is the newest and preferred way to interact with Relativity instead of the Relativity Services API(RSAPI). 
-                ////The RSAPI will be scheduled for depreciation after the Object Manager reaches feature party with it.
-                //using (IObjectManager objectManager = this.Helper.GetServicesManager().CreateProxy<IObjectManager>(ExecutionIdentity.CurrentUser))
-                //{
-
-                //}
-
-                ////Setting up an RSAPI Client
-                //using (IRSAPIClient rsapiClient = Helper.GetServicesManager().CreateProxy<IRSAPIClient>(ExecutionIdentity.CurrentUser))
-                //{
-                //    //Set the proxy to use the current workspace
-                //    //rsapiClient.APIOptions.WorkspaceID = workspaceArtifactId;
-
-                //    //Add code for working with RSAPIClient
-                //}
-
-                //logger.LogVerbose("Log information throughout execution.");
+                logger.LogVerbose("Log information throughout execution.");
             }
             catch (Exception ex)
             {
@@ -67,7 +48,8 @@ namespace AgentAgent.Agent
             {
                 return "Agent Agent Agent";
             }
-        }
+        
+
 
     }
 }

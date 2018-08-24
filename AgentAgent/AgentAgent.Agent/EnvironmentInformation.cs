@@ -1,13 +1,13 @@
 ﻿using System;
 using Relativity.API;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 
 namespace AgentAgent.Agent
 {
+
+    /// <summary>
+    /// A class to hold a set of methods that allow you to get information about the Relativity environmentk
+    /// </summary>
     class EnvironmentInformation
     {
         private IDBContext _eddsDbContext;
@@ -17,6 +17,7 @@ namespace AgentAgent.Agent
             _eddsDbContext = eddsDbContext;
         }
 
+        //Get agent artifact type id from artifact type table
         public int GetAgentArtifactType()
         {
             int agentArtifactType = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
@@ -26,7 +27,7 @@ namespace AgentAgent.Agent
 
             if (agentArtifactType == 0)
             {
-                throw new Exception("Unable to retrieve agent artifact type from database");
+                throw new Exception("Unable to retrieve agent artifact type ID from database");
             }
             else
             {
@@ -34,14 +35,14 @@ namespace AgentAgent.Agent
             }
         }
 
-        //Get system container ID
+        //Get system container ID from artifact table
         public int GetSystemContainerId()
         {
             int systemContainerId = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
                 SELECT TOP 1 [ArtifactID]
                 FROM [EDDS].[eddsdbo].[Artifact]
                 WHERE TextIdentifier = 'System'
-                ORDER BY[ArtifactID] ASC");
+                ORDER BY [ArtifactID] ASC");
 
             if (systemContainerId == 0)
             {
@@ -82,6 +83,7 @@ namespace AgentAgent.Agent
             }
         }
 
+        //Get text identifier for an artifact from the artifact table
         public string GetTextIdByArtifactId(int artifactId)
         {
             string textIdentifier;
@@ -110,6 +112,7 @@ namespace AgentAgent.Agent
 
         }
 
+        //Get current deployed agent count for a specific agent type
         public int GetAgentCount(int agentTypeArtifactId)
         {
             int agentCount;
@@ -129,6 +132,7 @@ namespace AgentAgent.Agent
 
         }
 
+        //Get default run interval for a specific agent type from agent type table
         public int GetAgentRunIntervalByType(int agentTypeArtifactId)
         {
             int runInterval;

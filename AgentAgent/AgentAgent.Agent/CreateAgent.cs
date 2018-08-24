@@ -199,6 +199,9 @@ namespace AgentAgent.Agent
 
         }
 
+        //Using the agent type name and current count of that agent type in the system, generate a name for generated agents
+        //There is no real issue with having agents with the same name, but in the future would like to add logic
+        //to make sure that the agent name doesn't already exist
         private string CreateAgentName()
         {
             int agentCount = _environmentInformation.GetAgentCount(_agent.AgentTypeArtifactId);
