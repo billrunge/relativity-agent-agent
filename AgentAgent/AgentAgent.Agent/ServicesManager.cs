@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ServiceProcess;
 
 namespace AgentAgent.Agent
@@ -14,6 +10,7 @@ namespace AgentAgent.Agent
         private ServiceController _serviceControl;
         private readonly string _agentServiceName = "kCura EDDS Agent Manager";
         private readonly string _serviceHostServiceName = "kCura Service Host Manager";
+        private readonly string _webProcessingServiceName = "kCura EDDS Web Processing Manager";
 
         public ServicesManager()
         {
@@ -63,19 +60,19 @@ namespace AgentAgent.Agent
 
         }
 
-        public void StopAgentService(string agentServerHostname)
-        {
-            StopService(_agentServiceName, agentServerHostname);
-        }
-
         public void StartAgentService(string agentServerHostname)
         {
             StartService(_agentServiceName, agentServerHostname);
         }
 
-        public void StopServiceHostService(string agentServerHostname)
+        public void StopAgentService(string agentServerHostname)
         {
-            StopService(_serviceHostServiceName, agentServerHostname);
+            StopService(_agentServiceName, agentServerHostname);
+        }
+
+        public void RestartAgentService(string agentServerHostName)
+        {
+            RestartService(_agentServiceName, agentServerHostName);
         }
 
         public void StartServiceHostService(string agentServerHostname)
@@ -83,9 +80,29 @@ namespace AgentAgent.Agent
             StartService(_serviceHostServiceName, agentServerHostname);
         }
 
+        public void StopServiceHostService(string agentServerHostname)
+        {
+            StopService(_serviceHostServiceName, agentServerHostname);
+        }
+
         public void RestartServiceHostService(string agentServerHostName)
         {
             RestartService(_serviceHostServiceName, agentServerHostName);
+        }
+
+        public void StartWebProcessingService(string agentServerHostname)
+        {
+            StartService(_webProcessingServiceName, agentServerHostname);
+        }
+
+        public void StopWebProcessingService(string agentServerHostname)
+        {
+            StopService(_webProcessingServiceName, agentServerHostname);
+        }
+
+        public void RestartWebProcessingService(string agentServerHostName)
+        {
+            RestartService(_webProcessingServiceName, agentServerHostName);
         }
 
     }
