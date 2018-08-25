@@ -25,9 +25,11 @@ namespace AgentAgent.Agent
                 //Temporary test code to create an OCR worker
                 //All we need at this point to create an agent is EDDS db context,
                 //The agent type GUID, and a server artifact ID
-                CreateAgent agentCreator = new CreateAgent(eddsDbContext, "9541B7E8-569E-4995-B826-65437AAC26B9", 1016713);
 
-                agentCreator.Create();
+                //CreateAgent agentCreator = new CreateAgent(eddsDbContext, "9541B7E8-569E-4995-B826-65437AAC26B9", 1016713);
+
+                //agentCreator.Create();
+
 
 
                 logger.LogVerbose("Log information throughout execution.");
