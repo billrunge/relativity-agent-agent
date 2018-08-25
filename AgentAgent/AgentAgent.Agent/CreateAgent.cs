@@ -65,7 +65,7 @@ namespace AgentAgent.Agent
                                         '''+@AgentName+''', 
                                         '+@ParentContainerID+', 
                                         '''', 
-                                        ''created with dynamic agent'', 
+                                        ''Created with Agent Agent'', 
                                         0 
                             )SELECT @AgentArtifactID = Scope_identity()'
 
@@ -199,6 +199,43 @@ namespace AgentAgent.Agent
 
         }
 
+        //Insert row into EDDS's AuditRecord table
+        private void InsertAuditRecord()
+        {
+            string SQL = @"
+                INSERT INTO [eddsdbo].[AuditRecord] 
+                            ([ArtifactID], 
+                             [Action], 
+                             [Details], 
+                             [UserID], 
+                             [TimeStamp], 
+                             [RequestOrigination], 
+                             [RecordOrigination]) 
+                VALUES      (@ArtifactID, 
+                             @Action, 
+                             '<auditElement>Created with Agent Agent</auditElement>', 
+                             777, 
+                             Getutcdate(), 
+                             '<auditElement></auditElement>', 
+                             '<auditElement></auditElement>') ";
+
+            //Gather values to input into above script
+            SqlParameter agentArtifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = _agent.ArtifactId
+            };
+
+            SqlParameter actionParam = new SqlParameter("@Action", System.Data.SqlDbType.Char)
+            {
+                Value = 2
+            };
+
+            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam, actionParam });
+
+
+
+        }
+
         //Using the agent type name and current count of that agent type in the system, generate a name for generated agents
         //There is no real issue with having agents with the same name, but in the future would like to add logic
         //to make sure that the agent name doesn't already exist
@@ -218,6 +255,7 @@ namespace AgentAgent.Agent
             InsertArtifact();
             InsertArtifactAncestry();
             InsertAgentTable();
+            InsertAuditRecord();
         }
 
     }

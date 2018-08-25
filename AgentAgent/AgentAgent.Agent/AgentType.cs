@@ -15,6 +15,6 @@ namespace AgentAgent.Agent
         public bool RespectsResourcePool { get; protected set; }
         public bool UsesQueue { get; protected set; }
         public string QueueName { get; protected set; }
-                            
+        
     }
 }

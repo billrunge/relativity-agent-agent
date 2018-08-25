@@ -35,7 +35,7 @@ namespace AgentAgent.Agent
             catch (Exception ex)
             {
                 //Your Agent caught an exception
-                RaiseError(ex.Message, ex.Message);                
+                RaiseError(ex.Message, ex.Message);
             }
         }
 
@@ -48,8 +48,9 @@ namespace AgentAgent.Agent
             {
                 return "Agent Agent Agent";
             }
-        
 
 
+
+        }
     }
 }
