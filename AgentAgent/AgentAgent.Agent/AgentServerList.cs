@@ -9,7 +9,7 @@ namespace AgentAgent.Agent
 
         public AgentServerList()
         {
-            this.OutputList = new List<AgentServer>();
+            OutputList = new List<AgentServer>();
         }
 
         public void Add(AgentServer server)

@@ -16,7 +16,7 @@ namespace AgentAgent.Agent
         public void DeleteAgentByArtifactId(int agentArtifactId)
         {            
             string SQL = @"
-                UPDATE [eddsdbo].[Artifact]
+                UPDATE [Artifact]
                 SET [DeleteFlag] = 1
                 WHERE ArtifactID = @ArtifactID";
 
@@ -33,8 +33,8 @@ namespace AgentAgent.Agent
             string SQL = @"
                 UPDATE A 
                 SET    A.[DeleteFlag] = 1 
-                FROM   [eddsdbo].[Agent] AG 
-                       INNER JOIN [eddsdbo].[Artifact] A 
+                FROM   [Agent] AG 
+                       INNER JOIN [Artifact] A 
                                ON A.[ArtifactID] = AG.ArtifactID 
                 WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID";
 
@@ -51,10 +51,10 @@ namespace AgentAgent.Agent
             string SQL = @"
                 UPDATE A 
                 SET    [DeleteFlag] = 1 
-                FROM   [eddsdbo].[Agent] AG 
-                       INNER JOIN [eddsdbo].[ExtendedResourceGroupServers] ERGS 
+                FROM   [Agent] AG 
+                       INNER JOIN [ExtendedResourceGroupServers] ERGS 
                                ON AG.[ServerArtifactID] = ERGS.[ServerArtifactID] 
-                       INNER JOIN [eddsdbo].[Artifact] A 
+                       INNER JOIN [Artifact] A 
                                ON AG.[ArtifactID] = A.[ArtifactID] 
                 WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
                        AND ERGS.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
@@ -78,13 +78,13 @@ namespace AgentAgent.Agent
         {
 
             string SQL = @"
-                DELETE FROM [eddsdbo].[Agent] 
+                DELETE FROM [Agent] 
                 WHERE  [ArtifactID] = @AgentArtifactID 
 
-                DELETE FROM [eddsdbo].[ArtifactAncestry] 
+                DELETE FROM [ArtifactAncestry] 
                 WHERE  [ArtifactID] = @AgentArtifactID 
 
-                DELETE FROM [eddsdbo].[Artifact] 
+                DELETE FROM [Artifact] 
                 WHERE  [ArtifactID] = @AgentArtifactID";
 
             //Gather values to input into above script

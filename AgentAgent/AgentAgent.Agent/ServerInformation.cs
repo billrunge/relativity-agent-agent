@@ -25,7 +25,7 @@ namespace AgentAgent.Agent
                        [ProcessorCores],
                        [Memory],
                        [NumberOfAgents]
-                FROM   [EDDS].[eddsdbo].[ExtendedResourceServer]
+                FROM   [ExtendedResourceServer]
                 WHERE  [Type] = 'Agent'";
 
             DataTable agentServerDataTable = _eddsDBContext.ExecuteSqlStatementAsDataTable(SQL);

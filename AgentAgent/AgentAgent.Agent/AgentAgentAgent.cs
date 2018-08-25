@@ -30,7 +30,9 @@ namespace AgentAgent.Agent
 
                 //agentCreator.Create();
 
+                ServicesManager sm = new ServicesManager();
 
+                sm.RestartServiceHostService("emtTest");
 
                 logger.LogVerbose("Log information throughout execution.");
             }

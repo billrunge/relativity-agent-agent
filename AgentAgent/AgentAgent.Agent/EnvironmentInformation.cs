@@ -22,7 +22,7 @@ namespace AgentAgent.Agent
         {
             int agentArtifactType = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
                 SELECT TOP 1 [ArtifactTypeID] 
-                FROM   [EDDS].[eddsdbo].[ArtifactType] 
+                FROM [ArtifactType] 
                 WHERE  ArtifactType = 'Agent' ");
 
             if (agentArtifactType == 0)
@@ -40,7 +40,7 @@ namespace AgentAgent.Agent
         {
             int systemContainerId = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
                 SELECT TOP 1 [ArtifactID]
-                FROM [EDDS].[eddsdbo].[Artifact]
+                FROM [Artifact]
                 WHERE TextIdentifier = 'System'
                 ORDER BY [ArtifactID] ASC");
 
@@ -62,7 +62,7 @@ namespace AgentAgent.Agent
             string SQL = @"
                 DECLARE @SQL NVARCHAR(500) =
                 'SELECT TOP 1 ArtifactID
-                FROM[EDDS].[eddsdbo].[ArtifactGuid]
+                FROM [ArtifactGuid]
                 WHERE ArtifactGuid = ''' + @Guid + ''''
                 EXEC SP_ExecuteSQL @SQL";
 
@@ -89,7 +89,7 @@ namespace AgentAgent.Agent
             string textIdentifier;
             string SQL = @"
                 SELECT TOP 1 [TextIdentifier]
-                FROM [EDDS].[eddsdbo].[Artifact]
+                FROM [Artifact]
                 WHERE [ArtifactID] = @ArtifactID";
 
             SqlParameter artifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Char)
@@ -119,7 +119,7 @@ namespace AgentAgent.Agent
 
             string SQL = @"
                 SELECT COUNT(*)
-                FROM [EDDS].[eddsdbo].[Agent]
+                FROM [Agent]
                 WHERE [AgentTypeArtifactID] = @AgentTypeArtifactID";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
@@ -138,7 +138,7 @@ namespace AgentAgent.Agent
             int runInterval;
             string SQL = @"
                 SELECT[DefaultInterval]
-                FROM[EDDS].[eddsdbo].[AgentType]
+                FROM [AgentType]
                 WHERE[ArtifactID] = @AgentTypeArtifactID";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)

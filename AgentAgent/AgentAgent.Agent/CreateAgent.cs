@@ -36,7 +36,7 @@ namespace AgentAgent.Agent
                 DECLARE @AgentArtifactID NVARCHAR(10)
 
                 SET @SQL = '
-                INSERT INTO[EDDS].[eddsdbo].[Artifact] 
+                INSERT INTO [Artifact] 
                             ( 
                                         [ArtifactTypeID], 
                                         [ParentArtifactID], 
@@ -109,7 +109,7 @@ namespace AgentAgent.Agent
             string SQL = @"
                 DECLARE @SQL NVARCHAR(255)
                 SET @SQL = '
-                INSERT INTO[EDDS].[eddsdbo].[ArtifactAncestry] 
+                INSERT INTO [ArtifactAncestry] 
                            (ArtifactID, 
                             AncestorArtifactID) 
                 VALUES     ('+@AgentArtifactID+', 
@@ -137,7 +137,7 @@ namespace AgentAgent.Agent
             string SQL = @"
                 DECLARE @SQL NVARCHAR(2000)
                 SET @SQL = '
-                INSERT INTO[EDDS].[eddsdbo].[Agent] 
+                INSERT INTO [Agent] 
                            ([Name], 
                             [Message], 
                             [MessageTime], 
@@ -203,7 +203,7 @@ namespace AgentAgent.Agent
         private void InsertAuditRecord()
         {
             string SQL = @"
-                INSERT INTO [eddsdbo].[AuditRecord] 
+                INSERT INTO [AuditRecord] 
                             ([ArtifactID], 
                              [Action], 
                              [Details], 
