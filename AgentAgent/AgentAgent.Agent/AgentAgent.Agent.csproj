@@ -72,6 +72,7 @@
     <Compile Include="AgentServerList.cs" />
     <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />
+    <Compile Include="CustomAgentTypes\ProcessingSetManager.cs" />
     <Compile Include="DeleteAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
     <Compile Include="PowershellObject.cs" />
@@ -84,9 +85,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomAgentTypes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

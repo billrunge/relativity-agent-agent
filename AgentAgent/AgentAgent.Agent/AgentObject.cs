@@ -1,6 +1,6 @@
 ﻿namespace AgentAgent.Agent
 {
-    class AgentObject
+    public class AgentObject
     {
         public string AgentName { get; set; }
         public int AgentArtifactTypeId { get; set; }
@@ -10,5 +10,6 @@
         public int AgentTypeArtifactId { get; set; }
         public int RunInterval { get; set; }
         public string AgentTypeGuid { get; set; }
+
     }
 }

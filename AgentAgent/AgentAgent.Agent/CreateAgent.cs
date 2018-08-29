@@ -4,20 +4,27 @@ using Relativity.API;
 
 namespace AgentAgent.Agent
 {
-    class CreateAgent
+
+    interface ICreateAgent
+    {
+        void Create();
+    }
+
+
+    class CreateAgent : ICreateAgent
     {
         private AgentObject _agent;
         private readonly IDBContext _eddsDbContext;
-        private readonly EnvironmentInformation _environmentInformation;
+        private readonly IEnvironmentInformation _environmentInformation;
 
-        public CreateAgent(IDBContext eddsDbContext, string agentTypeGuid, int agentServerArtifactId)
+        public CreateAgent(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, string agentTypeGuid, int agentServerArtifactId)
         {
             _agent = new AgentObject();
             _eddsDbContext = eddsDbContext;
             _agent.AgentTypeGuid = agentTypeGuid;
             _agent.AgentServerArtifactId = agentServerArtifactId;
 
-            _environmentInformation = new EnvironmentInformation(_eddsDbContext);
+            _environmentInformation = environmentInformation;
             _agent.AgentTypeArtifactId = _environmentInformation.GetArtifactIdFromGuid(_agent.AgentTypeGuid);                        
             _agent.AgentArtifactTypeId = _environmentInformation.GetAgentArtifactType();
             _agent.SystemContainerId = _environmentInformation.GetSystemContainerId();

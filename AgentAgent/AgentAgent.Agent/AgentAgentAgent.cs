@@ -1,4 +1,5 @@
-﻿using kCura.Agent;
+﻿using AgentAgent.Agent.CustomAgentTypes;
+using kCura.Agent;
 using kCura.Relativity.Client;
 using Relativity.API;
 using Relativity.Services.Objects;
@@ -16,11 +17,24 @@ namespace AgentAgent.Agent
         public override void Execute()
         {
             IAPILog logger = Helper.GetLoggerFactory().GetLogger();
-
             try
             {
                 //Get a dbContext for the EDDS database
                 IDBContext eddsDbContext = Helper.GetDBContext(-1);
+
+                ProcessingSetManager procManagerType = new ProcessingSetManager(eddsDbContext);
+                EnvironmentInformation environmentInformation = new EnvironmentInformation(eddsDbContext);
+                CreateAgent agentCreator = new CreateAgent(eddsDbContext, environmentInformation, procManagerType.Guid, 1016713);
+                DeleteAgent agentDeleter = new DeleteAgent(eddsDbContext);
+
+                if (procManagerType.DesiredAgentCount() > 0 && environmentInformation.GetAgentCount(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid)) < 1)
+                {
+                    agentCreator.Create();
+                } else if (procManagerType.DesiredAgentCount() < environmentInformation.GetAgentCount(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid)))
+                {
+                    agentDeleter.DeleteAgentsByAgentType(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid));
+                }        
+
 
                 //Temporary test code to create an OCR worker
                 //All we need at this point to create an agent is EDDS db context,
@@ -30,11 +44,9 @@ namespace AgentAgent.Agent
 
                 //agentCreator.Create();
 
-                ServicesManager sm = new ServicesManager();
+                //logger.LogVerbose("Log information throughout execution.");
 
-                sm.RestartServiceHostService("emtTest");
-
-                logger.LogVerbose("Log information throughout execution.");
+                
             }
             catch (Exception ex)
             {

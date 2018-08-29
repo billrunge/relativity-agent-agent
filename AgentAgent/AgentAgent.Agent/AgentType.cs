@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace AgentAgent.Agent
 {
-    class AgentType
+    interface IAgentType
     {
+        int DesiredAgentCount();
+    }
+
+    abstract class AgentType : IAgentType
+    {
+        public string AgentTypeName { get; protected set; }
         public string Guid { get; protected set; }
         public bool AlwaysNeeded { get; protected set; }
         public int MaxPerInstance { get; protected set; }
@@ -15,6 +17,8 @@ namespace AgentAgent.Agent
         public bool RespectsResourcePool { get; protected set; }
         public bool UsesQueue { get; protected set; }
         public string QueueName { get; protected set; }
+
+        public abstract int DesiredAgentCount();
         
     }
 }

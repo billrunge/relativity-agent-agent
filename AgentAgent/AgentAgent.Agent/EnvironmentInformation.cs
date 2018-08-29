@@ -5,10 +5,20 @@ using System.Data.SqlClient;
 namespace AgentAgent.Agent
 {
 
+    public interface IEnvironmentInformation
+    {
+        int GetAgentArtifactType();
+        int GetSystemContainerId();
+        int GetArtifactIdFromGuid(string Guid);
+        string GetTextIdByArtifactId(int artifactId);
+        int GetAgentCount(int agentTypeArtifactId);
+        int GetAgentRunIntervalByType(int agentTypeArtifactId);
+    }
+
     /// <summary>
     /// A class to hold a set of methods that allow you to get information about the Relativity environmentk
     /// </summary>
-    class EnvironmentInformation
+    class EnvironmentInformation : IEnvironmentInformation
     {
         private IDBContext _eddsDbContext;
 
