@@ -1,8 +1,6 @@
 ﻿using AgentAgent.Agent.CustomAgentTypes;
 using kCura.Agent;
-using kCura.Relativity.Client;
 using Relativity.API;
-using Relativity.Services.Objects;
 using System;
 
 namespace AgentAgent.Agent

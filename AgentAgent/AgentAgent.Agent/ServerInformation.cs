@@ -39,10 +39,7 @@ namespace AgentAgent.Agent
                 foreach (DataRow row in agentServerDataTable.Rows)
                 {
 
-                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
-                    {
-                        throw new Exception("Unable to cast agent server artifactID returned from database to Int32");
-                    }
+
 
                     string hostname = row["Hostname"].ToString();
 
@@ -66,7 +63,7 @@ namespace AgentAgent.Agent
                         throw new Exception("Unable to cast count of agents on server returned from database to Int32");
                     }
 
-                    AgentServer agentServer = new AgentServer(artifactId, hostname, active, cores, memory, agentCount);
+                    AgentServerObject agentServer = new AgentServerObject(artifactId, hostname, active, cores, memory, agentCount);
 
                     outputList.Add(agentServer);
                 }
@@ -76,8 +73,7 @@ namespace AgentAgent.Agent
 
 
 
-        }     
-        
+        }             
 
     }
 }

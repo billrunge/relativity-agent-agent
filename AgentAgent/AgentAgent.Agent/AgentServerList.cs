@@ -5,14 +5,14 @@ namespace AgentAgent.Agent
 {
     class AgentServerList
     {
-        public List<AgentServer> OutputList {get; }
+        public List<AgentServerObject> OutputList {get; }
 
         public AgentServerList()
         {
-            OutputList = new List<AgentServer>();
+            OutputList = new List<AgentServerObject>();
         }
 
-        public void Add(AgentServer server)
+        public void Add(AgentServerObject server)
         {        
             OutputList.Add(server);
         }

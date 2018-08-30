@@ -1,6 +1,6 @@
 ﻿namespace AgentAgent.Agent
 {
-    class AgentServer
+    class AgentServerObject
     {
         public int ArtifactID { get; }
         public string Hostname { get;  }
@@ -9,7 +9,7 @@
         public long Memory { get;  }
         public int AgentCount { get; }
 
-        public AgentServer(int artifactId, string hostname, bool active, int processorCores, long memory, int agentCount)
+        public AgentServerObject(int artifactId, string hostname, bool active, int processorCores, long memory, int agentCount)
         {
             ArtifactID = artifactId;
             Hostname = hostname;

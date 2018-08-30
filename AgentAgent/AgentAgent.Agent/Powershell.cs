@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AgentAgent.Agent
 {
-    class PowershellObject
+    class Powershell
     {
         private string RunPowershell(string script)
         {

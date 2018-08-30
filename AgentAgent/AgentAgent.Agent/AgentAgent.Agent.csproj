@@ -67,16 +67,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
+    <Compile Include="AgentsPerPoolObject.cs" />
     <Compile Include="AgentObject.cs" />
-    <Compile Include="AgentServer.cs" />
+    <Compile Include="AgentServerObject.cs" />
     <Compile Include="AgentServerList.cs" />
     <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />
     <Compile Include="CustomAgentTypes\ProcessingSetManager.cs" />
     <Compile Include="DeleteAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
-    <Compile Include="PowershellObject.cs" />
+    <Compile Include="Powershell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourcePoolObject.cs" />
+    <Compile Include="ResourcePoolList.cs" />
     <Compile Include="ServerInformation.cs" />
     <Compile Include="ServicesManager.cs" />
   </ItemGroup>

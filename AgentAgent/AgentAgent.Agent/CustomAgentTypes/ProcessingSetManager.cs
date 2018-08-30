@@ -1,4 +1,6 @@
 ﻿using Relativity.API;
+using System;
+using System.Data;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -30,6 +32,41 @@ namespace AgentAgent.Agent.CustomAgentTypes
             else {
                 return 0;
             }
+
+        }
+
+        private ResourcePoolList PoolsWithJobsInQueue()
+        {
+            ResourcePoolList poolList = new ResourcePoolList();
+            string SQL = @"
+                SELECT DISTINCT(RG.[ArtifactID]) 
+                FROM   [ResourceGroup] RG 
+                       INNER JOIN [Case] C 
+                               ON C.[ResourceGroupArtifactID] = RG.[ArtifactID] 
+                       INNER JOIN [ProcessingSetQueue] PSQ 
+                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] ";
+
+            DataTable poolTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
+
+            if (poolTable.Rows.Count == 0)
+            {
+                return null;
+            } else
+            {
+                foreach (DataRow row in poolTable.Rows)
+                {
+
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out int resourcePoolArtifactId))
+                    {
+                        throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
+                    }
+                    ResourcePoolObject rp = new ResourcePoolObject(resourcePoolArtifactId);
+                    poolList.Add(rp);
+                }
+
+                return poolList;
+}
+
 
         }
     }
