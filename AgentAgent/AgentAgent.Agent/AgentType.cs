@@ -4,7 +4,7 @@ namespace AgentAgent.Agent
 {
     interface IAgentType
     {
-        int DesiredAgentCount();
+       AgentsPerPoolList DesiredAgentsPerPool();
     }
 
     abstract class AgentType : IAgentType
@@ -15,10 +15,10 @@ namespace AgentAgent.Agent
         public int MaxPerInstance { get; protected set; }
         public int MaxPerResourcePool { get; protected set; }
         public bool RespectsResourcePool { get; protected set; }
-        public bool UsesQueue { get; protected set; }
-        public string QueueName { get; protected set; }
+        public bool UsesEddsQueue { get; protected set; }
+        public string EddsQueueName { get; protected set; }
 
-        public abstract int DesiredAgentCount();
+        public abstract AgentsPerPoolList DesiredAgentsPerPool();
         
     }
 }

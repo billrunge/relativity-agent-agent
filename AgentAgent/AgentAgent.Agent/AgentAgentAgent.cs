@@ -25,13 +25,6 @@ namespace AgentAgent.Agent
                 CreateAgent agentCreator = new CreateAgent(eddsDbContext, environmentInformation, procManagerType.Guid, 1016713);
                 DeleteAgent agentDeleter = new DeleteAgent(eddsDbContext);
 
-                if (procManagerType.DesiredAgentCount() > 0 && environmentInformation.GetAgentCount(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid)) < 1)
-                {
-                    agentCreator.Create();
-                } else if (procManagerType.DesiredAgentCount() < environmentInformation.GetAgentCount(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid)))
-                {
-                    agentDeleter.DeleteAgentsByAgentType(environmentInformation.GetArtifactIdFromGuid(procManagerType.Guid));
-                }        
 
 
                 //Temporary test code to create an OCR worker

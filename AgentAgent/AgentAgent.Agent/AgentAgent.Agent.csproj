@@ -71,6 +71,7 @@
     <Compile Include="AgentObject.cs" />
     <Compile Include="AgentServerObject.cs" />
     <Compile Include="AgentServerList.cs" />
+    <Compile Include="AgentsPerPoolList.cs" />
     <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />
     <Compile Include="CustomAgentTypes\ProcessingSetManager.cs" />

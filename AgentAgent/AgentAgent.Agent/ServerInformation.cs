@@ -39,7 +39,10 @@ namespace AgentAgent.Agent
                 foreach (DataRow row in agentServerDataTable.Rows)
                 {
 
-
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
+                    {
+                        throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
+                    }
 
                     string hostname = row["Hostname"].ToString();
 

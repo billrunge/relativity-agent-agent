@@ -8,36 +8,28 @@ namespace AgentAgent.Agent.CustomAgentTypes
     {
         private IDBContext _eddsDbContext;
 
-        //The Processing set manager is a one agent per resource pool agent
-        //Which makes determining the amount of agents desired fairly easy
+
         public ProcessingSetManager(IDBContext eddsDbContext)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "Processing Set Manager";
             Guid = "8326948B-32E1-4911-AC08-DA9130D38AF1";
-        }
-
-        public override int DesiredAgentCount()
-        {
-            string SQL = @"
-                SELECT COUNT(*)
-                FROM [ProcessingSetQueue]";
-
-            int queueDepth = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
-
-            if (queueDepth > 0)
-            {
-                return 1;
-            }
-            else {
-                return 0;
-            }
+            AlwaysNeeded = false;
+            MaxPerInstance = 0;
+            MaxPerResourcePool = 1;
+            RespectsResourcePool = true;
+            UsesEddsQueue = true;
+            EddsQueueName = "ProcessingSetQueue";
 
         }
 
-        private ResourcePoolList PoolsWithJobsInQueue()
+        //The Processing set manager is a one agent per resource pool agent
+        //Which makes determining the amount of agents per pool desired fairly easy
+
+        public override AgentsPerPoolList DesiredAgentsPerPool()
         {
-            ResourcePoolList poolList = new ResourcePoolList();
+            AgentsPerPoolList poolsWithJobsList = new AgentsPerPoolList();
+            //Select distinct Resource Pool Artifact IDs that have a job in the queue
             string SQL = @"
                 SELECT DISTINCT(RG.[ArtifactID]) 
                 FROM   [ResourceGroup] RG 
@@ -46,28 +38,40 @@ namespace AgentAgent.Agent.CustomAgentTypes
                        INNER JOIN [ProcessingSetQueue] PSQ 
                                ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] ";
 
-            DataTable poolTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
+            DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
 
-            if (poolTable.Rows.Count == 0)
+            //If nothing is returned, there are no jobs in the queue
+            if (poolsWithJobsTable.Rows.Count == 0)
             {
                 return null;
-            } else
+            }
+            //Otherwise let's iterate through the results and add to the AgentPerPoolList
+            else
             {
-                foreach (DataRow row in poolTable.Rows)
+
+                foreach (DataRow row in poolsWithJobsTable.Rows)
                 {
 
                     if (!int.TryParse(row["ArtifactID"].ToString(), out int resourcePoolArtifactId))
                     {
                         throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
                     }
-                    ResourcePoolObject rp = new ResourcePoolObject(resourcePoolArtifactId);
-                    poolList.Add(rp);
+                    AgentsPerPoolObject aPPO = new AgentsPerPoolObject
+                    {
+                        AgentCount = 1,
+                        AgentTypeGuid = Guid,
+                        ResourcePoolArtifactId = resourcePoolArtifactId
+                    };
+                    poolsWithJobsList.Add(aPPO);
                 }
 
-                return poolList;
-}
-
-
+                return poolsWithJobsList;
+            }
         }
+
+
+
+
     }
 }
+

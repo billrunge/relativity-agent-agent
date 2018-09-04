@@ -3,9 +3,8 @@ namespace AgentAgent.Agent
 {
     class AgentsPerPoolObject
     {
-        int AgentCount { get; set; }
-        int ResourcePoolArtifactId { get; set; }
-
-
+        public int AgentCount { get; set; }
+        public int ResourcePoolArtifactId { get; set; }
+        public string AgentTypeGuid { get; set; }
     }
 }
