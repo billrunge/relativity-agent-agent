@@ -1,4 +1,6 @@
-﻿namespace AgentAgent.Agent.CustomAgentTypes
+﻿using System.Collections.Generic;
+
+namespace AgentAgent.Agent.CustomAgentTypes
 {
     class CaseManager : AgentType
     {
@@ -20,9 +22,10 @@
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override AgentsPerPoolList DesiredAgentsPerPool()
+        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
-            AgentsPerPoolList outputList = new AgentsPerPoolList();
+            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
+
             AgentAgentAgent agent = new AgentAgentAgent();
 
             if (agent.IsOffHours())

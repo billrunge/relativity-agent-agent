@@ -1,10 +1,12 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace AgentAgent.Agent
 {
     interface IAgentType
     {
-       AgentsPerPoolList DesiredAgentsPerPool();
+        List<AgentsPerPoolObject> DesiredAgentsPerPool();
     }
 
     abstract class AgentType : IAgentType
@@ -19,7 +21,7 @@ namespace AgentAgent.Agent
         public bool UsesEddsQueue { get; protected set; }
         public string EddsQueueName { get; protected set; }
 
-        public abstract AgentsPerPoolList DesiredAgentsPerPool();
+        public abstract List<AgentsPerPoolObject> DesiredAgentsPerPool();
         
     }
 }

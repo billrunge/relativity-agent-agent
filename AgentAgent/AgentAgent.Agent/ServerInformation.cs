@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Relativity.API;
 
@@ -13,10 +14,9 @@ namespace AgentAgent.Agent
             _eddsDBContext = eddsDBContext;
         }
 
-        public AgentServerList GetAgentServerList()
+        public List<AgentServerObject> GetAgentServerList()
         {
-            AgentServerList outputList = new AgentServerList();
-
+            List<AgentServerObject> outputList = new List<AgentServerObject>();
 
             string SQL = @"
                 SELECT [ArtifactID],

@@ -1,4 +1,6 @@
-﻿namespace AgentAgent.Agent.CustomAgentTypes
+﻿using System.Collections.Generic;
+
+namespace AgentAgent.Agent.CustomAgentTypes
 {
     class ServerManager : AgentType
     {
@@ -12,12 +14,12 @@
             MaxPerResourcePool = 0;
             RespectsResourcePool = false;
             UsesEddsQueue = false;
-            EddsQueueName = "null";
+            EddsQueueName = null;
         }
 
-        public override AgentsPerPoolList DesiredAgentsPerPool()
+        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
-            AgentsPerPoolList outputList = new AgentsPerPoolList();
+            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
             AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
             {
                 AgentCount = 1,

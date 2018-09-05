@@ -1,5 +1,6 @@
 ﻿using Relativity.API;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace AgentAgent.Agent.CustomAgentTypes
@@ -26,9 +27,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //The Processing set manager is a one agent per resource pool agent
         //Which makes determining the amount of agents per pool desired fairly easy
 
-        public override AgentsPerPoolList DesiredAgentsPerPool()
+        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
-            AgentsPerPoolList poolsWithJobsList = new AgentsPerPoolList();
+            List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
             string SQL = @"
                 SELECT DISTINCT(RG.[ArtifactID]) 

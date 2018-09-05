@@ -1,5 +1,5 @@
 ﻿using Relativity.API;
-
+using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -21,9 +21,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = "ClusterUpgradeJobs";
         }
 
-        public override AgentsPerPoolList DesiredAgentsPerPool()
+        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
-            AgentsPerPoolList outputList = new AgentsPerPoolList();
+            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [ClusterUpgradeJobs]";
