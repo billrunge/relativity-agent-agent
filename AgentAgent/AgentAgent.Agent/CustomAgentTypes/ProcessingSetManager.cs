@@ -8,13 +8,13 @@ namespace AgentAgent.Agent.CustomAgentTypes
     {
         private IDBContext _eddsDbContext;
 
-
         public ProcessingSetManager(IDBContext eddsDbContext)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "Processing Set Manager";
             Guid = "8326948B-32E1-4911-AC08-DA9130D38AF1";
             AlwaysNeeded = false;
+            OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 1;
             RespectsResourcePool = true;
@@ -56,13 +56,13 @@ namespace AgentAgent.Agent.CustomAgentTypes
                     {
                         throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
                     }
-                    AgentsPerPoolObject aPPO = new AgentsPerPoolObject
+                    AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
                     {
                         AgentCount = 1,
                         AgentTypeGuid = Guid,
                         ResourcePoolArtifactId = resourcePoolArtifactId
                     };
-                    poolsWithJobsList.Add(aPPO);
+                    poolsWithJobsList.Add(agentsPerPoolObject);
                 }
 
                 return poolsWithJobsList;
