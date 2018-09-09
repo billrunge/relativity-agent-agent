@@ -5,40 +5,40 @@ using System.Data;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
-    class ProcessingSetManager : AgentType
+    class ProductionManager : AgentType
     {
         private IDBContext _eddsDbContext;
 
-        public ProcessingSetManager(IDBContext eddsDbContext)
+        public ProductionManager(IDBContext eddsDbContext)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "Processing Set Manager";
-            Guid = "8326948B-32E1-4911-AC08-DA9130D38AF1";
+            AgentTypeName = "Production Manager";
+            Guid = "916CF88F-F8D0-4C65-9ECC-1BBFDF5E1515";
             AlwaysNeeded = false;
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 1;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
-            EddsQueueName = "ProcessingSetQueue";
-
+            EddsQueueName = "ProductionSetQueue";
         }
 
-
-        //The Processing set manager is a one agent per resource pool agent
-        //Which makes determining the amount of agents per pool desired fairly easy
+        //Production managers are an at least one agent per resource pool, but only one manager per job
+        //so the ideal situation here is one manager per job in the queue. 
 
         public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
             List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
             string SQL = @"
-                SELECT DISTINCT(RG.[ArtifactID]) 
+                SELECT COUNT(RG.[ArtifactID]) AS [JobCount], 
+                       RG.[ArtifactID] 
                 FROM   [ResourceGroup] RG 
                        INNER JOIN [Case] C 
                                ON C.[ResourceGroupArtifactID] = RG.[ArtifactID] 
-                       INNER JOIN [ProcessingSetQueue] PSQ 
-                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] ";
+                       INNER JOIN [ProductionSetQueue] PSQ 
+                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] 
+                GROUP  BY RG.[ArtifactID]";
 
             DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
 
@@ -58,12 +58,19 @@ namespace AgentAgent.Agent.CustomAgentTypes
                     {
                         throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
                     }
+
+                    if (!int.TryParse(row["JobCount"].ToString(), out int resourcePoolJobCount))
+                    {
+                        throw new Exception("Unable to cast Resource Pool job count returned from database to int");
+                    }
+
                     AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
                     {
-                        AgentCount = 1,
+                        AgentCount = resourcePoolJobCount,
                         AgentTypeGuid = Guid,
                         ResourcePoolArtifactId = resourcePoolArtifactId
                     };
+
                     poolsWithJobsList.Add(agentsPerPoolObject);
                 }
 
@@ -71,9 +78,5 @@ namespace AgentAgent.Agent.CustomAgentTypes
             }
         }
 
-
-
-
     }
 }
-
