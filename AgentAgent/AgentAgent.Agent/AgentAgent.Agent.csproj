@@ -73,6 +73,7 @@
     <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />
     <Compile Include="CustomAgentTypes\AssistedReviewManager.cs" />
+    <Compile Include="CustomAgentTypes\BrandingManager.cs" />
     <Compile Include="CustomAgentTypes\CacheManager.cs" />
     <Compile Include="CustomAgentTypes\CaseManager.cs" />
     <Compile Include="CustomAgentTypes\CaseStatisticsManager.cs" />

@@ -38,7 +38,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                        INNER JOIN [Case] C 
                                ON C.[ResourceGroupArtifactID] = RG.[ArtifactID] 
                        INNER JOIN [ProcessingSetQueue] PSQ 
-                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] ";
+                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID]";
 
             DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
 
@@ -70,9 +70,6 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 return poolsWithJobsList;
             }
         }
-
-
-
 
     }
 }
