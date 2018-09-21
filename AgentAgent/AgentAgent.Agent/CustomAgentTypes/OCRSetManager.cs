@@ -5,43 +5,34 @@ using System.Data;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
-    class ProductionManager : AgentType
+    class OCRSetManager : AgentType
     {
         private IDBContext _eddsDbContext;
 
-        public ProductionManager(IDBContext eddsDbContext)
+        public OCRSetManager(IDBContext eddsDbContext)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "Production Manager";
-            Guid = "916CF88F-F8D0-4C65-9ECC-1BBFDF5E1515";
+            AgentTypeName = "OCR Set Manager";
+            Guid = "42BC48A4-4638-4653-8C2F-C1444D272F84";
             AlwaysNeeded = false;
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 1;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
-            EddsQueueName = "ProductionSetQueue";
-        }
+            EddsQueueName = "OCRSetQueue";
 
-        //Production managers are an at least one agent per resource pool, but only one manager per job
-        //so the ideal situation here is one manager per job in the queue. 
+        }
 
         public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
         {
             List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
-
-            //Todo: remove ResourceGroup table from join (there's a column on case for that)
-
             string SQL = @"
-                SELECT COUNT(RG.[ArtifactID]) AS [JobCount], 
-                       RG.[ArtifactID] 
-                FROM   [ResourceGroup] RG 
+                SELECT DISTINCT( C.[ResourceGroupArtifactID] ) 
+                FROM   [OCRSetQueue] OCR 
                        INNER JOIN [Case] C 
-                               ON C.[ResourceGroupArtifactID] = RG.[ArtifactID] 
-                       INNER JOIN [ProductionSetQueue] PSQ 
-                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] 
-                GROUP  BY RG.[ArtifactID]";
+                               ON OCR.[WorkspaceArtifactID] = C.[ArtifactID] ";
 
             DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
 
@@ -57,19 +48,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 foreach (DataRow row in poolsWithJobsTable.Rows)
                 {
 
-                    if (!int.TryParse(row["ArtifactID"].ToString(), out int resourcePoolArtifactId))
+                    if (!int.TryParse(row["ResourceGroupArtifactID"].ToString(), out int resourcePoolArtifactId))
                     {
-                        throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
-                    }
-
-                    if (!int.TryParse(row["JobCount"].ToString(), out int resourcePoolJobCount))
-                    {
-                        throw new Exception("Unable to cast Resource Pool job count returned from database to int");
+                        throw new Exception("Unable to cast ResourceGroupArtifactID returned from database to int");
                     }
 
                     AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
                     {
-                        AgentCount = resourcePoolJobCount,
+                        AgentCount = 1,
                         AgentTypeGuid = Guid,
                         ResourcePoolArtifactId = resourcePoolArtifactId
                     };

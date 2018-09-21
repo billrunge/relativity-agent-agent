@@ -32,6 +32,10 @@ namespace AgentAgent.Agent.CustomAgentTypes
         {
             List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
+
+            //Todo: remove ResourceGroup table from join (there's a column on case for that)
+
+
             string SQL = @"
                 SELECT DISTINCT(RG.[ArtifactID]) 
                 FROM   [ResourceGroup] RG 

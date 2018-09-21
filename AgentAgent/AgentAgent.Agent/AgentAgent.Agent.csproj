@@ -79,6 +79,7 @@
     <Compile Include="CustomAgentTypes\CaseStatisticsManager.cs" />
     <Compile Include="CustomAgentTypes\ClusterUpgradeWorker.cs" />
     <Compile Include="CustomAgentTypes\DistributedJobManager.cs" />
+    <Compile Include="CustomAgentTypes\OCRSetManager.cs" />
     <Compile Include="CustomAgentTypes\ProcessingSetManager.cs" />
     <Compile Include="CustomAgentTypes\ProductionManager.cs" />
     <Compile Include="CustomAgentTypes\ServerManager.cs" />
