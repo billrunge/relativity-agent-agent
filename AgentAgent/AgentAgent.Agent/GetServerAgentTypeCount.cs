@@ -21,9 +21,6 @@ namespace AgentAgent.Agent
         // [Resource Pool - Agent Server ID - Spots]
         private List<SpotsPerPoolObject> _inputSpotsPerPool;
 
-        //Output [Resource Pool - Agent Server ID - Spots]
-        public List<SpotsPerPoolObject> SpotsPerPool { get; set; }
-
         //Intermediate Object
         private List<SpotsPerPoolObject> _desiredSpotsPerPool;
 
@@ -33,7 +30,6 @@ namespace AgentAgent.Agent
         {
             _inputDesiredAgentsPerPool = agentsPerPool;
             _inputSpotsPerPool = spotsPerPool;
-            SpotsPerPool = new List<SpotsPerPoolObject>();
             _desiredSpotsPerPool = new List<SpotsPerPoolObject>();
             _environmentInformation = new EnvironmentInformation(eddsDbContext);
         }
@@ -41,7 +37,8 @@ namespace AgentAgent.Agent
         private void InputListConsolidater()
         {
             //Consilidate instances where ResourcePool and Agent Types match by summing desired agent count
-            _inputDesiredAgentsPerPool = _inputDesiredAgentsPerPool.GroupBy(x => new
+            _inputDesiredAgentsPerPool = _inputDesiredAgentsPerPool
+                .GroupBy(x => new
             {
                 x.ResourcePoolArtifactId,
                 x.AgentTypeGuid
@@ -64,24 +61,53 @@ namespace AgentAgent.Agent
                 agentTypeId = _environmentInformation.GetArtifactIdFromGuid(desiredAgentPerPool.AgentTypeGuid);
                 desiredAgentPerPool.AgentCount -= _environmentInformation.GetAgentCountByPool(agentTypeId, desiredAgentPerPool.ResourcePoolArtifactId);
             }
-
         }
 
         private void GetDesiredSpotsPerPool()
         {
             //populate the intermediate object that just shows how many spots each resource pool wants
             //based off the consolidated list with existing agents accounted for
-            _desiredSpotsPerPool = _inputDesiredAgentsPerPool.GroupBy(x => x.ResourcePoolArtifactId).Select(x => new SpotsPerPoolObject
+            _desiredSpotsPerPool = _inputDesiredAgentsPerPool
+                .GroupBy(x => x.ResourcePoolArtifactId)
+                .Select(x => new SpotsPerPoolObject
            {
                ResourcePoolArtifactId = x.Key,
                Spots = x.Sum(xs => xs.AgentCount)
 
            }).ToList<SpotsPerPoolObject>();
-
         }
 
-        private void 
+        private void SinglePoolAgentDistributor()
+        {
+            //get a sequence of agent server artifact IDs that only occur in the list once (only belong to one resource pool)
+            var singlePoolAgents = _inputSpotsPerPool
+                .GroupBy(x => x.AgentServerArtifactId)
+                .Where(x => x.Count() == 1)
+                .Select(x => x.Key);
 
+            //Loop through each server in sequence
+            foreach (var server in singlePoolAgents)
+            {
+                //Loop through each spot in the input spots per pool list
+                foreach (var poolAgentSpot in _inputSpotsPerPool)
+                {
+                    //If the spot on the input list matches one of the unique entries
+                    if (poolAgentSpot.AgentServerArtifactId == server)
+                    {
+                        //Loop through each entry in the desired input table
+                        foreach (var desiredAgentCount in _inputDesiredAgentsPerPool)
+                        {
+                            if (poolAgentSpot.ResourcePoolArtifactId == desiredAgentCount.ResourcePoolArtifactId)
+                            {
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
 
 
     }
