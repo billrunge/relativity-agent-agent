@@ -85,7 +85,7 @@
     <Compile Include="CustomAgentTypes\ServerManager.cs" />
     <Compile Include="DeleteAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
-    <Compile Include="GetPoolServerSpots.cs" />
+    <Compile Include="GetServerAgentTypeCount.cs" />
     <Compile Include="Powershell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcePoolObject.cs" />

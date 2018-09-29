@@ -142,6 +142,33 @@ namespace AgentAgent.Agent
 
         }
 
+        //Get current deployed agent count for a specific agent type and resource pool
+        public int GetAgentCountByPool (int agentTypeArtifactId, int resourcePoolArtifactId)
+        {
+            int agentCount;
+
+            string SQL = @"
+                SELECT Count(*) 
+                FROM   [Agent] A 
+                       INNER JOIN [ServerResourceGroup] S 
+                               ON A.[ServerArtifactID] = S.[ResourceServerArtifactID] 
+                WHERE  A.[AgentTypeArtifactID] = @AgentTypeArtifactID 
+                       AND S.[ResourceServerArtifactID] = @ResourcePoolArtifactID";
+
+            SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = agentTypeArtifactId
+            };
+
+            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourcePoolArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = resourcePoolArtifactId
+            };
+
+            agentCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentTypeArtifactIdParam, poolArtifactIdParam });
+            return agentCount;
+        }
+
         //Get default run interval for a specific agent type from agent type table
         public int GetAgentRunIntervalByType(int agentTypeArtifactId)
         {
