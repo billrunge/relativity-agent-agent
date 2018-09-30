@@ -2,6 +2,7 @@
 using kCura.Agent;
 using Relativity.API;
 using System;
+using System.Collections.Generic;
 
 namespace AgentAgent.Agent
 {
@@ -20,24 +21,18 @@ namespace AgentAgent.Agent
                 //Get a dbContext for the EDDS database
                 IDBContext eddsDbContext = Helper.GetDBContext(-1);
 
-                ProcessingSetManager procManagerType = new ProcessingSetManager(eddsDbContext);
-                EnvironmentInformation environmentInformation = new EnvironmentInformation(eddsDbContext);
-                CreateAgent agentCreator = new CreateAgent(eddsDbContext, environmentInformation, procManagerType.Guid, 1016713);
-                DeleteAgent agentDeleter = new DeleteAgent(eddsDbContext);
+                //EnvironmentInformation environmentInformation = new EnvironmentInformation(eddsDbContext);
+                //CreateAgent agentCreator = new CreateAgent(eddsDbContext, environmentInformation, procManagerType.Guid, 1016713);
+                //DeleteAgent agentDeleter = new DeleteAgent(eddsDbContext);
+
+                List<AgentsPerPoolObject> agentsPerPoolObject = new List<AgentsPerPoolObject>();
+                RunAgentTypeLogic runAgentLogic = new RunAgentTypeLogic(eddsDbContext);
+                agentsPerPoolObject = runAgentLogic.AgentsPerPoolObject;
 
 
 
-                //Temporary test code to create an OCR worker
-                //All we need at this point to create an agent is EDDS db context,
-                //The agent type GUID, and a server artifact ID
 
-                //CreateAgent agentCreator = new CreateAgent(eddsDbContext, "9541B7E8-569E-4995-B826-65437AAC26B9", 1016713);
 
-                //agentCreator.Create();
-
-                //logger.LogVerbose("Log information throughout execution.");
-
-                
             }
             catch (Exception ex)
             {

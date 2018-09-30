@@ -71,6 +71,7 @@
     <Compile Include="AgentObject.cs" />
     <Compile Include="AgentServerObject.cs" />
     <Compile Include="AgentType.cs" />
+    <Compile Include="AgentTypePerServerObject.cs" />
     <Compile Include="CreateAgent.cs" />
     <Compile Include="CustomAgentTypes\AssistedReviewManager.cs" />
     <Compile Include="CustomAgentTypes\BrandingManager.cs" />
@@ -86,10 +87,14 @@
     <Compile Include="DeleteAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
     <Compile Include="GetServerAgentTypeCount.cs" />
+    <Compile Include="GetSpotsPerServer.cs" />
+    <Compile Include="GetSpotsPerServerList.cs" />
     <Compile Include="Powershell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcePoolObject.cs" />
+    <Compile Include="RunAgentTypeLogic.cs" />
     <Compile Include="ServerInformation.cs" />
+    <Compile Include="ServerPoolCountObject.cs" />
     <Compile Include="ServicesManager.cs" />
     <Compile Include="SpotsPerPoolObject.cs" />
     <Compile Include="SpotsPerServerObject.cs" />
