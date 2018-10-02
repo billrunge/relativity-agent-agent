@@ -21,11 +21,25 @@ namespace AgentAgent.Agent
                 //Get a dbContext for the EDDS database
                 IDBContext eddsDbContext = Helper.GetDBContext(-1);
 
-                //EnvironmentInformation environmentInformation = new EnvironmentInformation(eddsDbContext);
-                //CreateAgent agentCreator = new CreateAgent(eddsDbContext, environmentInformation, procManagerType.Guid, 1016713);
-                //DeleteAgent agentDeleter = new DeleteAgent(eddsDbContext);
+                //Run all of the classes for agents to tell us how many agent spots they want per resource pool
+                RunAgentTypeLogic agentTypeLogic = new RunAgentTypeLogic(eddsDbContext);
 
-                List<AgentsPerPoolObject> agentsPerPoolObject = new List<AgentsPerPoolObject>();
+                //Get a list of the agentGuids that Agent Agent manages
+                List<string> agentGuidList = agentTypeLogic.AllAgentGuids;
+
+                //Use that list to determine how many of each of these agents exist per resource pool
+
+
+                //Get a list of all spots desired for each agent type by Resource Pool
+                List<AgentsDesired> desiredAgentList = agentTypeLogic.AgentsPerPoolObject;
+
+
+
+
+
+
+
+                List<AgentsDesired> agentsPerPoolObject = new List<AgentsDesired>();
                 RunAgentTypeLogic runAgentLogic = new RunAgentTypeLogic(eddsDbContext);
                 agentsPerPoolObject = runAgentLogic.AgentsPerPoolObject;
 

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using AgentAgent.Agent.Objects;
+using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
     class CacheManager : AgentType
     {
 
-        public CacheManager()
+        public CacheManager(int resourcePoolArtifactId)
         {
             AgentTypeName = "Cache Manager";
             Guid = "505B1655-2B80-45F5-8DE8-8F26442A6E07";
@@ -13,6 +14,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = true;
             MaxPerInstance = 1;
             MaxPerResourcePool = 0;
+            AgentAgentResourcePool = resourcePoolArtifactId;
             RespectsResourcePool = false;
             UsesEddsQueue = false;
             EddsQueueName = null;
@@ -22,29 +24,26 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             AgentAgentAgent agent = new AgentAgentAgent();
+            int agentCount = 0;
 
             if (agent.IsOffHours())
             {
-                AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
-                {
-                    AgentCount = 1,
-                    AgentTypeGuid = Guid,
-                    ResourcePoolArtifactId = 0
-                };
-
-                outputList.Add(agentsPerPoolObject);
-
-                return outputList;
+                agentCount = 1;
             }
-            else
+
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
             {
-                return null;
-            }
+                Guid = Guid,
+                Count = agentCount,
+                RespectsResourcePool = RespectsResourcePool
+            };
 
+            outputList.Add(agentsDesired);
+            return outputList;
         }
     }
 }

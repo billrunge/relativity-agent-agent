@@ -16,7 +16,7 @@ namespace AgentAgent.Agent
     class GetServerAgentTypeCount
     {
         //[Resource Pool - Agent Type - Desired Spots]
-        private List<AgentsPerPoolObject> _inputDesiredAgentsPerPool;
+        private List<AgentsDesired> _inputDesiredAgentsPerPool;
 
         // [Resource Pool - Agent Server ID - Spots]
         private List<SpotsPerPoolObject> _inputSpotsPerPool;
@@ -30,7 +30,7 @@ namespace AgentAgent.Agent
         private EnvironmentInformation _environmentInformation;
         public bool RunComplete { get; private set; }
 
-        public GetServerAgentTypeCount(IDBContext eddsDbContext, List<AgentsPerPoolObject> agentsPerPool, List<SpotsPerPoolObject> spotsPerPool)
+        public GetServerAgentTypeCount(IDBContext eddsDbContext, List<AgentsDesired> agentsPerPool, List<SpotsPerPoolObject> spotsPerPool)
         {
             _inputDesiredAgentsPerPool = agentsPerPool;
             _inputSpotsPerPool = spotsPerPool;
@@ -49,20 +49,20 @@ namespace AgentAgent.Agent
                     x.ResourcePoolArtifactId,
                     x.AgentTypeGuid
 
-                }).Select(x => new AgentsPerPoolObject
+                }).Select(x => new AgentsDesired
                 {
                     ResourcePoolArtifactId = x.Key.ResourcePoolArtifactId,
                     AgentTypeGuid = x.Key.AgentTypeGuid,
                     AgentCount = x.Sum(xs => xs.AgentCount)
 
-                }).ToList<AgentsPerPoolObject>();
+                }).ToList<AgentsDesired>();
         }
 
         private void AccountForExistingAgents()
         {
             //Subtract existing agent counts against desired agent counts in the consilidated input list
             int agentTypeId = 0;
-            foreach (AgentsPerPoolObject desiredAgentPerPool in _inputDesiredAgentsPerPool)
+            foreach (AgentsDesired desiredAgentPerPool in _inputDesiredAgentsPerPool)
             {
                 agentTypeId = _environmentInformation.GetArtifactIdFromGuid(desiredAgentPerPool.AgentTypeGuid);
                 desiredAgentPerPool.AgentCount -= _environmentInformation.GetAgentCountByPool(agentTypeId, desiredAgentPerPool.ResourcePoolArtifactId);

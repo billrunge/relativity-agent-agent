@@ -1,7 +1,7 @@
-﻿using Relativity.API;
-using System;
+﻿using AgentAgent.Agent.Objects;
+using Relativity.API;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SqlClient;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -10,7 +10,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
         private IDBContext _eddsDbContext;
         public int PagesPerAgent { get; set; }
 
-        public BrandingManager(IDBContext eddsDbContext)
+        public BrandingManager(IDBContext eddsDbContext, int agentAgentResourcePool)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "Branding Manager";
@@ -19,6 +19,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 0;
+            AgentAgentResourcePool = agentAgentResourcePool;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
             EddsQueueName = "ProductionSetQueue";
@@ -26,17 +27,15 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         }
         //The processing set queue has a column that shows how many images are remaining in a Processing set. This is very
-        //Useful for determining the amount of branding managers needs. Any jobs in a status of branding are going to have
-        //their images remaining summed and grouped by resource pool. The image sum is then divided by the PagesPerAgent variable
-        //to determine the amount of agents desired per resouce pool
+        //Useful for determining the amount of branding managers needs. Just divide the image sumby the PagesPerAgent variable
+        //to determine the amount of agents desired
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
+            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
 
             string SQL = @"
-                SELECT SUM(PSQ.[ImagesRemaining]) AS [ImagesRemaining], 
-                       C.[ResourceGroupArtifactID] 
+                SELECT IIF (SUM(PSQ.[ImagesRemaining]) IS NULL, 0, (SUM(PSQ.[ImagesRemaining]))) AS [ImagesRemaining]
                 FROM   [ProductionSetQueue] PSQ 
                        INNER JOIN [Case] C 
                                ON PSQ.[WorkspaceArtifactID] = C.[ArtifactID] 
@@ -45,46 +44,38 @@ namespace AgentAgent.Agent.CustomAgentTypes
                        INNER JOIN [CodeType] CT 
                                ON CO.[CodeTypeID] = CT.[CodeTypeID] 
                 WHERE  CO.[Name] = 'Branding' 
-                       AND CT.[Name] = 'ProductionSetQueueStatus' 
-                GROUP  BY C.[ResourceGroupArtifactID]";
+                       AND CT.[Name] = 'ProductionSetQueueStatus'
+					   AND C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            DataTable poolImageCount = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
-
-            //If nothing is returned, there are no jobs in the queue
-            if (poolImageCount.Rows.Count == 0)
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                return null;
-            }
-            //Otherwise let's iterate through the results and add to the AgentPerPoolList
-            else
-            {
+                Value = AgentAgentResourcePool
+            };
 
-                foreach (DataRow row in poolImageCount.Rows)
+            int poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
+            int agentsDesired = 0;
+            
+            if (poolImageCount > 0)
+            {
+                agentsDesired = poolImageCount / PagesPerAgent;
+
+                if (agentsDesired < 1)
                 {
-                    if (!int.TryParse(row["ResourceGroupArtifactID"].ToString(), out int resourcePoolArtifactId))
-                    {
-                        throw new Exception("Unable to cast ResourceGroupArtifactID returned from database to int");
-                    }
-
-                    if (!int.TryParse(row["ImagesRemaining"].ToString(), out int imagesRemaining))
-                    {
-                        throw new Exception("Unable to cast ImagesRemaining returned from database to int");
-                    }
-
-                    AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
-                    {
-                        AgentCount = imagesRemaining / PagesPerAgent,
-                        AgentTypeGuid = Guid,
-                        ResourcePoolArtifactId = resourcePoolArtifactId
-                    };
-                    poolsWithJobsList.Add(agentsPerPoolObject);
+                    agentsDesired = 1;
                 }
-
-                return poolsWithJobsList;
             }
 
-
+            AgentsDesiredObject desiredAgents = new AgentsDesiredObject()
+            {
+                Guid = Guid,
+                Count = agentsDesired,
+                RespectsResourcePool = RespectsResourcePool
+            };
+            poolsWithJobsList.Add(desiredAgents);
+            return poolsWithJobsList;
         }
 
+
     }
+
 }

@@ -22,15 +22,15 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesired> DesiredAgentsPerPool()
         {
-            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
+            List<AgentsDesired> outputList = new List<AgentsDesired>();
 
             AgentAgentAgent agent = new AgentAgentAgent();
 
             if (agent.IsOffHours())
             {
-                AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
+                AgentsDesired agentsPerPoolObject = new AgentsDesired
                 {
                     AgentCount = 1,
                     AgentTypeGuid = Guid,

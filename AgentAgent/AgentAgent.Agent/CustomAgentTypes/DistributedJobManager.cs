@@ -21,9 +21,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = "DistributedJob";
         }
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesired> DesiredAgentsPerPool()
         {
-            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
+            List<AgentsDesired> outputList = new List<AgentsDesired>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [DistributedJob]";
@@ -31,7 +31,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
             if (jobCount > 0)
             {
-                AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
+                AgentsDesired agentsPerPoolObject = new AgentsDesired
                 {
                     AgentCount = 1,
                     AgentTypeGuid = Guid,

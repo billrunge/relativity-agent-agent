@@ -10,14 +10,14 @@ namespace AgentAgent.Agent
 {
     class RunAgentTypeLogic
     {
-        public List<AgentsPerPoolObject> AgentsPerPoolObject { get; private set; }
+        public List<AgentsDesired> AgentsPerPoolObject { get; private set; }
+        public List<string> AllAgentGuids { get; private set; }
         private readonly IDBContext _eddsDbContext;
 
         public RunAgentTypeLogic(IDBContext eddsDbContext)
         {
-           AgentsPerPoolObject = new List<AgentsPerPoolObject>();
+           AgentsPerPoolObject = new List<AgentsDesired>();
             _eddsDbContext = eddsDbContext;
-
             Run();
         }
 
@@ -25,16 +25,27 @@ namespace AgentAgent.Agent
 
             //Create agent type objects
             AssistedReviewManager assistRevMan = new AssistedReviewManager(_eddsDbContext);
+            AllAgentGuids.Add(assistRevMan.Guid);
             BrandingManager brandMan = new BrandingManager(_eddsDbContext);
+            AllAgentGuids.Add(brandMan.Guid);
             CacheManager cacheMan = new CacheManager();
+            AllAgentGuids.Add(cacheMan.Guid);
             CaseManager caseMan = new CaseManager();
+            AllAgentGuids.Add(caseMan.Guid);
             CaseStatisticsManager caseStatsMan = new CaseStatisticsManager();
+            AllAgentGuids.Add(caseStatsMan.Guid);
             ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
+            AllAgentGuids.Add(clustUpWork.Guid);
             DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
+            AllAgentGuids.Add(distJobMan.Guid);
             OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext);
+            AllAgentGuids.Add(OcrSetMan.Guid);
             ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext);
+            AllAgentGuids.Add(procMan.Guid);
             ProductionManager prodMan = new ProductionManager(_eddsDbContext);
+            AllAgentGuids.Add(prodMan.Guid);
             ServerManager servMan = new ServerManager();
+            AllAgentGuids.Add(servMan.Guid);
 
             //Run queue checking logic for all agent type objects
             AgentsPerPoolObject.AddRange(assistRevMan.DesiredAgentsPerPool());

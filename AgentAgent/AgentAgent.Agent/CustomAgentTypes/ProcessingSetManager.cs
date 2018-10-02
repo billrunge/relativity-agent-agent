@@ -28,9 +28,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //The Processing set manager is a one agent per resource pool agent
         //Which makes determining the amount of agents per pool desired fairly easy
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesired> DesiredAgentsPerPool()
         {
-            List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
+            List<AgentsDesired> poolsWithJobsList = new List<AgentsDesired>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
 
             //Todo: remove ResourceGroup table from join (there's a column on case for that)
@@ -62,7 +62,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                     {
                         throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
                     }
-                    AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
+                    AgentsDesired agentsPerPoolObject = new AgentsDesired
                     {
                         AgentCount = 1,
                         AgentTypeGuid = Guid,

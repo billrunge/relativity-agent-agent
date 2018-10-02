@@ -1,4 +1,5 @@
-﻿using Relativity.API;
+﻿using AgentAgent.Agent.Objects;
+using Relativity.API;
 using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
@@ -16,14 +17,16 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 1;
             MaxPerResourcePool = 0;
+            //AgentAgentResourcePool = agentAgentResourcePool;
             RespectsResourcePool = false;
             UsesEddsQueue = true;
             EddsQueueName = "AssistedReviewMasterQueue";
         }
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsPerPoolObject> outputList = new List<AgentsPerPoolObject>();
+            int agentCount = 0;
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [AssistedReviewMasterQueue]";
@@ -31,19 +34,17 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
             if (jobCount > 0)
             {
-                AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
-                {
-                    AgentCount = 1,
-                    AgentTypeGuid = Guid,
-                    ResourcePoolArtifactId = 0
-                };
-                outputList.Add(agentsPerPoolObject);
-                return outputList;
+                agentCount = 1;
             }
-            else
+            AgentsDesiredObject agentsPerPoolObject = new AgentsDesiredObject
             {
-                return null;
-            }
+                Guid = Guid,
+                Count = agentCount,
+                RespectsResourcePool = RespectsResourcePool
+
+            };
+            outputList.Add(agentsPerPoolObject);
+            return outputList;
         }
 
 

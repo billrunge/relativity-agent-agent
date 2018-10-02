@@ -1,7 +1,7 @@
 ﻿
 namespace AgentAgent.Agent
 {
-    class AgentsPerPoolObject
+    class AgentsDesired
     {
         public int AgentCount { get; set; }
         public int ResourcePoolArtifactId { get; set; }

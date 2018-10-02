@@ -24,9 +24,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         }
 
-        public override List<AgentsPerPoolObject> DesiredAgentsPerPool()
+        public override List<AgentsDesired> DesiredAgentsPerPool()
         {
-            List<AgentsPerPoolObject> poolsWithJobsList = new List<AgentsPerPoolObject>();
+            List<AgentsDesired> poolsWithJobsList = new List<AgentsDesired>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
             string SQL = @"
                 SELECT DISTINCT( C.[ResourceGroupArtifactID] ) 
@@ -53,7 +53,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                         throw new Exception("Unable to cast ResourceGroupArtifactID returned from database to int");
                     }
 
-                    AgentsPerPoolObject agentsPerPoolObject = new AgentsPerPoolObject
+                    AgentsDesired agentsPerPoolObject = new AgentsDesired
                     {
                         AgentCount = 1,
                         AgentTypeGuid = Guid,

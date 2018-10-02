@@ -1,12 +1,13 @@
 ﻿
 
+using AgentAgent.Agent.Objects;
 using System.Collections.Generic;
 
 namespace AgentAgent.Agent
 {
     interface IAgentType
     {
-        List<AgentsPerPoolObject> DesiredAgentsPerPool();
+        List<AgentsDesiredObject> AgentsDesired();
     }
 
     abstract class AgentType : IAgentType
@@ -17,11 +18,12 @@ namespace AgentAgent.Agent
         public bool OffHoursAgent { get; protected set; }
         public int MaxPerInstance { get; protected set; }
         public int MaxPerResourcePool { get; protected set; }
+        public int AgentAgentResourcePool { get; protected set; }
         public bool RespectsResourcePool { get; protected set; }
         public bool UsesEddsQueue { get; protected set; }
         public string EddsQueueName { get; protected set; }
 
-        public abstract List<AgentsPerPoolObject> DesiredAgentsPerPool();
+        public abstract List<AgentsDesiredObject> AgentsDesired();
         
     }
 }
