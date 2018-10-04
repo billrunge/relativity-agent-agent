@@ -1,4 +1,5 @@
-﻿using Relativity.API;
+﻿using AgentAgent.Agent.Objects;
+using Relativity.API;
 using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
@@ -21,29 +22,28 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = "DistributedJob";
         }
 
-        public override List<AgentsDesired> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesired> outputList = new List<AgentsDesired>();
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [DistributedJob]";
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
+            int agentCount = 0;
 
             if (jobCount > 0)
             {
-                AgentsDesired agentsPerPoolObject = new AgentsDesired
-                {
-                    AgentCount = 1,
-                    AgentTypeGuid = Guid,
-                    ResourcePoolArtifactId = 0
-                };
-                outputList.Add(agentsPerPoolObject);
-                return outputList;
+                agentCount = 1;
             }
-            else
+
+            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
             {
-                return null;
-            }
+                Guid = Guid,
+                RespectsResourcePool = RespectsResourcePool,
+                Count = agentCount
+            };
+            outputList.Add(AgentsDesiredObject);
+            return outputList;
         }
     }
 }

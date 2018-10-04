@@ -1,4 +1,5 @@
-﻿using Relativity.API;
+﻿using AgentAgent.Agent.Objects;
+using Relativity.API;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +10,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
     {
         private IDBContext _eddsDbContext;
 
-        public OCRSetManager(IDBContext eddsDbContext)
+        public OCRSetManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "OCR Set Manager";
@@ -18,15 +19,15 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 1;
+            AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
             EddsQueueName = "OCRSetQueue";
-
         }
 
-        public override List<AgentsDesired> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesired> poolsWithJobsList = new List<AgentsDesired>();
+            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
             string SQL = @"
                 SELECT DISTINCT( C.[ResourceGroupArtifactID] ) 
@@ -53,14 +54,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                         throw new Exception("Unable to cast ResourceGroupArtifactID returned from database to int");
                     }
 
-                    AgentsDesired agentsPerPoolObject = new AgentsDesired
+                    AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
                     {
                         AgentCount = 1,
                         AgentTypeGuid = Guid,
                         ResourcePoolArtifactId = resourcePoolArtifactId
                     };
 
-                    poolsWithJobsList.Add(agentsPerPoolObject);
+                    poolsWithJobsList.Add(AgentsDesiredObject);
                 }
 
                 return poolsWithJobsList;

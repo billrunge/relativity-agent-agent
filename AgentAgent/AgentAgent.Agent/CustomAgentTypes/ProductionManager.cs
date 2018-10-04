@@ -26,9 +26,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Production managers are an at least one agent per resource pool, but only one manager per job
         //so the ideal situation here is one manager per job in the queue. 
 
-        public override List<AgentsDesired> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> DesiredAgentsPerPool()
         {
-            List<AgentsDesired> poolsWithJobsList = new List<AgentsDesired>();
+            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
             //Select distinct Resource Pool Artifact IDs that have a job in the queue
 
             //Todo: remove ResourceGroup table from join (there's a column on case for that)
@@ -67,14 +67,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                         throw new Exception("Unable to cast Resource Pool job count returned from database to int");
                     }
 
-                    AgentsDesired agentsPerPoolObject = new AgentsDesired
+                    AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
                     {
                         AgentCount = resourcePoolJobCount,
                         AgentTypeGuid = Guid,
                         ResourcePoolArtifactId = resourcePoolArtifactId
                     };
 
-                    poolsWithJobsList.Add(agentsPerPoolObject);
+                    poolsWithJobsList.Add(AgentsDesiredObject);
                 }
 
                 return poolsWithJobsList;

@@ -6,7 +6,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
     class CacheManager : AgentType
     {
 
-        public CacheManager(int resourcePoolArtifactId)
+        public CacheManager()
         {
             AgentTypeName = "Cache Manager";
             Guid = "505B1655-2B80-45F5-8DE8-8F26442A6E07";
@@ -14,7 +14,6 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = true;
             MaxPerInstance = 1;
             MaxPerResourcePool = 0;
-            AgentAgentResourcePool = resourcePoolArtifactId;
             RespectsResourcePool = false;
             UsesEddsQueue = false;
             EddsQueueName = null;
@@ -24,7 +23,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override List<AgentsDesiredObject> AgentsDesiredObject()
         {
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             AgentAgentAgent agent = new AgentAgentAgent();
@@ -35,14 +34,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
+            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject()
             {
                 Guid = Guid,
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
 
-            outputList.Add(agentsDesired);
+            outputList.Add(AgentsDesiredObject);
             return outputList;
         }
     }

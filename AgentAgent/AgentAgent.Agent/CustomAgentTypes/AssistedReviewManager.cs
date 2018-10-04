@@ -17,13 +17,12 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 1;
             MaxPerResourcePool = 0;
-            //AgentAgentResourcePool = agentAgentResourcePool;
             RespectsResourcePool = false;
             UsesEddsQueue = true;
             EddsQueueName = "AssistedReviewMasterQueue";
         }
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override List<AgentsDesiredObject> AgentsDesiredObject()
         {
             int agentCount = 0;
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
@@ -36,14 +35,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
             {
                 agentCount = 1;
             }
-            AgentsDesiredObject agentsPerPoolObject = new AgentsDesiredObject
+            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
             {
                 Guid = Guid,
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
 
             };
-            outputList.Add(agentsPerPoolObject);
+            outputList.Add(AgentsDesiredObject);
             return outputList;
         }
 

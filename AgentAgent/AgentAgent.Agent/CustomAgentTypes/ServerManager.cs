@@ -17,16 +17,16 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = null;
         }
 
-        public override List<AgentsDesired> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> DesiredAgentsPerPool()
         {
-            List<AgentsDesired> outputList = new List<AgentsDesired>();
-            AgentsDesired agentsPerPoolObject = new AgentsDesired
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
+            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
             {
                 AgentCount = 1,
                 AgentTypeGuid = Guid,
                 ResourcePoolArtifactId = 0
             };
-            outputList.Add(agentsPerPoolObject);
+            outputList.Add(AgentsDesiredObject);
             return outputList;
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AgentAgent.Agent.Objects;
+using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -21,28 +22,28 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override List<AgentsDesired> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesired> outputList = new List<AgentsDesired>();
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             AgentAgentAgent agent = new AgentAgentAgent();
+            int agentCount = 0;
 
             if (agent.IsOffHours())
             {
-                AgentsDesired agentsPerPoolObject = new AgentsDesired
-                {
-                    AgentCount = 1,
-                    AgentTypeGuid = Guid,
-                    ResourcePoolArtifactId = 0
-                };
-
-                outputList.Add(agentsPerPoolObject);
-
-                return outputList;
+                agentCount = 1;
             }
-            else
+
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject
             {
-                return null;
-            }
+                Guid = Guid,
+                RespectsResourcePool = RespectsResourcePool,
+                Count = agentCount
+
+            };
+
+            outputList.Add(agentsDesiredObject);
+
+            return outputList;
 
         }
     }

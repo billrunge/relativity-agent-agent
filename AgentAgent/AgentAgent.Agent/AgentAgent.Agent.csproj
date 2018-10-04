@@ -68,7 +68,7 @@
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
-    <Compile Include="Objects\AgentsPerPool.cs" />
+    <Compile Include="Old Code\AgentsPerPool.cs" />
     <Compile Include="Objects\Agent.cs" />
     <Compile Include="Objects\AgentServer.cs" />
     <Compile Include="AgentType.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="CustomAgentTypes\ServerManager.cs" />
     <Compile Include="DeleteAgent.cs" />
     <Compile Include="EnvironmentInformation.cs" />
-    <Compile Include="GetServerAgentTypeCount.cs" />
+    <Compile Include="Old Code\GetServerAgentTypeCount.cs" />
     <Compile Include="GetSpotsPerServer.cs" />
     <Compile Include="GetSpotsPerServerList.cs" />
     <Compile Include="Powershell.cs" />
@@ -105,9 +105,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Old Code\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

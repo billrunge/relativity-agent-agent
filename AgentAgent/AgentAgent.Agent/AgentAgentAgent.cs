@@ -31,7 +31,7 @@ namespace AgentAgent.Agent
 
 
                 //Get a list of all spots desired for each agent type by Resource Pool
-                List<AgentsDesired> desiredAgentList = agentTypeLogic.AgentsPerPoolObject;
+                List<AgentsDesiredObject> desiredAgentList = agentTypeLogic.AgentsDesiredObjectObject;
 
 
 
@@ -39,9 +39,9 @@ namespace AgentAgent.Agent
 
 
 
-                List<AgentsDesired> agentsPerPoolObject = new List<AgentsDesired>();
+                List<AgentsDesiredObject> AgentsDesiredObjectObject = new List<AgentsDesiredObject>();
                 RunAgentTypeLogic runAgentLogic = new RunAgentTypeLogic(eddsDbContext);
-                agentsPerPoolObject = runAgentLogic.AgentsPerPoolObject;
+                AgentsDesiredObjectObject = runAgentLogic.AgentsDesiredObjectObject;
 
 
 

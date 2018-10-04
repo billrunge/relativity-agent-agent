@@ -81,25 +81,33 @@ namespace AgentAgent.Agent
 
         }
 
-        public List<AgentServerObject> GetAgentServerList()
+        public List<AgentServerObject> GetPoolAgentServerList(int resourcePoolArtifactId)
         {
             List<AgentServerObject> outputList = new List<AgentServerObject>();
 
             string SQL = @"
-                SELECT [ArtifactID],
-                       [Name]                                  as [Hostname],
-                       IIF([Status] = 'Active', 'True', 'False') as [Status],
-                       [ProcessorCores],
-                       [Memory],
-                       [NumberOfAgents]
-                FROM   [ExtendedResourceServer]
-                WHERE  [Type] = 'Agent'";
+                SELECT E.[ArtifactID], 
+                       E.[Name]                                    as [Hostname], 
+                       IIF(E.[Status] = 'Active', 'True', 'False') as [Status], 
+                       E.[ProcessorCores], 
+                       E.[Memory], 
+                       E.[NumberOfAgents] 
+                FROM   [ExtendedResourceServer] E 
+                       INNER JOIN [ServerResourceGroup] S 
+                               ON E.[ArtifactID] = S.[ResourceServerArtifactID] 
+                WHERE  [Type] = 'Agent' 
+                       AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            DataTable agentServerDataTable = _eddsDBContext.ExecuteSqlStatementAsDataTable(SQL);
+            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = resourcePoolArtifactId
+            };
+
+            DataTable agentServerDataTable = _eddsDBContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolArtifactIdParam });
 
             if (agentServerDataTable == null)
             {
-                throw new Exception("This environment contains no agent servers or retrieval from DB failed");
+                throw new Exception("The Agent Agent Resource Pools contains no agent servers or retrieval from DB failed");
             }
             else
             {

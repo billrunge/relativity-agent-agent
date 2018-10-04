@@ -10,7 +10,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
         private IDBContext _eddsDbContext;
         public int PagesPerAgent { get; set; }
 
-        public BrandingManager(IDBContext eddsDbContext, int agentAgentResourcePool)
+        public BrandingManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "Branding Manager";
@@ -19,7 +19,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 0;
-            AgentAgentResourcePool = agentAgentResourcePool;
+            AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
             EddsQueueName = "ProductionSetQueue";
@@ -53,22 +53,22 @@ namespace AgentAgent.Agent.CustomAgentTypes
             };
 
             int poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
-            int agentsDesired = 0;
+            int AgentsDesiredObject = 0;
             
             if (poolImageCount > 0)
             {
-                agentsDesired = poolImageCount / PagesPerAgent;
+                AgentsDesiredObject = poolImageCount / PagesPerAgent;
 
-                if (agentsDesired < 1)
+                if (AgentsDesiredObject < 1)
                 {
-                    agentsDesired = 1;
+                    AgentsDesiredObject = 1;
                 }
             }
 
             AgentsDesiredObject desiredAgents = new AgentsDesiredObject()
             {
                 Guid = Guid,
-                Count = agentsDesired,
+                Count = AgentsDesiredObject,
                 RespectsResourcePool = RespectsResourcePool
             };
             poolsWithJobsList.Add(desiredAgents);
