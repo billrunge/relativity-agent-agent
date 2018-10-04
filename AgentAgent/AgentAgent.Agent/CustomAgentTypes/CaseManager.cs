@@ -25,23 +25,23 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
-            AgentAgentAgent agentHelper = new AgentAgentAgent();
             int agentCount = 0;
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
+            AgentAgentAgent agentHelper = new AgentAgentAgent();            
 
             if (agentHelper.IsOffHours())
             {
                 agentCount = 1;
             }
 
-            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject
             {
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool,
                 Guid = Guid
             };
 
-            outputList.Add(AgentsDesiredObject);
+            outputList.Add(agentsDesiredObject);
             return outputList;
         }
     }

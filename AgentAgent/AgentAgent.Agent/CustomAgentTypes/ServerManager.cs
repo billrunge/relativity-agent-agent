@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AgentAgent.Agent.Objects;
+using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -17,14 +18,15 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = null;
         }
 
-        public override List<AgentsDesiredObject> DesiredAgentsPerPool()
+        //You always need a server manager.
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
             {
-                AgentCount = 1,
-                AgentTypeGuid = Guid,
-                ResourcePoolArtifactId = 0
+                Guid = Guid,
+                RespectsResourcePool = RespectsResourcePool,
+                Count = 1
             };
             outputList.Add(AgentsDesiredObject);
             return outputList;

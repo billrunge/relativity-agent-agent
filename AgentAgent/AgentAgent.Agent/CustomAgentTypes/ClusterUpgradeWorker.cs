@@ -24,12 +24,12 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
+            int agentCount = 0;
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [ClusterUpgradeJobs]";
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
-            int agentCount = 0;
 
             if (jobCount > 0)
             {

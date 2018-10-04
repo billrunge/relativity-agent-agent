@@ -24,9 +24,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
+            int agentCount = 0;
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             AgentAgentAgent agent = new AgentAgentAgent();
-            int agentCount = 0;
 
             if (agent.IsOffHours())
             {
@@ -40,11 +40,8 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 Count = agentCount
 
             };
-
             outputList.Add(agentsDesiredObject);
-
             return outputList;
-
         }
     }
 }

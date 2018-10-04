@@ -1,7 +1,7 @@
-﻿using Relativity.API;
-using System;
+﻿using AgentAgent.Agent.Objects;
+using Relativity.API;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SqlClient;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -9,7 +9,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
     {
         private IDBContext _eddsDbContext;
 
-        public ProductionManager(IDBContext eddsDbContext)
+        public ProductionManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
             AgentTypeName = "Production Manager";
@@ -18,6 +18,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
             OffHoursAgent = false;
             MaxPerInstance = 0;
             MaxPerResourcePool = 1;
+            AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
             UsesEddsQueue = true;
             EddsQueueName = "ProductionSetQueue";
@@ -26,60 +27,36 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Production managers are an at least one agent per resource pool, but only one manager per job
         //so the ideal situation here is one manager per job in the queue. 
 
-        public override List<AgentsDesiredObject> DesiredAgentsPerPool()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
-            //Select distinct Resource Pool Artifact IDs that have a job in the queue
-
-            //Todo: remove ResourceGroup table from join (there's a column on case for that)
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
-                SELECT COUNT(RG.[ArtifactID]) AS [JobCount], 
-                       RG.[ArtifactID] 
-                FROM   [ResourceGroup] RG 
+                SELECT Count(P.[SetQueueId]) 
+                FROM   [ProductionSetQueue] P 
                        INNER JOIN [Case] C 
-                               ON C.[ResourceGroupArtifactID] = RG.[ArtifactID] 
-                       INNER JOIN [ProductionSetQueue] PSQ 
-                               ON PSQ.[WorkspaceArtifactId] = C.[ArtifactID] 
-                GROUP  BY RG.[ArtifactID]";
+                               ON P.[WorkspaceArtifactId] = C.[ArtifactID] 
+                WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
-
-            //If nothing is returned, there are no jobs in the queue
-            if (poolsWithJobsTable.Rows.Count == 0)
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                return null;
-            }
-            //Otherwise let's iterate through the results and add to the AgentPerPoolList
-            else
+                Value = AgentAgentResourcePool
+            };
+
+            int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
+
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
             {
+                Guid = Guid,
+                RespectsResourcePool = RespectsResourcePool,
+                Count = jobCount
+            };
 
-                foreach (DataRow row in poolsWithJobsTable.Rows)
-                {
+            outputList.Add(agentsDesiredObject);
 
-                    if (!int.TryParse(row["ArtifactID"].ToString(), out int resourcePoolArtifactId))
-                    {
-                        throw new Exception("Unable to cast Resource Pool artifactID returned from database to int");
-                    }
-
-                    if (!int.TryParse(row["JobCount"].ToString(), out int resourcePoolJobCount))
-                    {
-                        throw new Exception("Unable to cast Resource Pool job count returned from database to int");
-                    }
-
-                    AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
-                    {
-                        AgentCount = resourcePoolJobCount,
-                        AgentTypeGuid = Guid,
-                        ResourcePoolArtifactId = resourcePoolArtifactId
-                    };
-
-                    poolsWithJobsList.Add(AgentsDesiredObject);
-                }
-
-                return poolsWithJobsList;
-            }
+            return outputList;
         }
-
     }
+
 }
+

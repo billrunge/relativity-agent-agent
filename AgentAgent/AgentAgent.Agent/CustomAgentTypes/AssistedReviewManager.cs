@@ -22,7 +22,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
             EddsQueueName = "AssistedReviewMasterQueue";
         }
 
-        public override List<AgentsDesiredObject> AgentsDesiredObject()
+        public override List<AgentsDesiredObject> AgentsDesired()
         {
             int agentCount = 0;
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
@@ -35,14 +35,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
             {
                 agentCount = 1;
             }
-            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject
             {
                 Guid = Guid,
-                Count = agentCount,
-                RespectsResourcePool = RespectsResourcePool
+                RespectsResourcePool = RespectsResourcePool,
+                Count = agentCount
 
             };
-            outputList.Add(AgentsDesiredObject);
+            outputList.Add(agentsDesiredObject);
             return outputList;
         }
 

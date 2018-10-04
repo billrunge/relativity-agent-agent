@@ -24,25 +24,26 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
+            int agentCount = 0;
             List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
             string SQL = @"
                 SELECT COUNT(*)
                 FROM [DistributedJob]";
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
-            int agentCount = 0;
+            
 
             if (jobCount > 0)
             {
                 agentCount = 1;
             }
 
-            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
-            outputList.Add(AgentsDesiredObject);
+            outputList.Add(agentsDesiredObject);
             return outputList;
         }
     }

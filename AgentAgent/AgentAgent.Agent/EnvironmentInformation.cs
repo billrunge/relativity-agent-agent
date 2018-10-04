@@ -12,6 +12,7 @@ namespace AgentAgent.Agent
         int GetArtifactIdFromGuid(string Guid);
         string GetTextIdByArtifactId(int artifactId);
         int GetAgentCount(int agentTypeArtifactId);
+        int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
     }
 

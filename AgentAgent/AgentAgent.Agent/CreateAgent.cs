@@ -4,12 +4,10 @@ using Relativity.API;
 
 namespace AgentAgent.Agent
 {
-
     interface ICreateAgent
     {
         void Create();
     }
-
 
     class CreateAgent : ICreateAgent
     {
@@ -29,9 +27,6 @@ namespace AgentAgent.Agent
             _agent.AgentArtifactTypeId = _environmentInformation.GetAgentArtifactType();
             _agent.SystemContainerId = _environmentInformation.GetSystemContainerId();
             _agent.RunInterval = _environmentInformation.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
-            
-
-
         }
 
         //Inserts row to the ArtifactID table, which generates a new artifact ID

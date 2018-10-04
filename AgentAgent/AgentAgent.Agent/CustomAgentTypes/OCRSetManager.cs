@@ -1,8 +1,7 @@
 ﻿using AgentAgent.Agent.Objects;
 using Relativity.API;
-using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SqlClient;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {
@@ -27,46 +26,39 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
-            //Select distinct Resource Pool Artifact IDs that have a job in the queue
+            int agentCount = 0;
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
+
             string SQL = @"
-                SELECT DISTINCT( C.[ResourceGroupArtifactID] ) 
-                FROM   [OCRSetQueue] OCR 
+                SELECT Count(O.[WorkspaceArtifactID]) 
+                FROM   [OCRSetQueue] O 
                        INNER JOIN [Case] C 
-                               ON OCR.[WorkspaceArtifactID] = C.[ArtifactID] ";
+                               ON O.[WorkspaceArtifactID] = C.[ArtifactID] 
+                WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            DataTable poolsWithJobsTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL);
-
-            //If nothing is returned, there are no jobs in the queue
-            if (poolsWithJobsTable.Rows.Count == 0)
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                return null;
-            }
-            //Otherwise let's iterate through the results and add to the AgentPerPoolList
-            else
+                Value = AgentAgentResourcePool
+            };
+
+            int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
+
+            if (jobCount > 0)
             {
-
-                foreach (DataRow row in poolsWithJobsTable.Rows)
-                {
-
-                    if (!int.TryParse(row["ResourceGroupArtifactID"].ToString(), out int resourcePoolArtifactId))
-                    {
-                        throw new Exception("Unable to cast ResourceGroupArtifactID returned from database to int");
-                    }
-
-                    AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
-                    {
-                        AgentCount = 1,
-                        AgentTypeGuid = Guid,
-                        ResourcePoolArtifactId = resourcePoolArtifactId
-                    };
-
-                    poolsWithJobsList.Add(AgentsDesiredObject);
-                }
-
-                return poolsWithJobsList;
+                agentCount = 1;
             }
+
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
+            {
+                Guid = Guid,
+                RespectsResourcePool = RespectsResourcePool,
+                Count = agentCount
+            };
+
+            outputList.Add(agentsDesiredObject);
+
+            return outputList;
         }
-
     }
+
 }

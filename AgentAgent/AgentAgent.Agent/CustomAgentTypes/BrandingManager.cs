@@ -32,7 +32,8 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public override List<AgentsDesiredObject> AgentsDesired()
         {
-            List<AgentsDesiredObject> poolsWithJobsList = new List<AgentsDesiredObject>();
+            int agentCount = 0;
+            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
                 SELECT IIF (SUM(PSQ.[ImagesRemaining]) IS NULL, 0, (SUM(PSQ.[ImagesRemaining]))) AS [ImagesRemaining]
@@ -52,30 +53,26 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 Value = AgentAgentResourcePool
             };
 
-            int poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
-            int AgentsDesiredObject = 0;
+            int poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });            
             
             if (poolImageCount > 0)
             {
-                AgentsDesiredObject = poolImageCount / PagesPerAgent;
+                agentCount = poolImageCount / PagesPerAgent;
 
-                if (AgentsDesiredObject < 1)
+                if (agentCount < 1)
                 {
-                    AgentsDesiredObject = 1;
+                    agentCount = 1;
                 }
             }
 
-            AgentsDesiredObject desiredAgents = new AgentsDesiredObject()
+            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
             {
                 Guid = Guid,
-                Count = AgentsDesiredObject,
+                Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
-            poolsWithJobsList.Add(desiredAgents);
-            return poolsWithJobsList;
+            outputList.Add(agentsDesiredObject);
+            return outputList;
         }
-
-
     }
-
 }

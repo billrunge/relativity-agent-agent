@@ -6,7 +6,5 @@ namespace AgentAgent.Agent
     {
         public int AgentServerArtifactId { get; set; }
         public int Spots { get; set; }
-        public int ResourcePoolArtifactId { get; set; }
-
     }
 }

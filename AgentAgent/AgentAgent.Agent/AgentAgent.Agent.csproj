@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
+    <Compile Include="CompareDesiredAgentsToExisting.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
     <Compile Include="Old Code\AgentsPerPool.cs" />
     <Compile Include="Objects\Agent.cs" />

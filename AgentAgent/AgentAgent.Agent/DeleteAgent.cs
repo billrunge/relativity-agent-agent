@@ -1,7 +1,6 @@
 ﻿using Relativity.API;
 using System.Data.SqlClient;
 
-
 namespace AgentAgent.Agent
 {
     class DeleteAgent
@@ -13,7 +12,7 @@ namespace AgentAgent.Agent
             _eddsDbContext = eddsDbContext;        
         }
 
-        public void DeleteAgentByArtifactId(int agentArtifactId)
+        public void Delete(int agentArtifactId)
         {            
             string SQL = @"
                 UPDATE [Artifact]
@@ -28,52 +27,7 @@ namespace AgentAgent.Agent
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
         }
 
-        public void DeleteAgentsByAgentType (int agentTypeId)
-        {
-            string SQL = @"
-                UPDATE A 
-                SET    A.[DeleteFlag] = 1 
-                FROM   [Agent] AG 
-                       INNER JOIN [Artifact] A 
-                               ON A.[ArtifactID] = AG.ArtifactID 
-                WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID";
-
-            //Gather values to input into above script
-            SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = agentTypeId
-            };
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentTypeArtifactIdParam });
-        }
-
-        public void DeleteAgentsByTypeAndResourcePool(int agentTypeId, int resourcePoolId)
-        {
-            string SQL = @"
-                UPDATE A 
-                SET    [DeleteFlag] = 1 
-                FROM   [Agent] AG 
-                       INNER JOIN [ExtendedResourceGroupServers] ERGS 
-                               ON AG.[ServerArtifactID] = ERGS.[ServerArtifactID] 
-                       INNER JOIN [Artifact] A 
-                               ON AG.[ArtifactID] = A.[ArtifactID] 
-                WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
-                       AND ERGS.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
-
-            //Gather values to input into above script
-            SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = agentTypeId
-            };
-
-            SqlParameter resourcePoolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = resourcePoolId
-            };
-
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentTypeArtifactIdParam, resourcePoolIdParam });
-
-        }
-
+        //Todo: integrate logic to force delete agents
         public void ForceDeleteAgent (int agentArtifactId)
         {
 
