@@ -27,6 +27,33 @@ namespace AgentAgent.Agent
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
         }
 
+        public int GetAgentIdToDelete (int agentTypeId, int serverArtifactId)
+        {
+            string SQL = @"
+                SELECT TOP 1 AG.[ArtifactID] 
+                FROM   [Agent] AG 
+                       INNER JOIN [Artifact] A 
+                               ON AG.[ArtifactID] = A.[ArtifactID] 
+                WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
+                       AND AG.[ServerArtifactID] = @ServerArtifactID 
+                       AND A.[DeleteFlag] = 0";
+
+            SqlParameter agentTypeIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = agentTypeId
+            };
+
+            SqlParameter serverArtifactIdParam = new SqlParameter("@ServerArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = serverArtifactId
+            };
+
+            return _eddsDbContext.ExecuteSqlStatementAsScalar<int?>(SQL, new SqlParameter[] { agentTypeIdParam, serverArtifactIdParam }).GetValueOrDefault();
+       
+        }
+
+
+
         //Todo: integrate logic to force delete agents
         public void ForceDeleteAgent (int agentArtifactId)
         {

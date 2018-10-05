@@ -1,6 +1,8 @@
 ﻿using System;
 using Relativity.API;
 using System.Data.SqlClient;
+using System.Collections.Generic;
+using System.Data;
 
 namespace AgentAgent.Agent
 {
@@ -12,12 +14,12 @@ namespace AgentAgent.Agent
         int GetArtifactIdFromGuid(string Guid);
         string GetTextIdByArtifactId(int artifactId);
         int GetAgentCount(int agentTypeArtifactId);
-        int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
+        int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
     }
 
     /// <summary>
-    /// A class to hold a set of methods that allow you to get information about the Relativity environmentk
+    /// A helper class to hold a set of methods that allow you to get information about the Relativity environment
     /// </summary>
     class EnvironmentInformation : IEnvironmentInformation
     {
@@ -169,6 +171,63 @@ namespace AgentAgent.Agent
             agentCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentTypeArtifactIdParam, poolArtifactIdParam });
             return agentCount;
         }
+
+        public List<SpotsPerServerObject> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
+        {
+            List<SpotsPerServerObject> outputList = new List<SpotsPerServerObject>();
+
+            string SQL = @"
+                SELECT AG.[ServerArtifactID], 
+                       Count(AG.[ArtifactID]) AS [Count] 
+                FROM   [Agent] AG 
+                       INNER JOIN [Artifact] A 
+                               ON AG.[ArtifactID] = A.[ArtifactID] 
+                       INNER JOIN [ServerResourceGroup] S 
+                               ON AG.[ServerArtifactID] = S.[ResourceServerArtifactID] 
+                WHERE  A.[DeleteFlag] = 0 
+                       AND AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
+                       AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID 
+                GROUP  BY AG.[ServerArtifactID]";
+
+            SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = agentTypeArtifactId
+            };
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = resourcePoolArtifactId
+            };
+
+            DataTable results = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { agentTypeArtifactIdParam, resourcePoolArtifactIdParam });
+
+            if (results != null)
+            {
+                foreach (DataRow row in results.Rows)
+                {
+                    if (!int.TryParse(row["ServerArtifactID"].ToString(), out int serverArtifactId))
+                    {
+                        throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
+                    }
+
+                    if (!int.TryParse(row["Count"].ToString(), out int count))
+                    {
+                        throw new Exception("Unable to cast agent count returned from database to Int32");
+                    }
+
+                    SpotsPerServerObject spotsPerServerObject = new SpotsPerServerObject()
+                    {
+                        AgentServerArtifactId = serverArtifactId,
+                        Spots = count
+                    };
+
+                    outputList.Add(spotsPerServerObject);
+
+                }
+            }
+            return outputList;
+
+        }
+ 
 
         //Get default run interval for a specific agent type from agent type table
         public int GetAgentRunIntervalByType(int agentTypeArtifactId)

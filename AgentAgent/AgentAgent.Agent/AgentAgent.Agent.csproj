@@ -67,8 +67,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
+    <Compile Include="AgentsDesiredListHelper.cs" />
     <Compile Include="CompareDesiredAgentsToExisting.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
+    <Compile Include="Objects\ServerAgent.cs" />
     <Compile Include="Old Code\AgentsPerPool.cs" />
     <Compile Include="Objects\Agent.cs" />
     <Compile Include="Objects\AgentServer.cs" />
@@ -94,7 +96,9 @@
     <Compile Include="Powershell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\ResourcePool.cs" />
-    <Compile Include="RunAgentTypeLogic.cs" />
+    <Compile Include="GetAgentsDesiredList.cs" />
+    <Compile Include="RunAgentCreate.cs" />
+    <Compile Include="RunAgentDelete.cs" />
     <Compile Include="ServerInformation.cs" />
     <Compile Include="Objects\ServerPoolCount.cs" />
     <Compile Include="ServicesManager.cs" />

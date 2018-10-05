@@ -1,4 +1,5 @@
 ﻿using AgentAgent.Agent.CustomAgentTypes;
+using AgentAgent.Agent.Objects;
 using kCura.Agent;
 using Relativity.API;
 using System;
@@ -21,31 +22,36 @@ namespace AgentAgent.Agent
                 //Get a dbContext for the EDDS database
                 IDBContext eddsDbContext = Helper.GetDBContext(-1);
 
+                //Generate Environment Information object
+                EnvironmentInformation environment = new EnvironmentInformation(eddsDbContext);
+
+                //ResourcePoolArtifactID is hard coded for now, but will get pulled from an instance setting and then eventually from the UI
+                int poolArtifactId = 1015040;
+
+                //Adjustment factor is also hardcoded but will be an instance setting and then UI
+                int adjFactor = 10;
+
                 //Run all of the classes for agents to tell us how many agent spots they want per resource pool
-                RunAgentTypeLogic agentTypeLogic = new RunAgentTypeLogic(eddsDbContext);
+                GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, poolArtifactId);
+                List<AgentsDesiredObject> desiredAgentsList = desiredAgents.AgentsPerServerObject;
 
-                //Get a list of the agentGuids that Agent Agent manages
-                List<string> agentGuidList = agentTypeLogic.AllAgentGuids;
+                //Use agents desired list helper to generate agent create and agent delete lists
+                AgentsDesiredListHelper listHelper = new AgentsDesiredListHelper(desiredAgentsList);
 
-                //Use that list to determine how many of each of these agents exist per resource pool
+                List<AgentsDesiredObject> createList = listHelper.GetAgentCreateList();
+                List<AgentsDesiredObject> deleteList = listHelper.GetAgentDeleteList();
 
+                //Get available agent spots per server list
+                GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, adjFactor, poolArtifactId);
+                List<SpotsPerServerObject> spotsPerServerList = new List<SpotsPerServerObject>();
+                spotsPerServerList = getSpotsPerServer.SpotsPerServerList;
 
-                //Get a list of all spots desired for each agent type by Resource Pool
-                List<AgentsDesiredObject> desiredAgentList = agentTypeLogic.AgentsDesiredObjectObject;
+                //Create and run agent create object
+                RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createList, spotsPerServerList);
+                agentCreate.Run();
 
-
-
-
-
-
-
-                List<AgentsDesiredObject> AgentsDesiredObjectObject = new List<AgentsDesiredObject>();
-                RunAgentTypeLogic runAgentLogic = new RunAgentTypeLogic(eddsDbContext);
-                AgentsDesiredObjectObject = runAgentLogic.AgentsDesiredObjectObject;
-
-
-
-
+                //Create and run agent delete object
+                RunAgentDelete agentDelete = new RunAgentDelete(eddsDbContext, environment, deleteList);
 
             }
             catch (Exception ex)

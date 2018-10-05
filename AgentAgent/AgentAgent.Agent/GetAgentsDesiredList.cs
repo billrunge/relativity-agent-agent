@@ -5,13 +5,13 @@ using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {
-    class RunAgentTypeLogic
+    class GetAgentsDesiredList
     {
         public List<AgentsDesiredObject> AgentsPerServerObject { get; private set; }
         private readonly IDBContext _eddsDbContext;
         private readonly int _resourcePoolId;
 
-        public RunAgentTypeLogic(IDBContext eddsDbContext, int resourcePoolId)
+        public GetAgentsDesiredList(IDBContext eddsDbContext, int resourcePoolId)
         {
            AgentsPerServerObject = new List<AgentsDesiredObject>();
             _eddsDbContext = eddsDbContext;
