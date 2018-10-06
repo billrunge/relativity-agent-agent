@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Relativity.API;
+using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {

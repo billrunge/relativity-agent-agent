@@ -3,12 +3,14 @@ using Relativity.API;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Data;
+using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {
 
     public interface IEnvironmentInformation
     {
+        List<SpotsPerServerObject> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentArtifactType();
         int GetSystemContainerId();
         int GetArtifactIdFromGuid(string Guid);
@@ -16,6 +18,7 @@ namespace AgentAgent.Agent
         int GetAgentCount(int agentTypeArtifactId);
         int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
+ 
     }
 
     /// <summary>
@@ -156,7 +159,7 @@ namespace AgentAgent.Agent
                        INNER JOIN [ServerResourceGroup] S 
                                ON A.[ServerArtifactID] = S.[ResourceServerArtifactID] 
                 WHERE  A.[AgentTypeArtifactID] = @AgentTypeArtifactID 
-                       AND S.[ResourceServerArtifactID] = @ResourcePoolArtifactID";
+                       AND S.[ResourceGroupArtifactID] = @ResourcePoolArtifactID";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
             {

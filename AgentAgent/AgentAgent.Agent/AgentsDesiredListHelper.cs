@@ -32,7 +32,7 @@ namespace AgentAgent.Agent
             {
                 Guid = x.Guid,
                 RespectsResourcePool = x.RespectsResourcePool,
-                Count = Math.Abs(x.Count)
+                Count = x.Count
 
             }).Where(x => x.Count < 0).ToList<AgentsDesiredObject>();
         }

@@ -1,5 +1,6 @@
 ﻿using Relativity.API;
 using System.Collections.Generic;
+using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {
@@ -23,6 +24,7 @@ namespace AgentAgent.Agent
             _serverInformation = new ServerInformation(_eddsDbContext);
             _adjustmentFactor = adjustmentFactor;
             _resourcePoolId = resourcePoolId;
+            Run();
         }
 
         private void Run()

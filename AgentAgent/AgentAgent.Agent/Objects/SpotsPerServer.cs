@@ -2,7 +2,7 @@
 
 namespace AgentAgent.Agent
 {
-    class SpotsPerServerObject
+    public class SpotsPerServerObject
     {
         public int AgentServerArtifactId { get; set; }
         public int Spots { get; set; }

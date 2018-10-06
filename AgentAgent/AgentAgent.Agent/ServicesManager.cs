@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
+using AgentAgent.Agent.Objects;
+
 
 namespace AgentAgent.Agent
 {
