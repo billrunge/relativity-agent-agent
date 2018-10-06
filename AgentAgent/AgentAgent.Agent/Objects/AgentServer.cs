@@ -1,6 +1,6 @@
 ﻿namespace AgentAgent.Agent
 {
-    class AgentServerObject
+    public class AgentServerObject
     {
         public int ArtifactID { get; }
         public string Hostname { get; }

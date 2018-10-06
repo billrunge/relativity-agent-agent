@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AgentAgent.Agent
+﻿namespace AgentAgent.Agent
 {
     public class SpotsPerServerObject
     {

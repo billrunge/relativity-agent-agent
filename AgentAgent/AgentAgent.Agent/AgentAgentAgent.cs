@@ -1,5 +1,4 @@
-﻿using AgentAgent.Agent.Objects;
-using kCura.Agent;
+﻿using kCura.Agent;
 using Relativity.API;
 using System;
 using System.Collections.Generic;

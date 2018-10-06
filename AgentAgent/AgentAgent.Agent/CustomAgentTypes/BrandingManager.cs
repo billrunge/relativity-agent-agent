@@ -1,5 +1,4 @@
-﻿using AgentAgent.Agent.Objects;
-using Relativity.API;
+﻿using Relativity.API;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -37,12 +36,12 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
             string SQL = @"
                 SELECT IIF (SUM(PSQ.[ImagesRemaining]) IS NULL, 0, (SUM(PSQ.[ImagesRemaining]))) AS [ImagesRemaining]
-                FROM   [ProductionSetQueue] PSQ 
-                       INNER JOIN [Case] C 
-                               ON PSQ.[WorkspaceArtifactID] = C.[ArtifactID] 
-                       INNER JOIN [Code] CO 
+                FROM   [ProductionSetQueue] PSQ WITH(NOLOCK)
+                       INNER JOIN [Case] C WITH(NOLOCK)
+                               ON PSQ.[WorkspaceArtifactID] = C.[ArtifactID]
+                       INNER JOIN [Code] CO WITH(NOLOCK)
                                ON PSQ.[Status] = CO.[ArtifactID] 
-                       INNER JOIN [CodeType] CT 
+                       INNER JOIN [CodeType] CT WITH(NOLOCK)
                                ON CO.[CodeTypeID] = CT.[CodeTypeID] 
                 WHERE  CO.[Name] = 'Branding' 
                        AND CT.[Name] = 'ProductionSetQueueStatus'

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Relativity.API;
-using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {
@@ -150,41 +149,7 @@ namespace AgentAgent.Agent
                 return outputList;
             }
         }
-
-        public List<int> GetPoolIDsByServerId(int agentServerArtifactId)
-        {
-            List<int> outputList = new List<int>();
-
-            string SQL = @"
-                SELECT [ResourceGroupArtifactID]
-                FROM[ServerResourceGroup]
-                WHERE[ResourceServerArtifactID] = @AgentServerArtifactID";
-
-            SqlParameter serverArtifactIdParam = new SqlParameter("@AgentServerArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = agentServerArtifactId
-            };
-
-            DataTable poolDataTable = _eddsDBContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { serverArtifactIdParam });
-
-            if (poolDataTable == null)
-            {
-                throw new Exception("This environment contains has no agent servers in resource pools or retrieval from DB failed");
-            }
-
-            foreach (DataRow pool in poolDataTable.Rows)
-            {
-                if (!int.TryParse(pool["ResourceGroupArtifactID"].ToString(), out int resourcePoolId))
-                {
-                    throw new Exception("Unable to cast resource pool ID returned from database to Int32");
-                }
-
-                outputList.Add(resourcePoolId);
-            }
-
-            return outputList;
-
-        }
+       
     }
 }
 

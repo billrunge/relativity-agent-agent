@@ -1,5 +1,4 @@
-﻿using AgentAgent.Agent.Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AgentAgent.Agent.CustomAgentTypes
 {

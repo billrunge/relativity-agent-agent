@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using AgentAgent.Agent.CustomAgentTypes;
 using Relativity.API;
-using AgentAgent.Agent.Objects;
 
 namespace AgentAgent.Agent
 {
@@ -34,6 +33,7 @@ namespace AgentAgent.Agent
             ServerManager servMan = new ServerManager();
 
             //Run queue checking logic for all agent type objects
+
             AgentsPerServerObject.AddRange(assistRevMan.AgentsDesired());
             AgentsPerServerObject.AddRange(brandMan.AgentsDesired());
             AgentsPerServerObject.AddRange(cacheMan.AgentsDesired());
