@@ -11,16 +11,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         public OCRSetManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "OCR Set Manager";
             Guid = "42BC48A4-4638-4653-8C2F-C1444D272F84";
-            AlwaysNeeded = false;
-            OffHoursAgent = false;
-            MaxPerInstance = 0;
-            MaxPerResourcePool = 1;
             AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
-            UsesEddsQueue = true;
-            EddsQueueName = "OCRSetQueue";
         }
 
         public override List<AgentsDesiredObject> AgentsDesired()

@@ -12,23 +12,16 @@ namespace AgentAgent.Agent.CustomAgentTypes
         public BrandingManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "Branding Manager";
             Guid = "29F92E0F-05C8-4DA2-ACCB-7C2ACAF2860A";
-            AlwaysNeeded = false;
-            OffHoursAgent = false;
-            MaxPerInstance = 0;
-            MaxPerResourcePool = 0;
             AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
-            UsesEddsQueue = true;
-            EddsQueueName = "ProductionSetQueue";
             PagesPerAgent = 50000;
 
         }
+
         //The processing set queue has a column that shows how many images are remaining in a Processing set. This is very
         //Useful for determining the amount of branding managers needs. Just divide the image sumby the PagesPerAgent variable
         //to determine the amount of agents desired
-
         public override List<AgentsDesiredObject> AgentsDesired()
         {
             int agentCount = 0;
@@ -70,6 +63,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
+
             outputList.Add(agentsDesiredObject);
             return outputList;
         }

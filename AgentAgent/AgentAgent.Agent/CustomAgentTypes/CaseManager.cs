@@ -7,15 +7,8 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public CaseManager()
         {
-            AgentTypeName = "Case Manager";
             Guid = "894462EF-395F-4527-A51B-8D328D229030";
-            AlwaysNeeded = false;
-            OffHoursAgent = true;
-            MaxPerInstance = 1;
-            MaxPerResourcePool = 0;
             RespectsResourcePool = false;
-            UsesEddsQueue = false;
-            EddsQueueName = null;
         }
 
         //The Case Manager agent is a single, off hour agent 

@@ -29,7 +29,7 @@ namespace AgentAgent.Agent
             //while there are rows in the agent desired list and we have not run out of servers
             while (_agentsDesired.Count > 0 && outOfServers == false)
             {
-                _logger.LogVerbose(string.Format("Agents Desired Count = {0}", _agentsDesired.Count));
+                _logger.LogDebug(string.Format("{0} AgentsDesiredObjects desired", _agentsDesired.Count));
                 //Create index counter for _agentsDesired
                 counter = _agentsDesired.Count() - 1;
 
@@ -69,7 +69,7 @@ namespace AgentAgent.Agent
                         else
                         {
                             //Out of servers! 
-                            //Log message about being out of servers
+                            _logger.LogDebug(string.Format("We've run out of spots! {0} remaining AgentsDesiredObjects", _agentsDesired.Count));
                             outOfServers = true;
                             break;
                         }

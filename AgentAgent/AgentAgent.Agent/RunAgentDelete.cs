@@ -11,14 +11,16 @@ namespace AgentAgent.Agent
         private List<AgentsDesiredObject> _agentsToDelete;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentInformation _environmentInformation;
+        private readonly IAPILog _logger;
         
 
-        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete)
+        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
             _environmentInformation = environmentInformation;
             _agentsToDelete = agentsToDelete;
             _resourcePoolId = resourcePoolId;
+            _logger = logger;
         }
 
         public void Run()
@@ -31,6 +33,8 @@ namespace AgentAgent.Agent
 
             while (_agentsToDelete.Count > 0)
             {
+                _logger.LogDebug(string.Format("{0} AgentsDesiredObjects to be deleted", _agentsToDelete.Count));
+
                 counter = _agentsToDelete.Count - 1;
                 while (counter >= 0)
                 {

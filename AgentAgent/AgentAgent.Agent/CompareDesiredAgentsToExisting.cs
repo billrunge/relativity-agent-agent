@@ -44,7 +44,7 @@ namespace AgentAgent.Agent
                 outputList.Add(agent);
                 counter -= 1;
             }
-            _logger.LogVerbose("Compare output: " + logString);
+            _logger.LogDebug("Compare output: " + logString);
             return outputList;
         }
     }

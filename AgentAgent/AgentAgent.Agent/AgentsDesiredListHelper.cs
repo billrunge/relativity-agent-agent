@@ -34,8 +34,5 @@ namespace AgentAgent.Agent
 
             }).Where(x => x.Count < 0).ToList<AgentsDesiredObject>();
         }
-
-
-
     }
 }

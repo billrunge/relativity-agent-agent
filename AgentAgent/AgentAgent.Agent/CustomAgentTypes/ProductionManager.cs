@@ -11,16 +11,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         public ProductionManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "Production Manager";
             Guid = "916CF88F-F8D0-4C65-9ECC-1BBFDF5E1515";
-            AlwaysNeeded = false;
-            OffHoursAgent = false;
-            MaxPerInstance = 0;
-            MaxPerResourcePool = 1;
             AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
-            UsesEddsQueue = true;
-            EddsQueueName = "ProductionSetQueue";
         }
 
         //Production managers are an at least one agent per resource pool, but only one manager per job

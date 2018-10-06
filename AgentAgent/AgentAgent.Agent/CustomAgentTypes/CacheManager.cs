@@ -7,15 +7,8 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         public CacheManager()
         {
-            AgentTypeName = "Cache Manager";
             Guid = "505B1655-2B80-45F5-8DE8-8F26442A6E07";
-            AlwaysNeeded = false;
-            OffHoursAgent = true;
-            MaxPerInstance = 1;
-            MaxPerResourcePool = 0;
             RespectsResourcePool = false;
-            UsesEddsQueue = false;
-            EddsQueueName = null;
         }
 
         //The Cache Manager agent is a single, off hour agent 

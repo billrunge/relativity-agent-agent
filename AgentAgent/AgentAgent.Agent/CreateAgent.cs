@@ -198,11 +198,13 @@ namespace AgentAgent.Agent
             };
             
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentServerArtifactID, agentName, agentTypeArtifactID, runInterval, artifactID });
-
+            
+            //Audit the agent's creation
+            InsertAuditRecord(_agent.AgentName);
         }
 
         //Insert row into EDDS's AuditRecord table
-        private void InsertAuditRecord()
+        private void InsertAuditRecord(string agentName)
         {
             string SQL = @"
                 INSERT INTO [AuditRecord] 
@@ -215,7 +217,7 @@ namespace AgentAgent.Agent
                              [RecordOrigination]) 
                 VALUES      (@ArtifactID, 
                              @Action, 
-                             '<auditElement>Created with Agent Agent</auditElement>', 
+                             '<auditElement>' + @AgentName + ' created with Agent Agent.</auditElement>', 
                              777, 
                              Getutcdate(), 
                              '<auditElement></auditElement>', 
@@ -227,14 +229,18 @@ namespace AgentAgent.Agent
                 Value = _agent.ArtifactId
             };
 
+            SqlParameter agentNameParam = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
+            {
+                Value = agentName
+            };
+
             SqlParameter actionParam = new SqlParameter("@Action", System.Data.SqlDbType.Char)
             {
+                //2 is create
                 Value = 2
             };
 
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam, actionParam });
-
-
+            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam, agentNameParam, actionParam });
 
         }
 
@@ -257,7 +263,6 @@ namespace AgentAgent.Agent
             InsertArtifact();
             InsertArtifactAncestry();
             InsertAgentTable();
-            InsertAuditRecord();
         }
 
     }

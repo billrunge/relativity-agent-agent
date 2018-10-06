@@ -11,16 +11,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         public ProcessingSetManager(IDBContext eddsDbContext, int poolArtifactId)
         {
             _eddsDbContext = eddsDbContext;
-            AgentTypeName = "Processing Set Manager";
             Guid = "8326948B-32E1-4911-AC08-DA9130D38AF1";
-            AlwaysNeeded = false;
-            OffHoursAgent = false;
-            MaxPerInstance = 0;
-            MaxPerResourcePool = 1;
             AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
-            UsesEddsQueue = true;
-            EddsQueueName = "ProcessingSetQueue";
         }
 
 

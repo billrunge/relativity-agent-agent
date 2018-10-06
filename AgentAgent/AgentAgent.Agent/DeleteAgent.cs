@@ -24,9 +24,12 @@ namespace AgentAgent.Agent
             {
                 Value = agentArtifactId
             };
+
+            //Auditing here would create duplicate delete records, 
+            //as Relativity will audit the delete if initiated by updating Artifact
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
         }
-
+        
         public int GetAgentIdToDelete (int agentTypeId, int serverArtifactId)
         {
             string SQL = @"
@@ -50,32 +53,6 @@ namespace AgentAgent.Agent
 
             return _eddsDbContext.ExecuteSqlStatementAsScalar<int?>(SQL, new SqlParameter[] { agentTypeIdParam, serverArtifactIdParam }).GetValueOrDefault();
        
-        }
-
-
-
-        //Todo: integrate logic to force delete agents
-        public void ForceDeleteAgent (int agentArtifactId)
-        {
-
-            string SQL = @"
-                DELETE FROM [Agent] 
-                WHERE  [ArtifactID] = @AgentArtifactID 
-
-                DELETE FROM [ArtifactAncestry] 
-                WHERE  [ArtifactID] = @AgentArtifactID 
-
-                DELETE FROM [Artifact] 
-                WHERE  [ArtifactID] = @AgentArtifactID";
-
-            //Gather values to input into above script
-            SqlParameter agentArtifactIdParam = new SqlParameter("@AgentArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = agentArtifactId
-            };
-
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
-
         }
 
     }
