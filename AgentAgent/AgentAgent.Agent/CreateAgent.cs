@@ -21,7 +21,6 @@ namespace AgentAgent.Agent
             _eddsDbContext = eddsDbContext;
             _agent.AgentTypeGuid = agentTypeGuid;
             _agent.AgentServerArtifactId = agentServerArtifactId;
-
             _environmentInformation = environmentInformation;
             _agent.AgentTypeArtifactId = _environmentInformation.GetArtifactIdFromGuid(_agent.AgentTypeGuid);                        
             _agent.AgentArtifactTypeId = _environmentInformation.GetAgentArtifactType();

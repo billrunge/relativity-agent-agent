@@ -153,12 +153,15 @@ namespace AgentAgent.Agent
             int agentCount;
 
             string SQL = @"
-                SELECT Count(*) 
-                FROM   [Agent] A 
-                       INNER JOIN [ServerResourceGroup] S 
-                               ON A.[ServerArtifactID] = S.[ResourceServerArtifactID] 
-                WHERE  A.[AgentTypeArtifactID] = @AgentTypeArtifactID 
-                       AND S.[ResourceGroupArtifactID] = @ResourcePoolArtifactID";
+                SELECT Count(AG.[ArtifactID]) 
+                FROM   [Agent] AG WITH(NOLOCK) 
+                        INNER JOIN [ServerResourceGroup] S WITH(NOLOCK) 
+                                ON AG.[ServerArtifactID] = S.[ResourceServerArtifactID] 
+                        INNER JOIN [Artifact] A WITH(NOLOCK) 
+                                ON AG.[ArtifactID] = A.[ArtifactID] 
+                WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
+                        AND S.[ResourceGroupArtifactID] = @ResourcePoolArtifactID 
+                        AND [DeleteFlag] = 0";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
             {
@@ -228,8 +231,7 @@ namespace AgentAgent.Agent
             }
             return outputList;
 
-        }
- 
+        } 
 
         //Get default run interval for a specific agent type from agent type table
         public int GetAgentRunIntervalByType(int agentTypeArtifactId)
@@ -257,6 +259,5 @@ namespace AgentAgent.Agent
             }
 
         }
-
     }
 }

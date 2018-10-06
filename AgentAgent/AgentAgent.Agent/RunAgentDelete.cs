@@ -13,7 +13,6 @@ namespace AgentAgent.Agent
         private readonly IEnvironmentInformation _environmentInformation;
         private readonly IAPILog _logger;
         
-
         public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
@@ -61,13 +60,14 @@ namespace AgentAgent.Agent
                             _agentsToDelete.Remove(_agentsToDelete[counter]);
                         }
                     }
+                    else
+                    {
+                        _agentsToDelete.Remove(_agentsToDelete[counter]);
+                    }
 
                     counter -= 1;
                 }
-
             }
-
-
         }
     }
 }

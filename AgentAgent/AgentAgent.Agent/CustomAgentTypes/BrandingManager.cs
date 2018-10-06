@@ -7,7 +7,6 @@ namespace AgentAgent.Agent.CustomAgentTypes
     class BrandingManager : AgentType
     {
         private IDBContext _eddsDbContext;
-        public int PagesPerAgent { get; set; }
 
         public BrandingManager(IDBContext eddsDbContext, int poolArtifactId)
         {

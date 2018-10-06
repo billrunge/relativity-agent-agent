@@ -28,6 +28,7 @@ namespace AgentAgent.Agent
             ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
             DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
             OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _resourcePoolId);
+            OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _resourcePoolId);
             ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _resourcePoolId);
             ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
             ServerManager servMan = new ServerManager();
@@ -42,6 +43,7 @@ namespace AgentAgent.Agent
             AgentsPerServerObject.AddRange(clustUpWork.AgentsDesired());
             AgentsPerServerObject.AddRange(distJobMan.AgentsDesired());
             AgentsPerServerObject.AddRange(OcrSetMan.AgentsDesired());
+            AgentsPerServerObject.AddRange(OcrWorker.AgentsDesired());
             AgentsPerServerObject.AddRange(procMan.AgentsDesired());
             AgentsPerServerObject.AddRange(prodMan.AgentsDesired());
             AgentsPerServerObject.AddRange(servMan.AgentsDesired());

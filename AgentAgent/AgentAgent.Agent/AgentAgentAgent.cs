@@ -20,8 +20,10 @@ namespace AgentAgent.Agent
                 //Adding message so time of last check-in updates
                 this.RaiseMessage("Managing the agents.", 10);
 
+                IAgentHelper helper = Helper;
+
                 logger.LogDebug("Getting EDDS database context");
-                IDBContext eddsDbContext = Helper.GetDBContext(-1);
+                IDBContext eddsDbContext = helper.GetDBContext(-1);
 
                 logger.LogDebug("Generating new EnvironmentInformation object");
                 EnvironmentInformation environment = new EnvironmentInformation(eddsDbContext);
