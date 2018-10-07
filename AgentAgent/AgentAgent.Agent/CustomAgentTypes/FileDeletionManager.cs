@@ -1,20 +1,15 @@
 ﻿namespace AgentAgent.Agent
 {
-    class CaseStatisticsManager : AgentType
+    class FileDeletionManager : AgentType
     {
-
         private readonly bool _isOffHours;
 
-        public CaseStatisticsManager(bool isOffHours)
+        public FileDeletionManager(bool isOffHours)
         {
-            Guid = "336F88BD-2D9B-4DB2-BB8A-6AA48C4F13D0";
+            Guid = "6A17A769-1BF2-4480-B8A8-D4000CF48143";
             RespectsResourcePool = false;
             _isOffHours = isOffHours;
         }
-
-        //The Case Statistics Manager agent is a single, off hour agent 
-        //Check if it is off hours, report one agent needed in any resource pool
-        //If it is not off hours, no agent needed
 
         public override AgentsDesiredObject AgentsDesired()
         {
@@ -27,11 +22,11 @@
 
             AgentsDesiredObject agentsDesired = new AgentsDesiredObject
             {
-                Guid = Guid,
+                Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool,
-                Count = agentCount
-
+                Guid = Guid
             };
+
             return agentsDesired;
         }
     }

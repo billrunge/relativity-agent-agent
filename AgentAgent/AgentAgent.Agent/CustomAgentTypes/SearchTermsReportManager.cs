@@ -3,31 +3,28 @@ using System.Data.SqlClient;
 
 namespace AgentAgent.Agent
 {
-    class ProcessingSetManager : AgentType
+    class SearchTermsReportManager : AgentType
     {
-        private IDBContext _eddsDbContext;
+        private readonly IDBContext _eddsDbContext;
 
-        public ProcessingSetManager(IDBContext eddsDbContext, int poolArtifactId)
+        public SearchTermsReportManager(IDBContext eddsDbContext, int poolArtifacId)
         {
             _eddsDbContext = eddsDbContext;
-            Guid = "8326948B-32E1-4911-AC08-DA9130D38AF1";
-            AgentAgentResourcePool = poolArtifactId;
+            Guid = "CD4545F1-4370-4FF2-B2CD-4709B159112D";
             RespectsResourcePool = true;
+            AgentAgentResourcePool = poolArtifacId;
         }
-
-
-        //The Processing set manager is a one agent per resource pool agent
-        //Which makes determining the amount of agents per pool desired easy
 
         public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
+            int jobCount = 0;
 
             string SQL = @"
-                SELECT Count(P.[SetQueueID]) 
-                FROM   [ProcessingSetQueue] P 
+                SELECT Count(STRQ.[CaseArtifactID]) 
+                FROM   [SearchTermsReportQueue] STRQ 
                        INNER JOIN [Case] C 
-                               ON P.[WorkspaceArtifactID] = C.[ArtifactID] 
+                               ON STRQ.[CaseArtifactID] = C.[ArtifactID] 
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
             SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
@@ -35,15 +32,14 @@ namespace AgentAgent.Agent
                 Value = AgentAgentResourcePool
             };
 
-            int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
+            jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
 
-            //If nothing is returned, there are no jobs in the queue
             if (jobCount > 0)
             {
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,

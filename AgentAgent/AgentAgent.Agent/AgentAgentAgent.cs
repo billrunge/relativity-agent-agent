@@ -36,7 +36,7 @@ namespace AgentAgent.Agent
 
                 //Run all of the classes for agents to tell us how many agent spots they want per resource pool
                 logger.LogDebug("Creating GetAgentsDesiredList object");
-                GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, environment, poolArtifactId);
+                GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, environment, poolArtifactId, IsOffHours());
                 logger.LogDebug("Getting AgentsDesiredList from GetAgentsDesiredList object");
                 List<AgentsDesiredObject> desiredAgentsList = desiredAgents.AgentsPerServerObject;
 

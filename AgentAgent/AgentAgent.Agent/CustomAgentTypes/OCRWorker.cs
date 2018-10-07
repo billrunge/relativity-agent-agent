@@ -1,8 +1,7 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace AgentAgent.Agent.CustomAgentTypes
+namespace AgentAgent.Agent
 {
     class OCRWorker : AgentType
     {
@@ -19,16 +18,15 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
         //Determining the amount of OCR Workers needed is a just a matter 
         //of getting the count of pages from the Worker Queue
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
             int imageCount = 0;
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
                 SELECT Count(O.[SetArtifactId]) 
-                FROM   [OCRWorkerQueue] O 
-                       INNER JOIN [Case] C 
+                FROM   [OCRWorkerQueue] O WITH(NOLOCK)
+                       INNER JOIN [Case] C WITH(NOLOCK) 
                                ON O.[WorkspaceArtifactID] = C.[ArtifactID] 
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
@@ -58,8 +56,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 RespectsResourcePool = RespectsResourcePool
             };
 
-            outputList.Add(agentsDesired);
-            return outputList;
+            return agentsDesired;
         }
     }
 }

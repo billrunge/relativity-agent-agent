@@ -1,8 +1,7 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace AgentAgent.Agent.CustomAgentTypes
+namespace AgentAgent.Agent
 {
     class OCRSetManager : AgentType
     {
@@ -16,15 +15,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
             RespectsResourcePool = true;
         }
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
                 SELECT Count(O.[WorkspaceArtifactID]) 
-                FROM   [OCRSetQueue] O 
-                       INNER JOIN [Case] C 
+                FROM   [OCRSetQueue] O WITH(NOLOCK)
+                       INNER JOIN [Case] C WITH(NOLOCK)
                                ON O.[WorkspaceArtifactID] = C.[ArtifactID] 
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
@@ -40,17 +38,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
 
-            outputList.Add(agentsDesiredObject);
-
-            return outputList;
+            return agentsDesired;
         }
     }
-
 }

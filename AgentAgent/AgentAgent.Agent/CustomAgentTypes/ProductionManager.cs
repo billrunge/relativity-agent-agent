@@ -1,8 +1,7 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace AgentAgent.Agent.CustomAgentTypes
+namespace AgentAgent.Agent
 {
     class ProductionManager : AgentType
     {
@@ -19,14 +18,12 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //Production managers are an at least one agent per resource pool, but only one manager per job
         //so the ideal situation here is one manager per job in the queue. 
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
-
             string SQL = @"
                 SELECT Count(P.[SetQueueId]) 
-                FROM   [ProductionSetQueue] P 
-                       INNER JOIN [Case] C 
+                FROM   [ProductionSetQueue] P WITH(NOLOCK) 
+                       INNER JOIN [Case] C WITH(NOLOCK)
                                ON P.[WorkspaceArtifactId] = C.[ArtifactID] 
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
@@ -37,16 +34,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
 
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
 
-            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = jobCount
             };
 
-            outputList.Add(agentsDesiredObject);
-
-            return outputList;
+            return agentsDesired;
         }
     }
 

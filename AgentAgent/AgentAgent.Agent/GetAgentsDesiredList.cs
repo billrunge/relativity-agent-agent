@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AgentAgent.Agent.CustomAgentTypes;
 using Relativity.API;
 
 namespace AgentAgent.Agent
@@ -10,47 +9,64 @@ namespace AgentAgent.Agent
         private readonly IDBContext _eddsDbContext;
         private readonly int _resourcePoolId;
         private readonly IEnvironmentInformation _environment;
+        private readonly bool _isOffHours;
 
-        public GetAgentsDesiredList(IDBContext eddsDbContext, IEnvironmentInformation environment, int resourcePoolId)
+        public GetAgentsDesiredList(IDBContext eddsDbContext, IEnvironmentInformation environment, int resourcePoolId, bool isOffHours)
         {
            AgentsPerServerObject = new List<AgentsDesiredObject>();
             _eddsDbContext = eddsDbContext;
             _resourcePoolId = resourcePoolId;
             _environment = environment;
+            _isOffHours = isOffHours;
             Run();
         }
 
         private void Run() {
 
-            //Create agent type objects
             AssistedReviewManager assistRevMan = new AssistedReviewManager(_eddsDbContext);
-            BrandingManager brandMan = new BrandingManager(_eddsDbContext, _resourcePoolId);
-            CacheManager cacheMan = new CacheManager();
-            CaseManager caseMan = new CaseManager();  
-            CaseStatisticsManager caseStatsMan = new CaseStatisticsManager(); 
-            ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
-            DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
-            IntegrationPointsAgent RipAgent = new IntegrationPointsAgent(_eddsDbContext, _resourcePoolId);
-            OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _resourcePoolId);
-            OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _resourcePoolId);
-            ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _resourcePoolId);
-            ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
-            ServerManager servMan = new ServerManager();
+            AgentsPerServerObject.Add(assistRevMan.AgentsDesired());
 
-            //Run queue checking logic for all agent type objects
-            AgentsPerServerObject.AddRange(assistRevMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(brandMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(cacheMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(caseMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(caseStatsMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(clustUpWork.AgentsDesired());
-            AgentsPerServerObject.AddRange(distJobMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(RipAgent.AgentsDesired());
-            AgentsPerServerObject.AddRange(OcrSetMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(OcrWorker.AgentsDesired());
-            AgentsPerServerObject.AddRange(procMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(prodMan.AgentsDesired());
-            AgentsPerServerObject.AddRange(servMan.AgentsDesired());
+            BrandingManager brandMan = new BrandingManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(brandMan.AgentsDesired());
+
+            CacheManager cacheMan = new CacheManager(_isOffHours);
+            AgentsPerServerObject.Add(cacheMan.AgentsDesired());
+
+            CaseManager caseMan = new CaseManager(_isOffHours);
+            AgentsPerServerObject.Add(caseMan.AgentsDesired());
+
+            CaseStatisticsManager caseStatsMan = new CaseStatisticsManager(_isOffHours);
+            AgentsPerServerObject.Add(caseStatsMan.AgentsDesired());
+
+            ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
+            AgentsPerServerObject.Add(clustUpWork.AgentsDesired());
+
+            DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
+            AgentsPerServerObject.Add(distJobMan.AgentsDesired());
+
+            FileDeletionManager fileDelMan = new FileDeletionManager(_isOffHours);
+            AgentsPerServerObject.Add(fileDelMan.AgentsDesired());
+
+            IntegrationPointsAgent RipAgent = new IntegrationPointsAgent(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(RipAgent.AgentsDesired());
+
+            OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(OcrSetMan.AgentsDesired());
+
+            OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(OcrWorker.AgentsDesired());
+
+            ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(procMan.AgentsDesired());
+
+            ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(prodMan.AgentsDesired());
+
+            SearchTermsReportManager STRMan = new SearchTermsReportManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObject.Add(STRMan.AgentsDesired());
+
+            ServerManager servMan = new ServerManager();
+            AgentsPerServerObject.Add(servMan.AgentsDesired());
         }
     }
 }

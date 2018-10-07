@@ -1,8 +1,7 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace AgentAgent.Agent.CustomAgentTypes
+namespace AgentAgent.Agent
 {
     class IntegrationPointsAgent : AgentType
     {
@@ -16,28 +15,27 @@ namespace AgentAgent.Agent.CustomAgentTypes
             AgentAgentResourcePool = poolArtifactId;
         }
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
-            List <AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
                 IF ( EXISTS (SELECT * 
-                             FROM   INFORMATION_SCHEMA.TABLES 
+                             FROM   INFORMATION_SCHEMA.TABLES WITH(NOLOCK)
                              WHERE  TABLE_SCHEMA = 'eddsdbo' 
                                     AND TABLE_NAME = 
                             'ScheduleAgentQueue_08C0CE2D-8191-4E8F-B037-899CEAEE493D') ) 
                   BEGIN 
                       SELECT IIF(Count(SAQ.[JobID]) > 3, 4, Count(SAQ.[JobID])) 
-                      FROM   [ScheduleAgentQueue_08C0CE2D-8191-4E8F-B037-899CEAEE493D] SAQ 
-                             INNER JOIN [Case] C 
+                      FROM   [ScheduleAgentQueue_08C0CE2D-8191-4E8F-B037-899CEAEE493D] SAQ WITH(NOLOCK)
+                             INNER JOIN [Case] C WITH(NOLOCK)
                                      ON SAQ.[WorkspaceID] = C.[ArtifactID] 
                       WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID 
                   END 
                 ELSE 
                   BEGIN 
                       SELECT 0 
-                  END ";
+                  END";
 
             SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
@@ -53,8 +51,7 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 Count = agentCount
             };
 
-            outputList.Add(agentsDesired);
-            return outputList;
+            return agentsDesired;
         }
 
     }

@@ -1,9 +1,9 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace AgentAgent.Agent.CustomAgentTypes
-{
+namespace AgentAgent.Agent
+{ 
+
     class BrandingManager : AgentType
     {
         private IDBContext _eddsDbContext;
@@ -21,10 +21,9 @@ namespace AgentAgent.Agent.CustomAgentTypes
         //The processing set queue has a column that shows how many images are remaining in a Processing set. This is very
         //Useful for determining the amount of branding managers needs. Just divide the image sumby the PagesPerAgent variable
         //to determine the amount of agents desired
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
 
             string SQL = @"
                 SELECT IIF (SUM(PSQ.[ImagesRemaining]) IS NULL, 0, (SUM(PSQ.[ImagesRemaining]))) AS [ImagesRemaining]
@@ -56,15 +55,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 }
             }
 
-            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject()
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
             {
                 Guid = Guid,
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
 
-            outputList.Add(agentsDesiredObject);
-            return outputList;
+            return agentsDesired;
         }
     }
 }

@@ -69,8 +69,10 @@
     <Compile Include="AgentAgentAgent.cs" />
     <Compile Include="AgentsDesiredListHelper.cs" />
     <Compile Include="CompareDesiredAgentsToExisting.cs" />
+    <Compile Include="CustomAgentTypes\FileDeletionManager.cs" />
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />
+    <Compile Include="CustomAgentTypes\SearchTermsReportManager.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
     <Compile Include="Objects\Agent.cs" />
     <Compile Include="Objects\AgentServer.cs" />

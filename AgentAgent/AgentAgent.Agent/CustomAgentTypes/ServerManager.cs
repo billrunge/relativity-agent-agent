@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AgentAgent.Agent.CustomAgentTypes
+﻿namespace AgentAgent.Agent
 {
     class ServerManager : AgentType
     {
@@ -8,21 +6,19 @@ namespace AgentAgent.Agent.CustomAgentTypes
         {
             Guid = "FBE5DF61-E8CF-4D9C-AD03-03C6100CED48";
             RespectsResourcePool = false;
-
         }
 
         //You always need a server manager.
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
-            AgentsDesiredObject AgentsDesiredObject = new AgentsDesiredObject
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = 1
             };
-            outputList.Add(AgentsDesiredObject);
-            return outputList;
+
+            return agentsDesired;
         }
     }
 }

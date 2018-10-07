@@ -1,7 +1,6 @@
 ﻿using Relativity.API;
-using System.Collections.Generic;
 
-namespace AgentAgent.Agent.CustomAgentTypes
+namespace AgentAgent.Agent
 {
     class DistributedJobManager : AgentType
     {
@@ -14,13 +13,13 @@ namespace AgentAgent.Agent.CustomAgentTypes
             RespectsResourcePool = false;
         }
 
-        public override List<AgentsDesiredObject> AgentsDesired()
+        public override AgentsDesiredObject AgentsDesired()
         {
             int agentCount = 0;
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
+
             string SQL = @"
                 SELECT COUNT(*)
-                FROM [DistributedJob]";
+                FROM [DistributedJob] WITH(NOLOCK)";
 
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
             
@@ -29,15 +28,14 @@ namespace AgentAgent.Agent.CustomAgentTypes
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesiredObject = new AgentsDesiredObject
+            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
 
-            outputList.Add(agentsDesiredObject);
-            return outputList;
+            return agentsDesired;
         }
     }
 }

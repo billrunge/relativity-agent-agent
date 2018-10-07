@@ -4,7 +4,7 @@ namespace AgentAgent.Agent
 {
     interface IAgentType
     {
-        List<AgentsDesiredObject> AgentsDesired();
+        AgentsDesiredObject AgentsDesired();
     }
 
     abstract class AgentType : IAgentType
@@ -13,6 +13,6 @@ namespace AgentAgent.Agent
         public int AgentAgentResourcePool { get; protected set; }
         public bool RespectsResourcePool { get; protected set; }
         public int PagesPerAgent { get; set; }
-        public abstract List<AgentsDesiredObject> AgentsDesired();        
+        public abstract AgentsDesiredObject AgentsDesired();
     }
 }
