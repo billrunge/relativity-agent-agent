@@ -7,21 +7,22 @@ namespace AgentAgent.Agent
     {
         private AgentServerObject _agentServer;
         private readonly int _agentServerArtifactId;
-        private readonly ServerInformation _serverInformation;
+        //private readonly ServerInformation _serverInformation;
+        private readonly IEnvironmentHelper _environment;
         private readonly float _adjustmentFactor;
         public int Spots { get; private set; }
 
-        public GetSpotsPerServer(IDBContext eddsDbContext, int agentServerArtifactId, float adjustmentFactor)
+        public GetSpotsPerServer(IDBContext eddsDbContext, IEnvironmentHelper environment, int agentServerArtifactId, float adjustmentFactor)
         {
             _agentServerArtifactId = agentServerArtifactId;
-            _serverInformation = new ServerInformation(eddsDbContext);
+            _environment = environment;
             _adjustmentFactor = adjustmentFactor;
             Run();
         }
 
         private void Run()
         {
-            _agentServer = _serverInformation.GetAgentServerObject(_agentServerArtifactId);
+            _agentServer = _environment.GetAgentServerObject(_agentServerArtifactId);
 
             int ram = Convert.ToInt32(_agentServer.Memory / 1024 / 1024 / 1024);
             int cores = _agentServer.ProcessorCores;

@@ -9,13 +9,13 @@ namespace AgentAgent.Agent
         private List<AgentsDesiredObject> _agentsDesired;
         private List<SpotsPerServerObject> _spotsPerServer;
         private readonly IDBContext _eddsDbContext;
-        private readonly IEnvironmentInformation _environmentInformation;
+        private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
 
-        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, List<AgentsDesiredObject> agentsDesired, List<SpotsPerServerObject> spotsPerServer, IAPILog logger)
+        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesiredObject> agentsDesired, List<SpotsPerServerObject> spotsPerServer, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
-            _environmentInformation = environmentInformation;
+            _environment = environment;
             _agentsDesired = agentsDesired;
             _spotsPerServer = spotsPerServer;
             _logger = logger;
@@ -46,7 +46,7 @@ namespace AgentAgent.Agent
                             _spotsPerServer = _spotsPerServer.OrderByDescending(x => x.Spots).ToList();
                             if (_spotsPerServer[0].Spots > 0)
                             {
-                                CreateAgent createAgent = new CreateAgent(_eddsDbContext, _environmentInformation, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
+                                CreateAgent createAgent = new CreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
                                 createAgent.Create();
                                 _spotsPerServer[0].Spots -= 1;
                                 _agentsDesired[counter].Count -= 1;

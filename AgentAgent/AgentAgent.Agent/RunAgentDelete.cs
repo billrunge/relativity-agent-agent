@@ -10,13 +10,13 @@ namespace AgentAgent.Agent
         private readonly int _resourcePoolId;
         private List<AgentsDesiredObject> _agentsToDelete;
         private readonly IDBContext _eddsDbContext;
-        private readonly IEnvironmentInformation _environmentInformation;
+        private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
         
-        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete, IAPILog logger)
+        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentHelper environment, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
-            _environmentInformation = environmentInformation;
+            _environment = environment;
             _agentsToDelete = agentsToDelete;
             _resourcePoolId = resourcePoolId;
             _logger = logger;
@@ -38,8 +38,8 @@ namespace AgentAgent.Agent
                 while (counter >= 0)
                 {
                     _agentsToDelete[counter].Count = Math.Abs(_agentsToDelete[counter].Count);
-                    agentTypeId = _environmentInformation.GetArtifactIdFromGuid(_agentsToDelete[counter].Guid);
-                    agentsPerServer = _environmentInformation.GetAgentsPerServerByPool(agentTypeId, _resourcePoolId);
+                    agentTypeId = _environment.GetArtifactIdFromGuid(_agentsToDelete[counter].Guid);
+                    agentsPerServer = _environment.GetAgentsPerServerByPool(agentTypeId, _resourcePoolId);
                     if (agentsPerServer.Count > 0)
                     {
                         agentsPerServer = agentsPerServer.OrderByDescending(x => x.Spots).ToList();

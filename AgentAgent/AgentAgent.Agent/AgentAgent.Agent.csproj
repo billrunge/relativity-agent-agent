@@ -90,7 +90,7 @@
     <Compile Include="CustomAgentTypes\ProductionManager.cs" />
     <Compile Include="CustomAgentTypes\ServerManager.cs" />
     <Compile Include="DeleteAgent.cs" />
-    <Compile Include="EnvironmentInformation.cs" />
+    <Compile Include="EnvironmentHelper.cs" />
     <Compile Include="GetSpotsPerServer.cs" />
     <Compile Include="GetSpotsPerServerList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

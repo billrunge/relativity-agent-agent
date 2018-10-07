@@ -7,7 +7,7 @@ using System.Data;
 namespace AgentAgent.Agent
 {
 
-    public interface IEnvironmentInformation
+    public interface IEnvironmentHelper
     {
         List<SpotsPerServerObject> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentArtifactType();
@@ -17,17 +17,18 @@ namespace AgentAgent.Agent
         int GetAgentCount(int agentTypeArtifactId);
         int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
- 
+        AgentServerObject GetAgentServerObject(int agentServerArtifactId);
+        List<AgentServerObject> GetPoolAgentServerList(int resourcePoolArtifactId);
     }
 
     /// <summary>
     /// A helper class to hold a set of methods that allow you to get information about the Relativity environment
     /// </summary>
-    class EnvironmentInformation : IEnvironmentInformation
+    class EnvironmentHelper : IEnvironmentHelper
     {
         private IDBContext _eddsDbContext;
 
-        public EnvironmentInformation(IDBContext eddsDbContext)
+        public EnvironmentHelper(IDBContext eddsDbContext)
         {
             _eddsDbContext = eddsDbContext;
         }
@@ -37,8 +38,8 @@ namespace AgentAgent.Agent
         {
             int agentArtifactType = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
                 SELECT TOP 1 [ArtifactTypeID] 
-                FROM [ArtifactType] 
-                WHERE  ArtifactType = 'Agent' ");
+                FROM [ArtifactType] WITH(NOLOCK)
+                WHERE  ArtifactType = 'Agent'");
 
             if (agentArtifactType == 0)
             {
@@ -55,7 +56,7 @@ namespace AgentAgent.Agent
         {
             int systemContainerId = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(@"
                 SELECT TOP 1 [ArtifactID]
-                FROM [Artifact]
+                FROM [Artifact] WITH(NOLOCK)
                 WHERE TextIdentifier = 'System'
                 ORDER BY [ArtifactID] ASC");
 
@@ -76,7 +77,7 @@ namespace AgentAgent.Agent
 
             string SQL = @"
                 SELECT TOP 1 ArtifactID
-                FROM [ArtifactGuid]
+                FROM [ArtifactGuid] WITH(NOLOCK)
                 WHERE ArtifactGuid = @Guid";
 
             SqlParameter artifactGuid = new SqlParameter("@Guid", System.Data.SqlDbType.Char)
@@ -102,7 +103,7 @@ namespace AgentAgent.Agent
             string textIdentifier;
             string SQL = @"
                 SELECT TOP 1 [TextIdentifier]
-                FROM [Artifact]
+                FROM [Artifact] WITH(NOLOCK)
                 WHERE [ArtifactID] = @ArtifactID";
 
             SqlParameter artifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Char)
@@ -132,7 +133,7 @@ namespace AgentAgent.Agent
 
             string SQL = @"
                 SELECT COUNT(*)
-                FROM [Agent]
+                FROM [Agent] WITH(NOLOCK)
                 WHERE [AgentTypeArtifactID] = @AgentTypeArtifactID";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
@@ -182,10 +183,10 @@ namespace AgentAgent.Agent
             string SQL = @"
                 SELECT AG.[ServerArtifactID], 
                        Count(AG.[ArtifactID]) AS [Count] 
-                FROM   [Agent] AG 
-                       INNER JOIN [Artifact] A 
+                FROM   [Agent] AG WITH(NOLOCK)
+                       INNER JOIN [Artifact] A WITH(NOLOCK)
                                ON AG.[ArtifactID] = A.[ArtifactID] 
-                       INNER JOIN [ServerResourceGroup] S 
+                       INNER JOIN [ServerResourceGroup] S WITH(NOLOCK)
                                ON AG.[ServerArtifactID] = S.[ResourceServerArtifactID] 
                 WHERE  A.[DeleteFlag] = 0 
                        AND AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
@@ -236,8 +237,8 @@ namespace AgentAgent.Agent
         {
             int runInterval;
             string SQL = @"
-                SELECT[DefaultInterval]
-                FROM [AgentType]
+                SELECT [DefaultInterval]
+                FROM [AgentType] WITH(NOLOCK)
                 WHERE[ArtifactID] = @AgentTypeArtifactID";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
@@ -256,6 +257,143 @@ namespace AgentAgent.Agent
                 return runInterval;
             }
 
-        } 
+        }
+
+        //Get an object holding information about agent servers by its ArtifactID
+        public AgentServerObject GetAgentServerObject(int agentServerArtifactId)
+        {
+            string SQL = @"
+				SELECT [ArtifactID],
+                       [Name]                                  as [Hostname],
+                       IIF([Status] = 'Active', 'True', 'False') as [Status],
+                       [ProcessorCores],
+                       [Memory],
+                       [NumberOfAgents]
+                FROM   [ExtendedResourceServer]
+                WHERE  [ArtifactID] = @ServerArtifactID";
+
+            SqlParameter serverArtifactIdParam = new SqlParameter("@ServerArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = agentServerArtifactId
+            };
+
+            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { serverArtifactIdParam });
+
+            if (agentServerDataTable == null)
+            {
+                throw new Exception("This environment contains no agent servers or retrieval from DB failed");
+            }
+            else if (agentServerDataTable.Rows.Count > 1)
+            {
+                throw new Exception("Multiple server entries returned for agent server Artifact ID");
+            }
+            else
+            {
+                if (!int.TryParse(agentServerDataTable.Rows[0]["ArtifactID"].ToString(), out int artifactId))
+                {
+                    throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
+                }
+
+                string hostname = agentServerDataTable.Rows[0]["Hostname"].ToString();
+
+                if (!bool.TryParse(agentServerDataTable.Rows[0]["Status"].ToString(), out bool active))
+                {
+                    throw new Exception("Unable to cast agent server status returned from database to Boolean");
+                }
+
+                if (!int.TryParse(agentServerDataTable.Rows[0]["ProcessorCores"].ToString(), out int cores))
+                {
+                    throw new Exception("Unable to cast agent server core count returned from database to Int32");
+                }
+
+                if (!long.TryParse(agentServerDataTable.Rows[0]["Memory"].ToString(), out long memory))
+                {
+                    throw new Exception("Unable to cast agent server memory count returned from database to Int64");
+                }
+
+                if (!int.TryParse(agentServerDataTable.Rows[0]["NumberOfAgents"].ToString(), out int agentCount))
+                {
+                    throw new Exception("Unable to cast count of agents on server returned from database to Int32");
+                }
+
+                AgentServerObject agentServer = new AgentServerObject(artifactId, hostname, active, cores, memory, agentCount);
+
+                return agentServer;
+
+            }
+
+
+
+        }
+
+        //Get a list of AgentServerObjects by Resource Pool
+        public List<AgentServerObject> GetPoolAgentServerList(int resourcePoolArtifactId)
+        {
+            List<AgentServerObject> outputList = new List<AgentServerObject>();
+
+            string SQL = @"
+                SELECT E.[ArtifactID], 
+                       E.[Name]                                    as [Hostname], 
+                       IIF(E.[Status] = 'Active', 'True', 'False') as [Status], 
+                       E.[ProcessorCores], 
+                       E.[Memory], 
+                       E.[NumberOfAgents] 
+                FROM   [ExtendedResourceServer] E 
+                       INNER JOIN [ServerResourceGroup] S 
+                               ON E.[ArtifactID] = S.[ResourceServerArtifactID] 
+                WHERE  [Type] = 'Agent' 
+                       AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
+
+            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = resourcePoolArtifactId
+            };
+
+            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolArtifactIdParam });
+
+            if (agentServerDataTable == null)
+            {
+                throw new Exception("The Agent Agent Resource Pools contains no agent servers or retrieval from DB failed");
+            }
+            else
+            {
+                foreach (DataRow row in agentServerDataTable.Rows)
+                {
+
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
+                    {
+                        throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
+                    }
+
+                    string hostname = row["Hostname"].ToString();
+
+                    if (!bool.TryParse(row["Status"].ToString(), out bool active))
+                    {
+                        throw new Exception("Unable to cast agent server status returned from database to Boolean");
+                    }
+
+                    if (!int.TryParse(row["ProcessorCores"].ToString(), out int cores))
+                    {
+                        throw new Exception("Unable to cast agent server core count returned from database to Int32");
+                    }
+
+                    if (!long.TryParse(row["Memory"].ToString(), out long memory))
+                    {
+                        throw new Exception("Unable to cast agent server memory count returned from database to Int64");
+                    }
+
+                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out int agentCount))
+                    {
+                        throw new Exception("Unable to cast count of agents on server returned from database to Int32");
+                    }
+
+                    AgentServerObject agentServer = new AgentServerObject(artifactId, hostname, active, cores, memory, agentCount);
+
+                    outputList.Add(agentServer);
+                }
+
+                return outputList;
+            }
+        }
     }
 }

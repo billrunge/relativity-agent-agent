@@ -13,19 +13,19 @@ namespace AgentAgent.Agent
     {
         private AgentObject _agent;
         private readonly IDBContext _eddsDbContext;
-        private readonly IEnvironmentInformation _environmentInformation;
+        private readonly IEnvironmentHelper _environment;
 
-        public CreateAgent(IDBContext eddsDbContext, IEnvironmentInformation environmentInformation, string agentTypeGuid, int agentServerArtifactId)
+        public CreateAgent(IDBContext eddsDbContext, IEnvironmentHelper environment, string agentTypeGuid, int agentServerArtifactId)
         {
             _agent = new AgentObject();
             _eddsDbContext = eddsDbContext;
             _agent.AgentTypeGuid = agentTypeGuid;
             _agent.AgentServerArtifactId = agentServerArtifactId;
-            _environmentInformation = environmentInformation;
-            _agent.AgentTypeArtifactId = _environmentInformation.GetArtifactIdFromGuid(_agent.AgentTypeGuid);                        
-            _agent.AgentArtifactTypeId = _environmentInformation.GetAgentArtifactType();
-            _agent.SystemContainerId = _environmentInformation.GetSystemContainerId();
-            _agent.RunInterval = _environmentInformation.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
+            _environment = environment;
+            _agent.AgentTypeArtifactId = _environment.GetArtifactIdFromGuid(_agent.AgentTypeGuid);                        
+            _agent.AgentArtifactTypeId = _environment.GetAgentArtifactType();
+            _agent.SystemContainerId = _environment.GetSystemContainerId();
+            _agent.RunInterval = _environment.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
         }
 
         //Inserts row to the ArtifactID table, which generates a new artifact ID
@@ -248,8 +248,8 @@ namespace AgentAgent.Agent
         //to make sure that the agent name doesn't already exist
         private string CreateAgentName()
         {
-            int agentCount = _environmentInformation.GetAgentCount(_agent.AgentTypeArtifactId);
-            string agentTypeName = _environmentInformation.GetTextIdByArtifactId(_agent.AgentTypeArtifactId);
+            int agentCount = _environment.GetAgentCount(_agent.AgentTypeArtifactId);
+            string agentTypeName = _environment.GetTextIdByArtifactId(_agent.AgentTypeArtifactId);
             return string.Format("{0} ({1})", agentTypeName, agentCount + 1);
         }
 

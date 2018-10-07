@@ -20,25 +20,24 @@ namespace AgentAgent.Agent
                 //Adding message so time of last check-in updates
                 this.RaiseMessage("Managing the agents.", 10);
 
-                IAgentHelper helper = Helper;
-
-                logger.LogDebug("Getting EDDS database context");
-                IDBContext eddsDbContext = helper.GetDBContext(-1);
-
-                logger.LogDebug("Generating new EnvironmentInformation object");
-                EnvironmentInformation environment = new EnvironmentInformation(eddsDbContext);
-
-                //ResourcePoolArtifactID is hard coded for now, but will get pulled from an instance setting and then eventually from the UI
+                //ResourcePoolArtifactID is hard coded for now (Default pool), but will get pulled from an instance setting and then eventually from the UI
                 int poolArtifactId = 1015040;
 
                 //Adjustment factor is also hardcoded but will be an instance setting and then UI
                 int adjFactor = 10;
 
+                logger.LogDebug("Getting EDDS database context");
+                IAgentHelper helper = Helper;
+                IDBContext eddsDbContext = helper.GetDBContext(-1);
+
+                logger.LogDebug("Generating new EnvironmentInformation object");
+                EnvironmentHelper environment = new EnvironmentHelper(eddsDbContext);
+
                 //Run all of the classes for agents to tell us how many agent spots they want per resource pool
                 logger.LogDebug("Creating GetAgentsDesiredList object");
                 GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, environment, poolArtifactId, IsOffHours());
                 logger.LogDebug("Getting AgentsDesiredList from GetAgentsDesiredList object");
-                List<AgentsDesiredObject> desiredAgentsList = desiredAgents.AgentsPerServerObject;
+                List<AgentsDesiredObject> desiredAgentsList = desiredAgents.AgentsPerServerObjectList;
 
                 //Create CompareDesiredAgentsToExisting Object and run it
                 logger.LogDebug("Creating CompareDesiredAgentsToExisting object");
@@ -56,7 +55,7 @@ namespace AgentAgent.Agent
                 string listString = "Create List: ";
                 foreach (AgentsDesiredObject cL in createList)
                 {
-                    listString += string.Format("{0} - {1} - {2} | ", cL.Guid, cL.Count, cL.RespectsResourcePool);
+                    listString += string.Format("{0} - {1} - {2}\r\n", cL.Guid, cL.Count, cL.RespectsResourcePool);
                 }
                 logger.LogDebug(listString);
 
@@ -67,13 +66,13 @@ namespace AgentAgent.Agent
                 listString = "Delete List: ";
                 foreach (AgentsDesiredObject dL in deleteList)
                 {
-                    listString += string.Format("{0} - {1} - {2} | ", dL.Guid, dL.Count, dL.RespectsResourcePool);
+                    listString += string.Format("{0} - {1} - {2}\r\n", dL.Guid, dL.Count, dL.RespectsResourcePool);
                 }
                 logger.LogDebug(listString);
 
                 //Get available agent spots per server list
                 logger.LogDebug("Generate spots per server object");
-                GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, adjFactor, poolArtifactId);                
+                GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, environment, adjFactor, poolArtifactId);                
 
                 logger.LogDebug("Generate spots per server list and populate it with the spots per server object");
                 List<SpotsPerServerObject> spotsPerServerList = getSpotsPerServer.SpotsPerServerList;
@@ -81,7 +80,7 @@ namespace AgentAgent.Agent
                 listString = "Spots Per Server List: ";
                 foreach (SpotsPerServerObject sP in spotsPerServerList)
                 {
-                    listString += string.Format("{0} - {1} | ", sP.AgentServerArtifactId, sP.Spots);
+                    listString += string.Format("{0} - {1}\r\n", sP.AgentServerArtifactId, sP.Spots);
                 }
                 logger.LogDebug(listString);
 
@@ -102,7 +101,7 @@ namespace AgentAgent.Agent
             catch (Exception ex)
             {
                 //Your Agent caught an exception
-                string fullError = string.Format("Message: {0} --- InnerException: {1} --- StackTrace: {2}", ex.Message, ex.InnerException, ex.StackTrace);
+                string fullError = string.Format("Message: {0} \r\n InnerException: {1} \r\n StackTrace: {2}", ex.Message, ex.InnerException, ex.StackTrace);
 
                 RaiseError(ex.Message, fullError);
                 logger.LogError(fullError);
