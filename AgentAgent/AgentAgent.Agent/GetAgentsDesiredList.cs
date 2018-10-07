@@ -9,16 +9,19 @@ namespace AgentAgent.Agent
         public List<AgentsDesiredObject> AgentsPerServerObject { get; private set; }
         private readonly IDBContext _eddsDbContext;
         private readonly int _resourcePoolId;
+        private readonly IEnvironmentInformation _environment;
 
-        public GetAgentsDesiredList(IDBContext eddsDbContext, int resourcePoolId)
+        public GetAgentsDesiredList(IDBContext eddsDbContext, IEnvironmentInformation environment, int resourcePoolId)
         {
            AgentsPerServerObject = new List<AgentsDesiredObject>();
             _eddsDbContext = eddsDbContext;
             _resourcePoolId = resourcePoolId;
+            _environment = environment;
             Run();
         }
 
         private void Run() {
+
             //Create agent type objects
             AssistedReviewManager assistRevMan = new AssistedReviewManager(_eddsDbContext);
             BrandingManager brandMan = new BrandingManager(_eddsDbContext, _resourcePoolId);
@@ -27,6 +30,7 @@ namespace AgentAgent.Agent
             CaseStatisticsManager caseStatsMan = new CaseStatisticsManager(); 
             ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
             DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
+            IntegrationPointsAgent RipAgent = new IntegrationPointsAgent(_eddsDbContext, _resourcePoolId);
             OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _resourcePoolId);
             OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _resourcePoolId);
             ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _resourcePoolId);
@@ -34,7 +38,6 @@ namespace AgentAgent.Agent
             ServerManager servMan = new ServerManager();
 
             //Run queue checking logic for all agent type objects
-
             AgentsPerServerObject.AddRange(assistRevMan.AgentsDesired());
             AgentsPerServerObject.AddRange(brandMan.AgentsDesired());
             AgentsPerServerObject.AddRange(cacheMan.AgentsDesired());
@@ -42,12 +45,12 @@ namespace AgentAgent.Agent
             AgentsPerServerObject.AddRange(caseStatsMan.AgentsDesired());
             AgentsPerServerObject.AddRange(clustUpWork.AgentsDesired());
             AgentsPerServerObject.AddRange(distJobMan.AgentsDesired());
+            AgentsPerServerObject.AddRange(RipAgent.AgentsDesired());
             AgentsPerServerObject.AddRange(OcrSetMan.AgentsDesired());
             AgentsPerServerObject.AddRange(OcrWorker.AgentsDesired());
             AgentsPerServerObject.AddRange(procMan.AgentsDesired());
             AgentsPerServerObject.AddRange(prodMan.AgentsDesired());
             AgentsPerServerObject.AddRange(servMan.AgentsDesired());
         }
-
     }
 }
