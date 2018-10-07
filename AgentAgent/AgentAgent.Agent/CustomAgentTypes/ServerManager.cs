@@ -9,7 +9,7 @@
         }
 
         //You always need a server manager.
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             return new AgentsDesired()
             {

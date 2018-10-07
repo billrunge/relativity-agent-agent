@@ -26,33 +26,33 @@ namespace AgentAgent.Agent
                 //Adjustment factor is also hardcoded but will be an instance setting and then UI
                 int adjFactor = 10;
 
-                logger.LogDebug("Getting EDDS database context");
-                IAgentHelper helper = Helper;
-                IDBContext eddsDbContext = helper.GetDBContext(-1);
+                logger.LogDebug("Creating EDDS database context");
+                IAgentHelper agentHelper = Helper;
+                IDBContext eddsDbContext = agentHelper.GetDBContext(-1);
 
-                logger.LogDebug("Generating new EnvironmentInformation object");
+                logger.LogDebug("Generating new Environment Helper");
                 EnvironmentHelper environment = new EnvironmentHelper(eddsDbContext);
 
                 //Run all of the classes for agents to tell us how many agent spots they want per resource pool
-                logger.LogDebug("Creating GetAgentsDesiredList object");
-                GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, environment, poolArtifactId, IsOffHours());
-                logger.LogDebug("Getting AgentsDesiredList from GetAgentsDesiredList object");
+                logger.LogDebug("Creating GetAgentsDesiredList");
+                GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(agentHelper, environment, poolArtifactId, IsOffHours());
+                logger.LogDebug("Getting AgentsDesiredList");
                 List<AgentsDesired> desiredAgentsList = desiredAgents.AgentsPerServerObjectList;
 
                 //Create CompareDesiredAgentsToExisting Object and run it
-                logger.LogDebug("Creating CompareDesiredAgentsToExisting object");
+                logger.LogDebug("Creating CompareDesiredAgentsToExisting");
                 CompareDesiredAgentsToExisting compare = new CompareDesiredAgentsToExisting(desiredAgentsList, poolArtifactId, environment, logger);
-                List<AgentsDesired> comparedList = compare.Compare();                           
+                List<AgentsDesired> comparedList = compare.Compare();
 
                 //Use agents desired list helper to generate agent create and agent delete lists
                 logger.LogDebug("Generate list helper object");
                 AgentsDesiredListHelper listHelper = new AgentsDesiredListHelper(comparedList);
 
                 //Create a create list
-                logger.LogDebug("Generate create list");
+                logger.LogDebug("Generating create list");
                 List<AgentsDesired> createList = listHelper.GetAgentCreateList();
 
-                string listString = "Create List: ";
+                string listString = string.Format("Create List ({0})--\r\n", createList.Count);
                 foreach (AgentsDesired cL in createList)
                 {
                     listString += string.Format("{0} - {1} - {2}\r\n", cL.Guid, cL.Count, cL.RespectsResourcePool);
@@ -60,10 +60,10 @@ namespace AgentAgent.Agent
                 logger.LogDebug(listString);
 
                 //Create a delete list
-                logger.LogDebug("Generate delete list");
+                logger.LogDebug("Generating delete list");
                 List<AgentsDesired> deleteList = listHelper.GetAgentDeleteList();
 
-                listString = "Delete List: ";
+                listString = string.Format("Delete List ({0})--\r\n", deleteList.Count);
                 foreach (AgentsDesired dL in deleteList)
                 {
                     listString += string.Format("{0} - {1} - {2}\r\n", dL.Guid, dL.Count, dL.RespectsResourcePool);
@@ -71,31 +71,32 @@ namespace AgentAgent.Agent
                 logger.LogDebug(listString);
 
                 //Get available agent spots per server list
-                logger.LogDebug("Generate spots per server object");
+                logger.LogDebug("Generating GetSpotsPerServerList");
                 GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, environment, adjFactor, poolArtifactId);                
 
-                logger.LogDebug("Generate spots per server list and populate it with the spots per server object");
-                List<SpotsPerServerObject> spotsPerServerList = getSpotsPerServer.SpotsPerServerList;
+                logger.LogDebug("Genererating SpotsPerServerList");
+                List<SpotsPerServer> spotsPerServerList = getSpotsPerServer.SpotsPerServerList;
 
-                listString = "Spots Per Server List: ";
-                foreach (SpotsPerServerObject sP in spotsPerServerList)
+                listString = string.Format("Spots Per Server List ({0}):--\r\n", spotsPerServerList.Count);
+                foreach (SpotsPerServer sP in spotsPerServerList)
                 {
                     listString += string.Format("{0} - {1}\r\n", sP.AgentServerArtifactId, sP.Spots);
                 }
                 logger.LogDebug(listString);
 
                 //Create and run agent create object
-                logger.LogDebug("Generate agent create object");
+                logger.LogDebug("Generating RunAgentCreate");
                 RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createList, spotsPerServerList, logger);
-                logger.LogDebug("Run agent create logic");
+                logger.LogDebug("Running RunAgentCreate");
                 agentCreate.Run();
+                logger.LogDebug("RunAgentCreate complete");
 
                 //Create and run agent delete object
-                logger.LogDebug("Generate agent delete object");
+                logger.LogDebug("Generating RunAgentDelete");
                 RunAgentDelete agentDelete = new RunAgentDelete(eddsDbContext, environment, poolArtifactId, deleteList, logger);
-                logger.LogDebug("Run agent delete logic");
-                agentDelete.Run();                            
-
+                logger.LogDebug("Running RunAgentDelete");
+                agentDelete.Run();
+                logger.LogDebug("RunAgentDelete complete");
 
             }
             catch (Exception ex)

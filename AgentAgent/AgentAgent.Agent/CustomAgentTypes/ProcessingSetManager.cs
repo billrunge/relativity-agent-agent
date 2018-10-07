@@ -17,7 +17,7 @@ namespace AgentAgent.Agent
 
         //The Processing set manager is a one agent per resource pool agent
         //Which makes determining the amount of agents per pool desired easy
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             int agentCount = 0;
 

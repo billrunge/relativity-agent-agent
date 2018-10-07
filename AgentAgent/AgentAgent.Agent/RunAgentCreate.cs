@@ -7,12 +7,12 @@ namespace AgentAgent.Agent
     class RunAgentCreate
     {
         private List<AgentsDesired> _agentsDesired;
-        private List<SpotsPerServerObject> _spotsPerServer;
+        private List<SpotsPerServer> _spotsPerServer;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
 
-        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesired> agentsDesired, List<SpotsPerServerObject> spotsPerServer, IAPILog logger)
+        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesired> agentsDesired, List<SpotsPerServer> spotsPerServer, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
             _environment = environment;

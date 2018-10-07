@@ -55,7 +55,7 @@ namespace AgentAgent.Agent
 
                 counter -= 1;
             }
-            _logger.LogDebug("Compare output: " + logString);
+            _logger.LogDebug("Compare output--\r\n" + logString);
             return outputList;
         }
     }

@@ -27,7 +27,7 @@ namespace AgentAgent.Agent
             int agentTypeId;
             int agentToDeleteId;
             int counter;
-            List<SpotsPerServerObject> agentsPerServer = new List<SpotsPerServerObject>();
+            List<SpotsPerServer> agentsPerServer = new List<SpotsPerServer>();
             DeleteAgent deleteAgent = new DeleteAgent(_eddsDbContext);
 
             while (_agentsToDelete.Count > 0)

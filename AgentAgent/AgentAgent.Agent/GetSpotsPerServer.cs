@@ -5,7 +5,7 @@ namespace AgentAgent.Agent
 {
     class GetSpotsPerServer
     {
-        private AgentServerObject _agentServer;
+        private AgentServer _agentServer;
         private readonly int _agentServerArtifactId;
         private readonly IEnvironmentHelper _environment;
         private readonly float _adjustmentFactor;

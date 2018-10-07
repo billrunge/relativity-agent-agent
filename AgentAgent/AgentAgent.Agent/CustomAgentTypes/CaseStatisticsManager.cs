@@ -15,7 +15,7 @@
         //Check if it is off hours, report one agent needed in any resource pool
         //If it is not off hours, no agent needed
 
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             int agentCount = 0;
 

@@ -15,7 +15,7 @@ namespace AgentAgent.Agent
             AgentAgentResourcePool = poolArtifactId;
         }
 
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             int agentCount = 0;
 

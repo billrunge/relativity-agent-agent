@@ -1,22 +1,12 @@
 ﻿namespace AgentAgent.Agent
 {
-    public class AgentServerObject
+    public class AgentServer
     {
-        public int ArtifactID { get; }
-        public string Hostname { get; }
-        public bool Active { get; }
-        public int ProcessorCores { get; }
-        public long Memory { get; }
-        public int AgentCount { get; }
-
-        public AgentServerObject(int artifactId, string hostname, bool active, int processorCores, long memory, int agentCount)
-        {
-            ArtifactID = artifactId;
-            Hostname = hostname;
-            Active = active;
-            ProcessorCores = processorCores;
-            Memory = memory;
-            AgentCount = agentCount;
-        }
+        public int ArtifactID { get; set; }
+        public string Hostname { get; set; }
+        public bool Active { get; set; }
+        public int ProcessorCores { get; set; }
+        public long Memory { get; set; }
+        public int AgentCount { get; set; }
     }
 }

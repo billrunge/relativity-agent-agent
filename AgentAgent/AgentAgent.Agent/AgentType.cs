@@ -2,7 +2,7 @@
 {
     interface IAgentType
     {
-        AgentsDesired AgentsDesired();
+        AgentsDesired GetAgentsDesired();
     }
 
     abstract class AgentType : IAgentType
@@ -11,6 +11,6 @@
         public int AgentAgentResourcePool { get; protected set; }
         public bool RespectsResourcePool { get; protected set; }
         public int PagesPerAgent { get; set; }
-        public abstract AgentsDesired AgentsDesired();
+        public abstract AgentsDesired GetAgentsDesired();
     }
 }

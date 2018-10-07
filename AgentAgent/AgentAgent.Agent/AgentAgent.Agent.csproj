@@ -69,6 +69,8 @@
     <Compile Include="AgentAgentAgent.cs" />
     <Compile Include="AgentsDesiredListHelper.cs" />
     <Compile Include="CompareDesiredAgentsToExisting.cs" />
+    <Compile Include="CustomAgentTypes\DtSearchIndexJobManager.cs" />
+    <Compile Include="CustomAgentTypes\DtSearchIndexWorker.cs" />
     <Compile Include="CustomAgentTypes\FileDeletionManager.cs" />
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />

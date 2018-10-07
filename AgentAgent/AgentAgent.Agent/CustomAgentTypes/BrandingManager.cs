@@ -8,11 +8,11 @@ namespace AgentAgent.Agent
     {
         private IDBContext _eddsDbContext;
 
-        public BrandingManager(IDBContext eddsDbContext, int poolArtifactId)
+        public BrandingManager(IDBContext eddsDbContext, int poolId)
         {
             _eddsDbContext = eddsDbContext;
             Guid = "29F92E0F-05C8-4DA2-ACCB-7C2ACAF2860A";
-            AgentAgentResourcePool = poolArtifactId;
+            AgentAgentResourcePool = poolId;
             RespectsResourcePool = true;
             PagesPerAgent = 50000;
         }
@@ -20,7 +20,7 @@ namespace AgentAgent.Agent
         //The processing set queue has a column that shows how many images are remaining in a Processing set. This is very
         //Useful for determining the amount of branding managers needs. Just divide the image sumby the PagesPerAgent variable
         //to determine the amount of agents desired
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             int agentCount = 0;
             int poolImageCount = 0;

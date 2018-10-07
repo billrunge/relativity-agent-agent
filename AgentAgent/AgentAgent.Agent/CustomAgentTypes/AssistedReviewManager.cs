@@ -13,7 +13,7 @@ namespace AgentAgent.Agent
             RespectsResourcePool = false;
         }
 
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             int agentCount = 0;
 

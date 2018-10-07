@@ -18,7 +18,7 @@ namespace AgentAgent.Agent
         //Production managers are an at least one agent per resource pool, but only one manager per job
         //so the ideal situation here is one manager per job in the queue. 
 
-        public override AgentsDesired AgentsDesired()
+        public override AgentsDesired GetAgentsDesired()
         {
             string SQL = @"
                 SELECT Count(P.[SetQueueId]) 

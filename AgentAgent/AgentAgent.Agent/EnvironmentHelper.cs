@@ -9,7 +9,7 @@ namespace AgentAgent.Agent
 
     public interface IEnvironmentHelper
     {
-        List<SpotsPerServerObject> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
+        List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentArtifactType();
         int GetSystemContainerId();
         int GetArtifactIdFromGuid(string Guid);
@@ -17,8 +17,8 @@ namespace AgentAgent.Agent
         int GetAgentCount(int agentTypeArtifactId);
         int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
-        AgentServerObject GetAgentServerObject(int agentServerArtifactId);
-        List<AgentServerObject> GetPoolAgentServerList(int resourcePoolArtifactId);
+        AgentServer GetAgentServerObject(int agentServerArtifactId);
+        List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId);
     }
 
     /// <summary>
@@ -176,9 +176,9 @@ namespace AgentAgent.Agent
             return agentCount;
         }
 
-        public List<SpotsPerServerObject> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
+        public List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
         {
-            List<SpotsPerServerObject> outputList = new List<SpotsPerServerObject>();
+            List<SpotsPerServer> outputList = new List<SpotsPerServer>();
 
             string SQL = @"
                 SELECT AG.[ServerArtifactID], 
@@ -218,14 +218,11 @@ namespace AgentAgent.Agent
                         throw new Exception("Unable to cast agent count returned from database to Int32");
                     }
 
-                    SpotsPerServerObject spotsPerServerObject = new SpotsPerServerObject()
+                    outputList.Add(new SpotsPerServer()
                     {
                         AgentServerArtifactId = serverArtifactId,
                         Spots = count
-                    };
-
-                    outputList.Add(spotsPerServerObject);
-
+                    });
                 }
             }
             return outputList;
@@ -260,7 +257,7 @@ namespace AgentAgent.Agent
         }
 
         //Get an object holding information about agent servers by its ArtifactID
-        public AgentServerObject GetAgentServerObject(int agentServerArtifactId)
+        public AgentServer GetAgentServerObject(int agentServerArtifactId)
         {
             string SQL = @"
 				SELECT [ArtifactID],
@@ -281,11 +278,11 @@ namespace AgentAgent.Agent
 
             if (agentServerDataTable == null)
             {
-                throw new Exception("This environment contains no agent servers or retrieval from DB failed");
+                throw new Exception(String.Format("This environment does not contain an agent server with Artifat ID: {0} retrieval from DB failed", agentServerArtifactId));
             }
             else if (agentServerDataTable.Rows.Count > 1)
             {
-                throw new Exception("Multiple server entries returned for agent server Artifact ID");
+                throw new Exception(String.Format("Multiple server entries returned for agent server Artifact ID: {0}", agentServerArtifactId));
             }
             else
             {
@@ -316,20 +313,22 @@ namespace AgentAgent.Agent
                     throw new Exception("Unable to cast count of agents on server returned from database to Int32");
                 }
 
-                AgentServerObject agentServer = new AgentServerObject(artifactId, hostname, active, cores, memory, agentCount);
-
-                return agentServer;
-
+                return new AgentServer
+                {
+                    ArtifactID = artifactId,
+                    Hostname = hostname,
+                    Active = active,
+                    ProcessorCores = cores,
+                    Memory = memory,
+                    AgentCount = agentCount
+                };                   
             }
-
-
-
         }
 
         //Get a list of AgentServerObjects by Resource Pool
-        public List<AgentServerObject> GetPoolAgentServerList(int resourcePoolArtifactId)
+        public List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId)
         {
-            List<AgentServerObject> outputList = new List<AgentServerObject>();
+            List<AgentServer> outputList = new List<AgentServer>();
 
             string SQL = @"
                 SELECT E.[ArtifactID], 
@@ -385,13 +384,16 @@ namespace AgentAgent.Agent
                     if (!int.TryParse(row["NumberOfAgents"].ToString(), out int agentCount))
                     {
                         throw new Exception("Unable to cast count of agents on server returned from database to Int32");
-                    }
+                    }                   
 
-                    AgentServerObject agentServer = new AgentServerObject(artifactId, hostname, active, cores, memory, agentCount);
-
-                    outputList.Add(agentServer);
+                    outputList.Add(new AgentServer {
+                    ArtifactID = artifactId,
+                    Hostname = hostname,
+                    Active = active,
+                    ProcessorCores = cores,
+                    AgentCount = agentCount,
+                    Memory = memory});
                 }
-
                 return outputList;
             }
         }
