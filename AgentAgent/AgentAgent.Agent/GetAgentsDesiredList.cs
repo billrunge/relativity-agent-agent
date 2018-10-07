@@ -5,7 +5,7 @@ namespace AgentAgent.Agent
 {
     class GetAgentsDesiredList
     {
-        public List<AgentsDesiredObject> AgentsPerServerObjectList { get; private set; }
+        public List<AgentsDesired> AgentsPerServerObjectList { get; private set; }
         private readonly IDBContext _eddsDbContext;
         private readonly int _resourcePoolId;
         private readonly IEnvironmentHelper _environment;
@@ -13,7 +13,7 @@ namespace AgentAgent.Agent
 
         public GetAgentsDesiredList(IDBContext eddsDbContext, IEnvironmentHelper environment, int resourcePoolId, bool isOffHours)
         {
-           AgentsPerServerObjectList = new List<AgentsDesiredObject>();
+           AgentsPerServerObjectList = new List<AgentsDesired>();
             _eddsDbContext = eddsDbContext;
             _resourcePoolId = resourcePoolId;
             _environment = environment;

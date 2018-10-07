@@ -18,7 +18,7 @@ namespace AgentAgent.Agent
 
         //Determining the amount of OCR Workers needed is a just a matter 
         //of getting the count of pages from the Worker Queue
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;
             int imageCount = 0;
@@ -41,22 +41,20 @@ namespace AgentAgent.Agent
             {
                 if ((imageCount / PagesPerAgent) < 1)
                 {
-                    agentCount += 1;
+                    agentCount = 1;
                 }
                 else
                 {
-                    agentCount += imageCount / PagesPerAgent;
+                    agentCount = imageCount / PagesPerAgent;
                 }
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
-
-            return agentsDesired;
         }
     }
 }

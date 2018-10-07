@@ -5,34 +5,33 @@ namespace AgentAgent.Agent
 {
     class AgentsDesiredListHelper
     {
-        private readonly List<AgentsDesiredObject> _agentsDesiredObjects;
+        private readonly List<AgentsDesired> _agentsDesiredList;
 
-        public AgentsDesiredListHelper(List<AgentsDesiredObject> agentsDesiredObjects)
+        public AgentsDesiredListHelper(List<AgentsDesired> agentsDesiredList)
         {
-            _agentsDesiredObjects = agentsDesiredObjects;
+            _agentsDesiredList = agentsDesiredList;
         }
 
-        public List<AgentsDesiredObject> GetAgentCreateList()
+        public List<AgentsDesired> GetAgentCreateList()
         {
-            return _agentsDesiredObjects.Select(x => new AgentsDesiredObject()
+            return _agentsDesiredList.Select(x => new AgentsDesired()
             {
                 Guid = x.Guid,
                 RespectsResourcePool = x.RespectsResourcePool,
                 Count = x.Count
 
-            }).Where(x => x.Count > 0).ToList<AgentsDesiredObject>();            
-
+            }).Where(x => x.Count > 0).ToList<AgentsDesired>();
         }
 
-        public List<AgentsDesiredObject> GetAgentDeleteList()
+        public List<AgentsDesired> GetAgentDeleteList()
         {
-            return _agentsDesiredObjects.Select(x => new AgentsDesiredObject()
+            return _agentsDesiredList.Select(x => new AgentsDesired()
             {
                 Guid = x.Guid,
                 RespectsResourcePool = x.RespectsResourcePool,
                 Count = x.Count
 
-            }).Where(x => x.Count < 0).ToList<AgentsDesiredObject>();
+            }).Where(x => x.Count < 0).ToList<AgentsDesired>();
         }
     }
 }

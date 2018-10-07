@@ -15,15 +15,15 @@ namespace AgentAgent.Agent
             AgentAgentResourcePool = poolArtifactId;
             RespectsResourcePool = true;
             PagesPerAgent = 50000;
-
         }
 
         //The processing set queue has a column that shows how many images are remaining in a Processing set. This is very
         //Useful for determining the amount of branding managers needs. Just divide the image sumby the PagesPerAgent variable
         //to determine the amount of agents desired
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;
+            int poolImageCount = 0;
 
             string SQL = @"
                 SELECT IIF (SUM(PSQ.[ImagesRemaining]) IS NULL, 0, (SUM(PSQ.[ImagesRemaining]))) AS [ImagesRemaining]
@@ -43,7 +43,7 @@ namespace AgentAgent.Agent
                 Value = AgentAgentResourcePool
             };
 
-            int poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });            
+            poolImageCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });            
             
             if (poolImageCount > 0)
             {
@@ -55,14 +55,12 @@ namespace AgentAgent.Agent
                 }
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool
             };
-
-            return agentsDesired;
         }
     }
 }

@@ -9,16 +9,14 @@
         }
 
         //You always need a server manager.
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = 1
             };
-
-            return agentsDesired;
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace AgentAgent.Agent
+﻿namespace AgentAgent.Agent
 {
     interface IAgentType
     {
-        AgentsDesiredObject AgentsDesired();
+        AgentsDesired AgentsDesired();
     }
 
     abstract class AgentType : IAgentType
@@ -13,6 +11,6 @@ namespace AgentAgent.Agent
         public int AgentAgentResourcePool { get; protected set; }
         public bool RespectsResourcePool { get; protected set; }
         public int PagesPerAgent { get; set; }
-        public abstract AgentsDesiredObject AgentsDesired();
+        public abstract AgentsDesired AgentsDesired();
     }
 }

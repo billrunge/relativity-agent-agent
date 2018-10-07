@@ -11,7 +11,7 @@
             _isOffHours = isOffHours;
         }
 
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;       
 
@@ -20,14 +20,12 @@
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
+            return new AgentsDesired()
             {
                 Count = agentCount,
                 RespectsResourcePool = RespectsResourcePool,
                 Guid = Guid
             };
-
-            return agentsDesired;
         }
     }
 }

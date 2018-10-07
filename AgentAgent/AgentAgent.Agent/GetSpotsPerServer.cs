@@ -7,7 +7,6 @@ namespace AgentAgent.Agent
     {
         private AgentServerObject _agentServer;
         private readonly int _agentServerArtifactId;
-        //private readonly ServerInformation _serverInformation;
         private readonly IEnvironmentHelper _environment;
         private readonly float _adjustmentFactor;
         public int Spots { get; private set; }

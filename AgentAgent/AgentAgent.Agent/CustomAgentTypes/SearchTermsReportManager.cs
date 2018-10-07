@@ -15,7 +15,7 @@ namespace AgentAgent.Agent
             AgentAgentResourcePool = poolArtifacId;
         }
 
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;
             int jobCount = 0;
@@ -39,14 +39,12 @@ namespace AgentAgent.Agent
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
-
-            return agentsDesired;
         }
     }
 }

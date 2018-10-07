@@ -15,11 +15,9 @@ namespace AgentAgent.Agent
             RespectsResourcePool = true;
         }
 
-
         //The Processing set manager is a one agent per resource pool agent
         //Which makes determining the amount of agents per pool desired easy
-
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;
 
@@ -43,14 +41,12 @@ namespace AgentAgent.Agent
                 agentCount = 1;
             }
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
-
-            return agentsDesired;
         }
     }
 }

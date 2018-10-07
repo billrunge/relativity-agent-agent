@@ -5,43 +5,54 @@ namespace AgentAgent.Agent
 {
     class CompareDesiredAgentsToExisting
     {
-        private List<AgentsDesiredObject> _agentsDesiredObjects;
+        private List<AgentsDesired> _agentsDesiredList;
         private readonly int _poolArtifactId;
         private IEnvironmentHelper _environment;
         private IAPILog _logger;
 
-        public CompareDesiredAgentsToExisting(List<AgentsDesiredObject> agentsDesiredObjects, int poolArtifactId, IEnvironmentHelper environment, IAPILog logger)
+        public CompareDesiredAgentsToExisting(List<AgentsDesired> agentsDesiredList, int poolArtifactId, IEnvironmentHelper environment, IAPILog logger)
         {
-            _agentsDesiredObjects = agentsDesiredObjects;
+            _agentsDesiredList = agentsDesiredList;
             _poolArtifactId = poolArtifactId;
             _environment = environment;
             _logger = logger;
         }
 
-        public List<AgentsDesiredObject> Compare()
+        public List<AgentsDesired> Compare()
         {
-            List<AgentsDesiredObject> outputList = new List<AgentsDesiredObject>();
+            List<AgentsDesired> outputList = new List<AgentsDesired>();
             string logString = "";
 
-            int counter = _agentsDesiredObjects.Count - 1;
+            int counter = _agentsDesiredList.Count - 1;
             while (counter >= 0)
             {
-                string agentGuid = _agentsDesiredObjects[counter].Guid;
+                //Declaring all of these to variables to make logging easier
+                int currentCount;
+                string agentGuid = _agentsDesiredList[counter].Guid;
                 int agentTypeId = _environment.GetArtifactIdFromGuid(agentGuid);
-                int currentCount = _environment.GetAgentCountByPool(agentTypeId, _poolArtifactId);
-                int desiredCount = _agentsDesiredObjects[counter].Count;
+                int desiredCount = _agentsDesiredList[counter].Count;
+
+                //Account for agents Resource Pool policy
+                if (_agentsDesiredList[counter].RespectsResourcePool)
+                {
+                    currentCount = _environment.GetAgentCountByPool(agentTypeId, _poolArtifactId);
+                }
+                else
+                {
+                    currentCount = _environment.GetAgentCount(agentTypeId);
+                }
+
                 int difference = desiredCount - currentCount;
 
                 logString += string.Format("AgentGuid: {0}, AgentTypeID {1}, Current Count: {2}, Desired Count: {3} Difference: {4}\r\n", agentGuid, agentTypeId, currentCount, desiredCount, difference);
 
-                AgentsDesiredObject agent = new AgentsDesiredObject
+                outputList.Add(new AgentsDesired
                 {
-                    Guid = _agentsDesiredObjects[counter].Guid,
-                    RespectsResourcePool = _agentsDesiredObjects[counter].RespectsResourcePool,
+                    Guid = _agentsDesiredList[counter].Guid,
+                    RespectsResourcePool = _agentsDesiredList[counter].RespectsResourcePool,
                     Count = difference
-                };
+                });
 
-                outputList.Add(agent);
                 counter -= 1;
             }
             _logger.LogDebug("Compare output: " + logString);

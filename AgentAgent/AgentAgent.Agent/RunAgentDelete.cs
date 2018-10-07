@@ -8,12 +8,12 @@ namespace AgentAgent.Agent
     class RunAgentDelete
     {
         private readonly int _resourcePoolId;
-        private List<AgentsDesiredObject> _agentsToDelete;
+        private List<AgentsDesired> _agentsToDelete;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
         
-        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentHelper environment, int resourcePoolId, List<AgentsDesiredObject> agentsToDelete, IAPILog logger)
+        public RunAgentDelete(IDBContext eddsDbContext, IEnvironmentHelper environment, int resourcePoolId, List<AgentsDesired> agentsToDelete, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
             _environment = environment;

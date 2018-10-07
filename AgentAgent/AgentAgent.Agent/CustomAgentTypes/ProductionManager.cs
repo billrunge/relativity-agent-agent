@@ -18,7 +18,7 @@ namespace AgentAgent.Agent
         //Production managers are an at least one agent per resource pool, but only one manager per job
         //so the ideal situation here is one manager per job in the queue. 
 
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             string SQL = @"
                 SELECT Count(P.[SetQueueId]) 
@@ -34,14 +34,12 @@ namespace AgentAgent.Agent
 
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject()
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = jobCount
             };
-
-            return agentsDesired;
         }
     }
 

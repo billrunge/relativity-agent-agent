@@ -37,12 +37,12 @@ namespace AgentAgent.Agent
                 logger.LogDebug("Creating GetAgentsDesiredList object");
                 GetAgentsDesiredList desiredAgents = new GetAgentsDesiredList(eddsDbContext, environment, poolArtifactId, IsOffHours());
                 logger.LogDebug("Getting AgentsDesiredList from GetAgentsDesiredList object");
-                List<AgentsDesiredObject> desiredAgentsList = desiredAgents.AgentsPerServerObjectList;
+                List<AgentsDesired> desiredAgentsList = desiredAgents.AgentsPerServerObjectList;
 
                 //Create CompareDesiredAgentsToExisting Object and run it
                 logger.LogDebug("Creating CompareDesiredAgentsToExisting object");
                 CompareDesiredAgentsToExisting compare = new CompareDesiredAgentsToExisting(desiredAgentsList, poolArtifactId, environment, logger);
-                List<AgentsDesiredObject> comparedList = compare.Compare();                           
+                List<AgentsDesired> comparedList = compare.Compare();                           
 
                 //Use agents desired list helper to generate agent create and agent delete lists
                 logger.LogDebug("Generate list helper object");
@@ -50,10 +50,10 @@ namespace AgentAgent.Agent
 
                 //Create a create list
                 logger.LogDebug("Generate create list");
-                List<AgentsDesiredObject> createList = listHelper.GetAgentCreateList();
+                List<AgentsDesired> createList = listHelper.GetAgentCreateList();
 
                 string listString = "Create List: ";
-                foreach (AgentsDesiredObject cL in createList)
+                foreach (AgentsDesired cL in createList)
                 {
                     listString += string.Format("{0} - {1} - {2}\r\n", cL.Guid, cL.Count, cL.RespectsResourcePool);
                 }
@@ -61,10 +61,10 @@ namespace AgentAgent.Agent
 
                 //Create a delete list
                 logger.LogDebug("Generate delete list");
-                List<AgentsDesiredObject> deleteList = listHelper.GetAgentDeleteList();
+                List<AgentsDesired> deleteList = listHelper.GetAgentDeleteList();
 
                 listString = "Delete List: ";
-                foreach (AgentsDesiredObject dL in deleteList)
+                foreach (AgentsDesired dL in deleteList)
                 {
                     listString += string.Format("{0} - {1} - {2}\r\n", dL.Guid, dL.Count, dL.RespectsResourcePool);
                 }

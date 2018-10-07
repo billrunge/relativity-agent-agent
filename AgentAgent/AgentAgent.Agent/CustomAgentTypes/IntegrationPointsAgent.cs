@@ -15,7 +15,7 @@ namespace AgentAgent.Agent
             AgentAgentResourcePool = poolArtifactId;
         }
 
-        public override AgentsDesiredObject AgentsDesired()
+        public override AgentsDesired AgentsDesired()
         {
             int agentCount = 0;
 
@@ -44,14 +44,12 @@ namespace AgentAgent.Agent
 
             agentCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { resourcePoolArtifactIdParam });
 
-            AgentsDesiredObject agentsDesired = new AgentsDesiredObject
+            return new AgentsDesired()
             {
                 Guid = Guid,
                 RespectsResourcePool = RespectsResourcePool,
                 Count = agentCount
             };
-
-            return agentsDesired;
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace AgentAgent.Agent
 {
-    public class AgentsDesiredObject
+    public class AgentsDesired
     {
         public string Guid { get; set; }
         public int Count { get; set; }
