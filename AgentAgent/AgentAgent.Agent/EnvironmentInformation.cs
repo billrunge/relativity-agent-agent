@@ -256,40 +256,6 @@ namespace AgentAgent.Agent
                 return runInterval;
             }
 
-        }
-
-        //See if an agents associated application is installed
-        //so we don't try to hit an non-existent queue table
-        public bool IsAgentsApplicationInstalled(string agentTypeGuid)
-        {
-            int workspaceCount;
-            bool installed = false;
-
-            string SQL = @"
-                SELECT Count(CA.[CaseApplicationID]) 
-                FROM   [CaseApplication] CA WITH(NOLOCK) 
-	                   INNER JOIN [ArtifactGuid] AG WITH(NOLOCK) 
-			                   ON CA.[ApplicationID] = AG.[ArtifactID] 
-	                   INNER JOIN [ExtendedAgentType] EAT WITH(NOLOCK) 
-			                   ON AG.[ArtifactGuid] = EAT.[ApplicationGuid] 
-	                   INNER JOIN [ApplicationInstall] AI WITH(NOLOCK) 
-			                   ON AI.[ApplicationInstallID] = CA.[CaseApplicationID] 
-                WHERE  CA.[CaseID] <> -1 
-	                   AND AI.[Status] = 6 
-	                   AND EAT.[Guid] = @Guid";
-
-            SqlParameter agentTypeGuidParam = new SqlParameter("@Guid", System.Data.SqlDbType.Char)
-            {
-                Value = agentTypeGuid
-            };
-
-            workspaceCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentTypeGuidParam });
-
-            if (workspaceCount > 0)
-            {
-                installed = true;
-            }
-            return installed;
-        }
+        } 
     }
 }
