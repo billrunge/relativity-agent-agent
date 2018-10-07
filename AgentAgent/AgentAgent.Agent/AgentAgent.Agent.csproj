@@ -97,7 +97,6 @@
     <Compile Include="GetAgentsDesiredList.cs" />
     <Compile Include="RunAgentCreate.cs" />
     <Compile Include="RunAgentDelete.cs" />
-    <Compile Include="ServerInformation.cs" />
     <Compile Include="Objects\SpotsPerServer.cs" />
   </ItemGroup>
   <ItemGroup>
