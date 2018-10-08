@@ -9,10 +9,11 @@ namespace AgentAgent.Agent
         private readonly IEnvironmentHelper _environment;
         private readonly float _adjustmentFactor;
         private readonly int _resourcePoolId;
+        private readonly bool _ignoreSearchServers;
         private List<AgentServer> agentServerList;
         public List<SpotsPerServer> SpotsPerServerList { get; private set; }
 
-        public GetSpotsPerServerList(IDBContext eddsDbContext, IEnvironmentHelper environment, float adjustmentFactor, int resourcePoolId)
+        public GetSpotsPerServerList(IDBContext eddsDbContext, IEnvironmentHelper environment, float adjustmentFactor, int resourcePoolId, bool ignoreSearchServers)
         {
             agentServerList = new List<AgentServer>();
             SpotsPerServerList = new List<SpotsPerServer>();
@@ -20,12 +21,20 @@ namespace AgentAgent.Agent
             _environment = environment;
             _adjustmentFactor = adjustmentFactor;
             _resourcePoolId = resourcePoolId;
+            _ignoreSearchServers = ignoreSearchServers;
             Run();
         }
 
         private void Run()
         {
-            agentServerList = _environment.GetPoolAgentServerList(_resourcePoolId);
+            if (_ignoreSearchServers)
+            {
+                agentServerList = _environment.GetPoolAgentServerList(_resourcePoolId);
+            }
+            else
+            {
+                agentServerList = _environment.GetPoolAgentServerListNoDtSearch(_resourcePoolId);
+            }
             foreach (AgentServer agent in agentServerList)
             {
                 GetSpotsPerServer getSpotsPerServer = new GetSpotsPerServer(_eddsDbContext, _environment, agent.ArtifactID, _adjustmentFactor);

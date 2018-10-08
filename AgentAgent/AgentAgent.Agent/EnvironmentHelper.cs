@@ -19,6 +19,7 @@ namespace AgentAgent.Agent
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
         AgentServer GetAgentServerObject(int agentServerArtifactId);
         List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId);
+        List<AgentServer> GetPoolAgentServerListNoDtSearch(int resourcePoolArtifactId);
     }
 
     /// <summary>
@@ -396,6 +397,88 @@ namespace AgentAgent.Agent
                     ProcessorCores = cores,
                     AgentCount = agentCount,
                     Memory = memory});
+                }
+                return outputList;
+            }
+        }
+
+        //Get a list of AgentServerObjects by Resource Pool that do not conatin the dtSearch search agent
+        public List<AgentServer> GetPoolAgentServerListNoDtSearch(int resourcePoolArtifactId)
+        {
+            List<AgentServer> outputList = new List<AgentServer>();
+            //A0683637-4690-49CE-B8BE-156324FC64F0 is the GUID for the dtSearch Search Agent
+            string SQL = @"
+                SELECT E.[ArtifactID], 
+                       E.[Name]                                    as [Hostname], 
+                       IIF(E.[Status] = 'Active', 'True', 'False') as [Status], 
+                       E.[ProcessorCores], 
+                       E.[Memory], 
+                       E.[NumberOfAgents] 
+                FROM   [ExtendedResourceServer] E WITH(NOLOCK) 
+                       INNER JOIN [ServerResourceGroup] S WITH(NOLOCK) 
+                               ON E.[ArtifactID] = S.[ResourceServerArtifactID] 
+                WHERE  E.[Type] = 'Agent' 
+                       AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID 
+                       AND E.[ArtifactID] NOT IN (SELECT A.[ServerArtifactID] 
+                                                  FROM   [Agent] A WITH(NOLOCK) 
+                                                         INNER JOIN [AgentType] AGT WITH(NOLOCK) 
+                                                                 ON A.[AgentTypeArtifactID] = 
+                                                                    AGT.[ArtifactID] 
+                                                  WHERE 
+                               AGT.[Guid] = 'A0683637-4690-49CE-B8BE-156324FC64F0')";
+
+            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = resourcePoolArtifactId
+            };
+
+            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolArtifactIdParam });
+
+            if (agentServerDataTable == null)
+            {
+                throw new Exception("The Agent Agent Resource Pools contains no agent servers or retrieval from DB failed");
+            }
+            else
+            {
+                foreach (DataRow row in agentServerDataTable.Rows)
+                {
+
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
+                    {
+                        throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
+                    }
+
+                    string hostname = row["Hostname"].ToString();
+
+                    if (!bool.TryParse(row["Status"].ToString(), out bool active))
+                    {
+                        throw new Exception("Unable to cast agent server status returned from database to Boolean");
+                    }
+
+                    if (!int.TryParse(row["ProcessorCores"].ToString(), out int cores))
+                    {
+                        throw new Exception("Unable to cast agent server core count returned from database to Int32");
+                    }
+
+                    if (!long.TryParse(row["Memory"].ToString(), out long memory))
+                    {
+                        throw new Exception("Unable to cast agent server memory count returned from database to Int64");
+                    }
+
+                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out int agentCount))
+                    {
+                        throw new Exception("Unable to cast count of agents on server returned from database to Int32");
+                    }
+
+                    outputList.Add(new AgentServer
+                    {
+                        ArtifactID = artifactId,
+                        Hostname = hostname,
+                        Active = active,
+                        ProcessorCores = cores,
+                        AgentCount = agentCount,
+                        Memory = memory
+                    });
                 }
                 return outputList;
             }

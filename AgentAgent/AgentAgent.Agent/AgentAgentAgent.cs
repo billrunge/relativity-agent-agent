@@ -26,6 +26,10 @@ namespace AgentAgent.Agent
                 //Adjustment factor is also hardcoded but will be an instance setting and then UI
                 int adjFactor = 10;
 
+                //This switch tells Agent Agent to not create any agents on a server containing the dtSearch search agent
+                //will eventually make this accessible in the UI
+                bool ignoreSearchServer = true;
+
                 logger.LogDebug("Creating EDDS database context");
                 IAgentHelper agentHelper = Helper;
                 IDBContext eddsDbContext = agentHelper.GetDBContext(-1);
@@ -72,7 +76,7 @@ namespace AgentAgent.Agent
 
                 //Get available agent spots per server list
                 logger.LogDebug("Generating GetSpotsPerServerList");
-                GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, environment, adjFactor, poolArtifactId);                
+                GetSpotsPerServerList getSpotsPerServer = new GetSpotsPerServerList(eddsDbContext, environment, adjFactor, poolArtifactId, ignoreSearchServer);                
 
                 logger.LogDebug("Genererating SpotsPerServerList");
                 List<SpotsPerServer> spotsPerServerList = getSpotsPerServer.SpotsPerServerList;
