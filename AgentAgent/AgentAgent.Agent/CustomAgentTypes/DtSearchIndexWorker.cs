@@ -42,17 +42,20 @@ namespace AgentAgent.Agent
             {
                 foreach (DataRow row in queueResults.Rows)
                 {
-                    if (!int.TryParse(row["WorkspaceArtifactID"].ToString(), out int workspaceID))
+                    int workspaceId;
+                    int setId;
+
+                    if (!int.TryParse(row["WorkspaceArtifactID"].ToString(), out workspaceId))
                     {
                         throw new Exception("Unable to cast WorkspaceArtifactID returned from database to Int32");
                     }
 
-                    if (!int.TryParse(row["SetArtifactID"].ToString(), out int SetID))
+                    if (!int.TryParse(row["SetArtifactID"].ToString(), out setId))
                     {
                         throw new Exception("Unable to cast SetArtifactId returned from database to Int32");
                     }
 
-                    IDBContext workspaceDbContext = _agentHelper.GetDBContext(workspaceID);
+                    IDBContext workspaceDbContext = _agentHelper.GetDBContext(workspaceId);
 
                     SQL = @"
                         SELECT Count(ID) 
@@ -61,7 +64,7 @@ namespace AgentAgent.Agent
 
                     SqlParameter jobIdParam = new SqlParameter("@DtSearchIndexID", System.Data.SqlDbType.Char)
                     {
-                        Value = SetID
+                        Value = setId
                     };
 
                     agentCount += workspaceDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { jobIdParam });

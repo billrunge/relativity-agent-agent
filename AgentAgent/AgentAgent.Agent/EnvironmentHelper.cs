@@ -212,12 +212,15 @@ namespace AgentAgent.Agent
             {
                 foreach (DataRow row in results.Rows)
                 {
-                    if (!int.TryParse(row["ServerArtifactID"].ToString(), out int serverArtifactId))
+                    int serverArtifactId;
+                    int count; 
+
+                    if (!int.TryParse(row["ServerArtifactID"].ToString(), out serverArtifactId))
                     {
                         throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
                     }
 
-                    if (!int.TryParse(row["Count"].ToString(), out int count))
+                    if (!int.TryParse(row["Count"].ToString(), out count))
                     {
                         throw new Exception("Unable to cast agent count returned from database to Int32");
                     }
@@ -290,29 +293,35 @@ namespace AgentAgent.Agent
             }
             else
             {
-                if (!int.TryParse(agentServerDataTable.Rows[0]["ArtifactID"].ToString(), out int artifactId))
+                int artifactId;
+                bool active;
+                int cores;
+                long memory;
+                int agentCount;
+
+                if (!int.TryParse(agentServerDataTable.Rows[0]["ArtifactID"].ToString(), out artifactId))
                 {
                     throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
                 }
 
                 string hostname = agentServerDataTable.Rows[0]["Hostname"].ToString();
 
-                if (!bool.TryParse(agentServerDataTable.Rows[0]["Status"].ToString(), out bool active))
+                if (!bool.TryParse(agentServerDataTable.Rows[0]["Status"].ToString(), out active))
                 {
                     throw new Exception("Unable to cast agent server status returned from database to Boolean");
                 }
 
-                if (!int.TryParse(agentServerDataTable.Rows[0]["ProcessorCores"].ToString(), out int cores))
+                if (!int.TryParse(agentServerDataTable.Rows[0]["ProcessorCores"].ToString(), out cores))
                 {
                     throw new Exception("Unable to cast agent server core count returned from database to Int32");
                 }
 
-                if (!long.TryParse(agentServerDataTable.Rows[0]["Memory"].ToString(), out long memory))
+                if (!long.TryParse(agentServerDataTable.Rows[0]["Memory"].ToString(), out memory))
                 {
                     throw new Exception("Unable to cast agent server memory count returned from database to Int64");
                 }
 
-                if (!int.TryParse(agentServerDataTable.Rows[0]["NumberOfAgents"].ToString(), out int agentCount))
+                if (!int.TryParse(agentServerDataTable.Rows[0]["NumberOfAgents"].ToString(), out agentCount))
                 {
                     throw new Exception("Unable to cast count of agents on server returned from database to Int32");
                 }
@@ -362,30 +371,35 @@ namespace AgentAgent.Agent
             {
                 foreach (DataRow row in agentServerDataTable.Rows)
                 {
+                    int artifactId;
+                    bool active;
+                    int cores;
+                    long memory;
+                    int agentCount;
 
-                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out artifactId))
                     {
                         throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
                     }
 
                     string hostname = row["Hostname"].ToString();
 
-                    if (!bool.TryParse(row["Status"].ToString(), out bool active))
+                    if (!bool.TryParse(row["Status"].ToString(), out active))
                     {
                         throw new Exception("Unable to cast agent server status returned from database to Boolean");
                     }
 
-                    if (!int.TryParse(row["ProcessorCores"].ToString(), out int cores))
+                    if (!int.TryParse(row["ProcessorCores"].ToString(), out cores))
                     {
                         throw new Exception("Unable to cast agent server core count returned from database to Int32");
                     }
 
-                    if (!long.TryParse(row["Memory"].ToString(), out long memory))
+                    if (!long.TryParse(row["Memory"].ToString(), out memory))
                     {
                         throw new Exception("Unable to cast agent server memory count returned from database to Int64");
                     }
 
-                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out int agentCount))
+                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out agentCount))
                     {
                         throw new Exception("Unable to cast count of agents on server returned from database to Int32");
                     }                   
@@ -442,30 +456,35 @@ namespace AgentAgent.Agent
             {
                 foreach (DataRow row in agentServerDataTable.Rows)
                 {
+                    int artifactId;
+                    bool active;
+                    int cores;
+                    long memory;
+                    int agentCount;
 
-                    if (!int.TryParse(row["ArtifactID"].ToString(), out int artifactId))
+                    if (!int.TryParse(row["ArtifactID"].ToString(), out artifactId))
                     {
                         throw new Exception("Unable to cast agent server ArtifactID returned from database to Int32");
                     }
 
                     string hostname = row["Hostname"].ToString();
 
-                    if (!bool.TryParse(row["Status"].ToString(), out bool active))
+                    if (!bool.TryParse(row["Status"].ToString(), out active))
                     {
                         throw new Exception("Unable to cast agent server status returned from database to Boolean");
                     }
 
-                    if (!int.TryParse(row["ProcessorCores"].ToString(), out int cores))
+                    if (!int.TryParse(row["ProcessorCores"].ToString(), out cores))
                     {
                         throw new Exception("Unable to cast agent server core count returned from database to Int32");
                     }
 
-                    if (!long.TryParse(row["Memory"].ToString(), out long memory))
+                    if (!long.TryParse(row["Memory"].ToString(), out memory))
                     {
                         throw new Exception("Unable to cast agent server memory count returned from database to Int64");
                     }
 
-                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out int agentCount))
+                    if (!int.TryParse(row["NumberOfAgents"].ToString(), out agentCount))
                     {
                         throw new Exception("Unable to cast count of agents on server returned from database to Int32");
                     }
