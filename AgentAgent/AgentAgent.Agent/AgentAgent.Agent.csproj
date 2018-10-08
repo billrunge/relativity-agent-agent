@@ -69,12 +69,17 @@
     <Compile Include="AgentAgentAgent.cs" />
     <Compile Include="AgentsDesiredListHelper.cs" />
     <Compile Include="CompareDesiredAgentsToExisting.cs" />
+    <Compile Include="CustomAgentTypes\ApplicationInstallationManager.cs" />
+    <Compile Include="CustomAgentTypes\AutoBatchManager.cs" />
     <Compile Include="CustomAgentTypes\DtSearchIndexJobManager.cs" />
     <Compile Include="CustomAgentTypes\DtSearchIndexWorker.cs" />
     <Compile Include="CustomAgentTypes\FileDeletionManager.cs" />
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />
     <Compile Include="CustomAgentTypes\SearchTermsReportManager.cs" />
+    <Compile Include="CustomAgentTypes\TextExtractionManager.cs" />
+    <Compile Include="CustomAgentTypes\TranscriptManager.cs" />
+    <Compile Include="CustomAgentTypes\TransformSetManager.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
     <Compile Include="Objects\Agent.cs" />
     <Compile Include="Objects\AgentServer.cs" />

@@ -24,11 +24,17 @@ namespace AgentAgent.Agent
         }
 
         private void Run() {
-            
+
             //There has to be a better way to do this. Perhaps with a delegate?
+
+            ApplicationInstallationManager appInstMan = new ApplicationInstallationManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(appInstMan.GetAgentsDesired());
 
             AssistedReviewManager assistRevMan = new AssistedReviewManager(_eddsDbContext);
             AgentsPerServerObjectList.Add(assistRevMan.GetAgentsDesired());
+
+            AutoBatchManager autoBatMan = new AutoBatchManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(autoBatMan.GetAgentsDesired());
 
             BrandingManager brandMan = new BrandingManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(brandMan.GetAgentsDesired());
@@ -77,6 +83,16 @@ namespace AgentAgent.Agent
 
             ServerManager servMan = new ServerManager();
             AgentsPerServerObjectList.Add(servMan.GetAgentsDesired());
+
+            TextExtractionManager textExMan = new TextExtractionManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(textExMan.GetAgentsDesired());
+
+            TranscriptManager transcriptMan = new TranscriptManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(transcriptMan.GetAgentsDesired());
+
+            TransformSetManager transformMan = new TransformSetManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(transformMan.GetAgentsDesired());
+
         }
     }
 }

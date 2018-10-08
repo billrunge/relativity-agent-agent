@@ -132,9 +132,12 @@ namespace AgentAgent.Agent
             int agentCount;
 
             string SQL = @"
-                SELECT COUNT(*)
-                FROM [Agent] WITH(NOLOCK)
-                WHERE [AgentTypeArtifactID] = @AgentTypeArtifactID";
+                SELECT Count(AG.[ArtifactID]) 
+                FROM   [Agent] AG WITH(NOLOCK) 
+                       INNER JOIN [Artifact] A WITH(NOLOCK) 
+                               ON AG.[ArtifactID] = A.[ArtifactID] 
+                WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
+                       AND A.[DeleteFlag] = 0";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
             {
