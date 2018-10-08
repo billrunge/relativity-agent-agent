@@ -17,6 +17,7 @@ namespace AgentAgent.Agent
         int GetAgentCount(int agentTypeArtifactId);
         int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
+        int GetAnalyticsServerCountByResourcePool(int poolId);
         AgentServer GetAgentServerObject(int agentServerArtifactId);
         List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId);
         List<AgentServer> GetPoolAgentServerListNoDtSearch(int resourcePoolArtifactId);
@@ -260,6 +261,29 @@ namespace AgentAgent.Agent
             {
                 return runInterval;
             }
+
+        }
+
+        //Get count of Analytics servers in a specific respource pool
+        public int GetAnalyticsServerCountByResourcePool (int poolId)
+        {
+            int serverCount = 0;
+
+            string SQL = @"
+                SELECT Count(RS.[ArtifactID]) 
+                FROM   [ResourceServer] RS WITH(NOLOCK) 
+                       INNER JOIN [ResourceGroupAnalyticsServers] RGAS WITH(NOLOCK) 
+                               ON RS.[ArtifactID] = RGAS.[AnalyticsServerArtifactID] 
+                WHERE  RGAS.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
+
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = poolId
+            };
+
+            serverCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { poolIdParam });
+
+            return serverCount;
 
         }
 

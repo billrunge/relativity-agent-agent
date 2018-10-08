@@ -78,11 +78,17 @@ namespace AgentAgent.Agent
             ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(prodMan.GetAgentsDesired());
 
+            RelativityAnalyticsIndexManager relAnalyticsIndexMan = new RelativityAnalyticsIndexManager(_eddsDbContext, _environment, _resourcePoolId);
+            AgentsPerServerObjectList.Add(relAnalyticsIndexMan.GetAgentsDesired()); 
+
             SearchTermsReportManager STRMan = new SearchTermsReportManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(STRMan.GetAgentsDesired());
 
             ServerManager servMan = new ServerManager();
             AgentsPerServerObjectList.Add(servMan.GetAgentsDesired());
+
+            TelemetryMetricsTransmissionAgent telMetTransAgent = new TelemetryMetricsTransmissionAgent();
+            AgentsPerServerObjectList.Add(telMetTransAgent.GetAgentsDesired());
 
             TextExtractionManager textExMan = new TextExtractionManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(textExMan.GetAgentsDesired());

@@ -76,7 +76,9 @@
     <Compile Include="CustomAgentTypes\FileDeletionManager.cs" />
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />
+    <Compile Include="CustomAgentTypes\RelativityAnalyticsIndexManager.cs" />
     <Compile Include="CustomAgentTypes\SearchTermsReportManager.cs" />
+    <Compile Include="CustomAgentTypes\TelemetryMetricsTransmissionAgent.cs" />
     <Compile Include="CustomAgentTypes\TextExtractionManager.cs" />
     <Compile Include="CustomAgentTypes\TranscriptManager.cs" />
     <Compile Include="CustomAgentTypes\TransformSetManager.cs" />
