@@ -11,16 +11,16 @@ namespace AgentAgent.Agent
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
-        private readonly bool _useApiCreate;
+        private readonly ICreateAgent _createAgent;
 
-        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesired> agentsDesired, List<SpotsPerServer> spotsPerServer, bool useApiCreate, IAPILog logger)
+        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, ICreateAgent createAgent, List<AgentsDesired> agentsDesired, List<SpotsPerServer> spotsPerServer, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
             _environment = environment;
+            _createAgent = createAgent;
             _agentsDesired = agentsDesired;
             _spotsPerServer = spotsPerServer;
             _logger = logger;
-            _useApiCreate = useApiCreate;
         }
 
         public void Run()
@@ -48,17 +48,8 @@ namespace AgentAgent.Agent
                             _spotsPerServer = _spotsPerServer.OrderByDescending(x => x.Spots).ToList();
                             if (_spotsPerServer[0].Spots > 0)
                             {
-                                if (_useApiCreate)
-                                {
-                                    ApiCreateAgent createAgent = new ApiCreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
-                                    createAgent.Create();
-                                }
-                                else
-                                {
-                                    CreateAgent createAgent = new CreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
-                                    createAgent.Create();
-                                }                                
-                                
+                                _createAgent.Create(_agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
+
                                 _spotsPerServer[0].Spots -= 1;
                                 _agentsDesired[counter].Count -= 1;
 

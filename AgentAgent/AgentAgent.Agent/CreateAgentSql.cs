@@ -4,28 +4,25 @@ using Relativity.API;
 
 namespace AgentAgent.Agent
 {
-    interface ICreateAgent
+    class CreateAgentSql : ICreateAgent
     {
-        void Create();
-    }
-
-    class CreateAgent : ICreateAgent
-    {
-        private AgentObject _agent;
+        //private AgentObject _agent;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
+        private string _agentName;
+        private int _agentArtifactId;
+        private int _agentServerArtifactId;
+        private int _agentTypeArtifactId;
+        private int _agentArtifactTypeId;
+        private int _systemContainerId;
+        private int _runInterval;
 
-        public CreateAgent(IDBContext eddsDbContext, IEnvironmentHelper environment, string agentTypeGuid, int agentServerArtifactId)
+
+        public CreateAgentSql(IDBContext eddsDbContext, IEnvironmentHelper environment)
         {
-            _agent = new AgentObject();
             _eddsDbContext = eddsDbContext;
-            _agent.AgentTypeGuid = agentTypeGuid;
-            _agent.AgentServerArtifactId = agentServerArtifactId;
             _environment = environment;
-            _agent.AgentTypeArtifactId = _environment.GetArtifactIdFromGuid(_agent.AgentTypeGuid);
-            _agent.AgentArtifactTypeId = _environment.GetAgentArtifactType();
-            _agent.SystemContainerId = _environment.GetSystemContainerId();
-            _agent.RunInterval = _environment.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
+
         }
 
         //Inserts row to the ArtifactID table, which generates a new artifact ID
@@ -77,17 +74,17 @@ namespace AgentAgent.Agent
             //Gather values to input into above script
             SqlParameter agentName = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
             {
-                Value = _agent.AgentName
+                Value = _agentName
             };
 
             SqlParameter agentArtifactTypeID = new SqlParameter("@AgentArtifactType", System.Data.SqlDbType.Char)
             {
-                Value = _agent.AgentArtifactTypeId
+                Value = _agentArtifactTypeId
             };
 
             SqlParameter parentContainerID = new SqlParameter("@ParentContainerID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.SystemContainerId
+                Value = _systemContainerId
             };
 
             //Run SQL to create ArtifactID/Artifact table entry and return ArtifactID
@@ -99,7 +96,7 @@ namespace AgentAgent.Agent
             }
             else
             {
-                _agent.ArtifactId = artifactId;
+                _agentArtifactId = artifactId;
             }
 
         }
@@ -120,12 +117,12 @@ namespace AgentAgent.Agent
 
             SqlParameter artifactID = new SqlParameter("@AgentArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.ArtifactId
+                Value = _agentArtifactId
             };
 
             SqlParameter parentContainerID = new SqlParameter("@ParentContainerID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.SystemContainerId
+                Value = _systemContainerId
             };
 
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { artifactID, parentContainerID });
@@ -173,33 +170,33 @@ namespace AgentAgent.Agent
             //Gather values to input into above script
             SqlParameter agentServerArtifactID = new SqlParameter("@ServerArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.AgentServerArtifactId
+                Value = _agentServerArtifactId
             };
 
             SqlParameter agentName = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
             {
-                Value = _agent.AgentName
+                Value = _agentName
             };
 
             SqlParameter agentTypeArtifactID = new SqlParameter("@AgentTypeArtifact", System.Data.SqlDbType.Char)
             {
-                Value = _agent.AgentTypeArtifactId
+                Value = _agentTypeArtifactId
             };
 
             SqlParameter artifactID = new SqlParameter("@AgentArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.ArtifactId
+                Value = _agentArtifactId
             };
 
             SqlParameter runInterval = new SqlParameter("@RunInterval", System.Data.SqlDbType.Char)
             {
-                Value = _agent.RunInterval
+                Value = _runInterval
             };
 
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentServerArtifactID, agentName, agentTypeArtifactID, runInterval, artifactID });
 
             //Audit the agent's creation
-            InsertAuditRecord(_agent.AgentName);
+            InsertAuditRecord(_agentName);
         }
 
         //Insert row into EDDS's AuditRecord table
@@ -225,7 +222,7 @@ namespace AgentAgent.Agent
             //Gather values to input into above script
             SqlParameter agentArtifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = _agent.ArtifactId
+                Value = _agentArtifactId
             };
 
             SqlParameter agentNameParam = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
@@ -248,15 +245,21 @@ namespace AgentAgent.Agent
         //to make sure that the agent name doesn't already exist
         private string CreateAgentName()
         {
-            int agentCount = _environment.GetAgentCount(_agent.AgentTypeArtifactId);
-            string agentTypeName = _environment.GetTextIdByArtifactId(_agent.AgentTypeArtifactId);
+            int agentCount = _environment.GetAgentCount(_agentTypeArtifactId);
+            string agentTypeName = _environment.GetTextIdByArtifactId(_agentTypeArtifactId);
             return string.Format("{0} ({1})", agentTypeName, agentCount + 1);
         }
 
         //Run the methods to create the agent
-        public void Create()
+        public void Create(string agentTypeGuid, int agentServerArtifactId)
         {
-            _agent.AgentName = CreateAgentName();
+            _agentTypeArtifactId = _environment.GetArtifactIdFromGuid(agentTypeGuid);
+            _agentServerArtifactId = agentServerArtifactId;
+            _runInterval = _environment.GetAgentRunIntervalByType(_agentTypeArtifactId);
+            _agentName = CreateAgentName();
+            _agentArtifactTypeId = _environment.GetAgentArtifactType();
+            _systemContainerId = _environment.GetSystemContainerId();
+
             //These three methods must be ran in this order
             //Or at the very least, InsertArtifact first
             InsertArtifact();

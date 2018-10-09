@@ -29,7 +29,7 @@ namespace AgentAgent.Agent
                 bool ignoreSearchServer = true;
 
                 //Use API to create agents instead of manually creating in SQL
-                bool useApiCreate = true;
+                bool useApiCreate = false;
 
                 logger.LogVerbose("Creating new {objectName}", "Agent Helper");
                 IAgentHelper agentHelper = Helper;
@@ -80,12 +80,21 @@ namespace AgentAgent.Agent
                 logger.LogDebug("Spots Per Server List = {spotsPerServerList}", spotsPerServerListString);
 
                 logger.LogVerbose("Creating {objectName}", "Agent Create");
-                RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createList, spotsPerServerList, useApiCreate, logger);
+
+                ICreateAgent createAgent = new CreateAgentSql(eddsDbContext, environment);
+
+                if (useApiCreate)
+                {
+                    createAgent = new CreateAgentApi(eddsDbContext, environment);
+                }
+                                
+                RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createAgent, createList, spotsPerServerList, logger);
                 logger.LogVerbose("Running {objectName}", "Agent Create");
                 agentCreate.Run();
                 logger.LogVerbose("Completed {objectName}", "Agent Create");
 
                 logger.LogVerbose("Creating {objectName}", "Agent Delete");
+
                 RunAgentDelete agentDelete = new RunAgentDelete(eddsDbContext, environment, poolArtifactId, deleteList, logger);
                 logger.LogVerbose("Running {objectName}", "Agent Delete");
                 agentDelete.Run();

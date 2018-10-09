@@ -7,34 +7,34 @@ using System.Threading.Tasks;
 
 namespace AgentAgent.Agent
 {
-    class ApiCreateAgent : ICreateAgent
+    class CreateAgentApi : ICreateAgent
     {
-        private AgentObject _agent;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
+        private int _agentTypeArtifactId;
+        private int _agentServerArtifactId;
+        private int _runInterval;
 
-        public ApiCreateAgent(IDBContext eddsDbContext, IEnvironmentHelper environment, string agentTypeGuid, int agentServerArtifactId)
+        public CreateAgentApi(IDBContext eddsDbContext, IEnvironmentHelper environment)
         {
-            _agent = new AgentObject();
             _eddsDbContext = eddsDbContext;
-            _agent.AgentTypeGuid = agentTypeGuid;
-            _agent.AgentServerArtifactId = agentServerArtifactId;
             _environment = environment;
-            _agent.AgentTypeArtifactId = _environment.GetArtifactIdFromGuid(_agent.AgentTypeGuid);
-            _agent.AgentArtifactTypeId = _environment.GetAgentArtifactType();
-            _agent.SystemContainerId = _environment.GetSystemContainerId();
-            _agent.RunInterval = _environment.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
         }
 
         private string CreateAgentName()
         {
-            int agentCount = _environment.GetAgentCount(_agent.AgentTypeArtifactId);
-            string agentTypeName = _environment.GetTextIdByArtifactId(_agent.AgentTypeArtifactId);
+            int agentCount = _environment.GetAgentCount(_agentTypeArtifactId);
+            string agentTypeName = _environment.GetTextIdByArtifactId(_agentTypeArtifactId);
             return string.Format("{0} ({1})", agentTypeName, agentCount + 1);
         }
 
-        public void Create()
+        public void Create(string agentTypeGuid, int agentServerArtifactId)
         {
+            _agentServerArtifactId = agentServerArtifactId;
+            _agentTypeArtifactId = _environment.GetArtifactIdFromGuid(agentTypeGuid);
+            _runInterval = _environment.GetAgentRunIntervalByType(_agentTypeArtifactId);
+
+
             int agentId = ApiCreate().GetAwaiter().GetResult();
 
             if (agentId < 1)
@@ -54,17 +54,19 @@ namespace AgentAgent.Agent
             {
                 Relativity.Services.Agent.Agent newAgent = new Relativity.Services.Agent.Agent
                 {
-                    AgentType = new AgentTypeRef(_agent.AgentTypeArtifactId),
+                    AgentType = new AgentTypeRef(_agentTypeArtifactId),
                     Enabled = true,
-                    Interval = _agent.RunInterval,
+                    Interval = _runInterval,
                     Name = CreateAgentName(),
                     LoggingLevel = Relativity.Services.Agent.Agent.LoggingLevelEnum.Critical,
                     Server = new ResourceServerRef
                     {
-                        ArtifactID = _agent.AgentServerArtifactId
+                        ArtifactID = _agentServerArtifactId
                     }
                 };
-                return await agentManager.CreateSingleAsync(newAgent);                
+
+                return await agentManager.CreateSingleAsync(newAgent);
+
             }
         }
     }
