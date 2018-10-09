@@ -19,8 +19,10 @@ At this time, the Agent Agent manages the following agent types--
 - OCR Worker
 - Processing Set Manager
 - Production Manager
+- Relativity Analytics Index Manager
 - Search Terms Report Manager
 - Server Manager
+- Telemetry Metrics Agent
 - Text Exatraction Manager
 - Transcript Manager
 - Transform Set Manager
