@@ -31,7 +31,7 @@ namespace AgentAgent.Agent
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID 
                        AND [Status] IN ( 0, 1 )";
 
-            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = AgentAgentResourcePool
             };

@@ -22,7 +22,7 @@ namespace AgentAgent.Agent
             _agent.AgentTypeGuid = agentTypeGuid;
             _agent.AgentServerArtifactId = agentServerArtifactId;
             _environment = environment;
-            _agent.AgentTypeArtifactId = _environment.GetArtifactIdFromGuid(_agent.AgentTypeGuid);                        
+            _agent.AgentTypeArtifactId = _environment.GetArtifactIdFromGuid(_agent.AgentTypeGuid);
             _agent.AgentArtifactTypeId = _environment.GetAgentArtifactType();
             _agent.SystemContainerId = _environment.GetSystemContainerId();
             _agent.RunInterval = _environment.GetAgentRunIntervalByType(_agent.AgentTypeArtifactId);
@@ -195,9 +195,9 @@ namespace AgentAgent.Agent
             {
                 Value = _agent.RunInterval
             };
-            
+
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentServerArtifactID, agentName, agentTypeArtifactID, runInterval, artifactID });
-            
+
             //Audit the agent's creation
             InsertAuditRecord(_agent.AgentName);
         }
@@ -266,3 +266,7 @@ namespace AgentAgent.Agent
 
     }
 }
+
+
+
+

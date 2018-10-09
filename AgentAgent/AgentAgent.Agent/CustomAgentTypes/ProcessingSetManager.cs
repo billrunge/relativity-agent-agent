@@ -28,7 +28,7 @@ namespace AgentAgent.Agent
                                ON P.[WorkspaceArtifactID] = C.[ArtifactID] 
                 WHERE  C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = AgentAgentResourcePool
             };

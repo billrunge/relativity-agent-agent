@@ -39,7 +39,7 @@ namespace AgentAgent.Agent
                                             7, 10, 11 ) 
                        AND C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = AgentAgentResourcePool
             };

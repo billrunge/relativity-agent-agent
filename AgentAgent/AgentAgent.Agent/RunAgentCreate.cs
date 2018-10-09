@@ -11,14 +11,16 @@ namespace AgentAgent.Agent
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
         private readonly IAPILog _logger;
+        private readonly bool _useApiCreate;
 
-        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesired> agentsDesired, List<SpotsPerServer> spotsPerServer, IAPILog logger)
+        public RunAgentCreate(IDBContext eddsDbContext, IEnvironmentHelper environment, List<AgentsDesired> agentsDesired, List<SpotsPerServer> spotsPerServer, bool useApiCreate, IAPILog logger)
         {
             _eddsDbContext = eddsDbContext;
             _environment = environment;
             _agentsDesired = agentsDesired;
             _spotsPerServer = spotsPerServer;
             _logger = logger;
+            _useApiCreate = useApiCreate;
         }
 
         public void Run()
@@ -46,8 +48,17 @@ namespace AgentAgent.Agent
                             _spotsPerServer = _spotsPerServer.OrderByDescending(x => x.Spots).ToList();
                             if (_spotsPerServer[0].Spots > 0)
                             {
-                                CreateAgent createAgent = new CreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
-                                createAgent.Create();
+                                if (_useApiCreate)
+                                {
+                                    ApiCreateAgent createAgent = new ApiCreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
+                                    createAgent.Create();
+                                }
+                                else
+                                {
+                                    CreateAgent createAgent = new CreateAgent(_eddsDbContext, _environment, _agentsDesired[counter].Guid, _spotsPerServer[0].AgentServerArtifactId);
+                                    createAgent.Create();
+                                }                                
+                                
                                 _spotsPerServer[0].Spots -= 1;
                                 _agentsDesired[counter].Count -= 1;
 
@@ -69,7 +80,7 @@ namespace AgentAgent.Agent
                         else
                         {
                             //Out of servers! 
-                            _logger.LogDebug(string.Format("We've run out of spots! {0} remaining AgentsDesiredObjects", _agentsDesired.Count));
+                            _logger.LogWarning("We've run out of spots! {count} remaining AgentsDesiredObjects", _agentsDesired.Count);
                             outOfServers = true;
                             break;
                         }
@@ -78,7 +89,6 @@ namespace AgentAgent.Agent
                     {
                         _agentsDesired.Remove(_agentsDesired[0]);
                     }
-
                     counter -= 1;
                 }
             }

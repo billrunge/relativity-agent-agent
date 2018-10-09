@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="kCura">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Agents\Client\kCura.dll</HintPath>
+    </Reference>
     <Reference Include="kCura.Agent, Version=9.5.370.136, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Relativity.Agent.9.5.370.136\lib\kCura.Agent.dll</HintPath>
     </Reference>
@@ -43,11 +46,36 @@
     <Reference Include="Relativity.Kepler, Version=1.0.1.423, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Relativity.ObjectManager.9.5.370.136\lib\Relativity.Kepler.dll</HintPath>
     </Reference>
+    <Reference Include="Relativity.Productions.Services.Interfaces">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Productions.Services.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Productions.Services.Interfaces.Private">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Productions.Services.Interfaces.Private.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.SDK.Services">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.SDK.Services.dll</HintPath>
+    </Reference>
     <Reference Include="Relativity.Services.DataContracts, Version=9.5.370.136, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Relativity.ObjectManager.9.5.370.136\lib\Relativity.Services.DataContracts.dll</HintPath>
     </Reference>
     <Reference Include="Relativity.Services.Interfaces, Version=9.5.370.136, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Relativity.ObjectManager.9.5.370.136\lib\Relativity.Services.Interfaces.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Services.Interfaces.Helpers">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.Interfaces.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Services.Interfaces.Private">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.Interfaces.Private.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Services.Pipeline">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.Pipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Services.Proxy">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Relativity.Services.ServiceLocator">
+      <HintPath>..\..\..\..\..\..\Program Files\kCura Corporation\Relativity SDK\Services API\Client\Relativity.Services.ServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="Relativity.Services.ServiceProxy, Version=1.0.1.392, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Relativity.ObjectManager.9.5.370.136\lib\Relativity.Services.ServiceProxy.dll</HintPath>
@@ -68,6 +96,7 @@
   <ItemGroup>
     <Compile Include="AgentAgentAgent.cs" />
     <Compile Include="AgentsDesiredListHelper.cs" />
+    <Compile Include="ApiCreateAgent.cs" />
     <Compile Include="CompareDesiredAgentsToExisting.cs" />
     <Compile Include="CustomAgentTypes\ApplicationInstallationManager.cs" />
     <Compile Include="CustomAgentTypes\AutoBatchManager.cs" />
@@ -83,7 +112,7 @@
     <Compile Include="CustomAgentTypes\TranscriptManager.cs" />
     <Compile Include="CustomAgentTypes\TransformSetManager.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
-    <Compile Include="Objects\Agent.cs" />
+    <Compile Include="Objects\AgentObject.cs" />
     <Compile Include="Objects\AgentServer.cs" />
     <Compile Include="AgentType.cs" />
     <Compile Include="CreateAgent.cs" />

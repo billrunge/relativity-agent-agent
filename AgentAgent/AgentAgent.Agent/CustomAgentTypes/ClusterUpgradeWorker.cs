@@ -19,7 +19,7 @@ namespace AgentAgent.Agent
 
             string SQL = @"
                 SELECT COUNT(*)
-                FROM [ClusterUpgradeJobs]";
+                FROM [ClusterUpgradeJobs] WITH(NOLOCK)";
             int jobCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL);
 
             if (jobCount > 0)

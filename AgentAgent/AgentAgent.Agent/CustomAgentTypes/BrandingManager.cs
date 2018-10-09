@@ -38,7 +38,7 @@ namespace AgentAgent.Agent
                        AND CT.[Name] = 'ProductionSetQueueStatus'
 					   AND C.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = AgentAgentResourcePool
             };

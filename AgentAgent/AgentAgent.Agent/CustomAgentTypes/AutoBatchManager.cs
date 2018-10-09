@@ -9,8 +9,8 @@ namespace AgentAgent.Agent
         private readonly IDBContext _eddsDbContext;
 
         //Auto Batch Managers are scheduled jobs that can run on a set interval of minutes. To prevent scheduled
-        //jobs continuously be created and destroyed, I put in a time buffer. For now setting it to 5 minutes 
-        //but will probably make it adjustable from the UI at some point
+        //jobs from causing agents continuously be created and destroyed, I put in a time buffer. 
+        //For now setting it to 5 minutes but will probably make it adjustable from the UI at some point
         private readonly int _timeBuffer;
 
         public AutoBatchManager(IDBContext eddsDbContext, int poolId)
@@ -37,12 +37,12 @@ namespace AgentAgent.Agent
                        AND A.[StartTime] < Dateadd(mi, Cast(@AutoBatchBuffer AS INT), 
                                            Getutcdate())";
 
-            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = AgentAgentResourcePool
             };
 
-            SqlParameter bufferParam = new SqlParameter("@AutoBatchBuffer", System.Data.SqlDbType.Char)
+            SqlParameter bufferParam = new SqlParameter("@AutoBatchBuffer", System.Data.SqlDbType.Int)
             {
                 Value = _timeBuffer
             };
