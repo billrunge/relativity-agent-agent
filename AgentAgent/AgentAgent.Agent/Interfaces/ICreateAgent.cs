@@ -1,4 +1,4 @@
-﻿namespace AgentAgent.Agent
+﻿namespace AgentAgent.Agent.Interfaces
 {
     interface ICreateAgent
     {

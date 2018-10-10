@@ -1,10 +1,7 @@
-﻿namespace AgentAgent.Agent
-{
-    interface IAgentType
-    {
-        AgentsDesired GetAgentsDesired();
-    }
+﻿using AgentAgent.Agent.Interfaces;
 
+namespace AgentAgent.Agent
+{
     abstract class AgentType : IAgentType
     {
         public string Guid { get; protected set; }

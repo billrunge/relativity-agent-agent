@@ -1,9 +1,12 @@
-﻿using Relativity.API;
+﻿using System;
+using System.Threading.Tasks;
+using Relativity.API;
 using Relativity.Services.Agent;
 using Relativity.Services.ResourceServer;
 using Relativity.Services.ServiceProxy;
-using System;
-using System.Threading.Tasks;
+using AgentAgent.Agent.Interfaces;
+
+
 
 namespace AgentAgent.Agent
 {

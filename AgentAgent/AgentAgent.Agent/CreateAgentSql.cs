@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using AgentAgent.Agent.Interfaces;
 using Relativity.API;
 
 namespace AgentAgent.Agent

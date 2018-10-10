@@ -2,6 +2,7 @@
 using Relativity.API;
 using System;
 using System.Collections.Generic;
+using AgentAgent.Agent.Interfaces;
 
 namespace AgentAgent.Agent
 {
@@ -87,7 +88,7 @@ namespace AgentAgent.Agent
                 {
                     createAgent = new CreateAgentApi(eddsDbContext, environment);
                 }
-                                
+
                 RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createAgent, createList, spotsPerServerList, logger);
                 logger.LogVerbose("Running {objectName}", "Agent Create");
                 agentCreate.Run();

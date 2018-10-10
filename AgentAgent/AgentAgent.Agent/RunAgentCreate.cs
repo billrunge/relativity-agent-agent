@@ -1,5 +1,6 @@
 ﻿using Relativity.API;
 using System.Collections.Generic;
+using AgentAgent.Agent.Interfaces;
 using System.Linq;
 
 namespace AgentAgent.Agent
