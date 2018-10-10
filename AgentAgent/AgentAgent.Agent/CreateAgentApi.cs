@@ -14,12 +14,14 @@ namespace AgentAgent.Agent
     {
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
+        private readonly IAgentHelper _helper;
         private int _agentTypeArtifactId;
         private int _agentServerArtifactId;
         private int _runInterval;
 
-        public CreateAgentApi(IDBContext eddsDbContext, IEnvironmentHelper environment)
+        public CreateAgentApi(IDBContext eddsDbContext, IEnvironmentHelper environment, IAgentHelper helper)
         {
+            _helper = helper;
             _eddsDbContext = eddsDbContext;
             _environment = environment;
         }
@@ -48,12 +50,16 @@ namespace AgentAgent.Agent
 
         public async Task<int> ApiCreate()
         {
-            ServiceFactorySettings settings = new ServiceFactorySettings(
-                                                              new Uri("net.pipe://localhost/relativity.services/"),
-                                                              new Uri("http://localhost/Relativity.Rest/API"),
-                                                              new IntegratedAuthCredentials());
+            //_helper.GetServicesManager().GetRESTServiceUrl();
+            //_helper.GetServicesManager().GetServicesURL();
 
-            using (IAgentManager agentManager = new ServiceFactory(settings).CreateProxy<IAgentManager>())
+            //_helper.GetServicesManager().CreateProxy<IAgentManager>(ExecutionIdentity.CurrentUser)
+            //ServiceFactorySettings settings = new ServiceFactorySettings(
+            //                                                  new Uri("net.pipe://localhost/relativity.services/"),
+            //                                                  new Uri("http://localhost/Relativity.Rest/API"),
+            //                                                  new IntegratedAuthCredentials());
+
+            using (IAgentManager agentManager = _helper.GetServicesManager().CreateProxy<IAgentManager>(ExecutionIdentity.CurrentUser))
             {
                 Relativity.Services.Agent.Agent newAgent = new Relativity.Services.Agent.Agent
                 {

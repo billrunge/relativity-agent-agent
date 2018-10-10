@@ -23,184 +23,156 @@ namespace AgentAgent.Agent
         {
             _eddsDbContext = eddsDbContext;
             _environment = environment;
-
         }
 
-        //Inserts row to the ArtifactID table, which generates a new artifact ID
-        private void InsertArtifact()
+        public void Create(string agentTypeGuid, int agentServerArtifactId)
         {
-            //Create a new ArtifactID, and return the created value
+            _agentTypeArtifactId = _environment.GetArtifactIdFromGuid(agentTypeGuid);
+            _agentServerArtifactId = agentServerArtifactId;
+            _runInterval = _environment.GetAgentRunIntervalByType(_agentTypeArtifactId);
+            _agentName = CreateAgentName();
+            _agentArtifactTypeId = _environment.GetAgentArtifactType();
+            _systemContainerId = _environment.GetSystemContainerId();
+
+            RunCreateAgentSql();
+        }
+
+        private void RunCreateAgentSql()
+        {
+            
             string SQL = @"
-                DECLARE @SQL NVARCHAR(2000)
-                DECLARE @AgentArtifactID NVARCHAR(10)
+                BEGIN TRY 
+                    BEGIN TRANSACTION 
 
-                SET @SQL = '
-                INSERT INTO [Artifact] 
-                            ( 
-                                        [ArtifactTypeID], 
-                                        [ParentArtifactID], 
-                                        [AccessControlListID], 
-                                        [AccessControlListIsInherited], 
-                                        [CreatedOn], 
-                                        [LastModifiedOn], 
-                                        [LastModifiedBy], 
-                                        [CreatedBy], 
-                                        [TextIdentifier], 
-                                        [ContainerID], 
-                                        [Keywords], 
-                                        [Notes], 
-                                        [DeleteFlag] 
-                            ) 
-                            VALUES 
-                            ( 
-                                        '+@AgentArtifactType+', 
-                                        '+@ParentContainerID+', 
-                                        1, 
-                                        1, 
-                                        CONVERT(nvarchar(25),Getutcdate(),121), 
-                                        CONVERT(nvarchar(25),Getutcdate(),121), 
-                                        777, 
-                                        777, 
-                                        '''+@AgentName+''', 
-                                        '+@ParentContainerID+', 
-                                        '''', 
-                                        ''Created with Agent Agent'', 
-                                        0 
-                            )SELECT @AgentArtifactID = Scope_identity()'
+                    --Get ArtifactID 
+                    DECLARE @AgentArtifactID INT 
 
-                EXEC SP_ExecuteSQL @SQL, N'@AgentArtifactID INTEGER OUTPUT', @AgentArtifactID OUTPUT
+                    INSERT INTO [Artifact] 
+                                ([ArtifactTypeID], 
+                                 [ParentArtifactID], 
+                                 [AccessControlListID], 
+                                 [AccessControlListIsInherited], 
+                                 [CreatedOn], 
+                                 [LastModifiedOn], 
+                                 [LastModifiedBy], 
+                                 [CreatedBy], 
+                                 [TextIdentifier], 
+                                 [ContainerID], 
+                                 [Keywords], 
+                                 [Notes], 
+                                 [DeleteFlag]) 
+                    VALUES      ( @AgentArtifactTypeID, 
+                                  @ParentContainerID, 
+                                  1, 
+                                  1, 
+                                  Getutcdate(), 
+                                  Getutcdate(), 
+                                  777, 
+                                  777, 
+                                  @AgentName, 
+                                  @ParentContainerID, 
+                                  '', 
+                                  'Created with Agent Agent', 
+                                  0 ) 
 
-                SELECT @AgentArtifactID";
+                    SELECT @AgentArtifactID = Scope_identity() 
 
-            //Gather values to input into above script
-            SqlParameter agentName = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
-            {
-                Value = _agentName
-            };
+                    INSERT INTO [ArtifactAncestry] 
+                                (ArtifactID, 
+                                 AncestorArtifactID) 
+                    VALUES      (@AgentArtifactID, 
+                                 @ParentContainerID) 
 
-            SqlParameter agentArtifactTypeID = new SqlParameter("@AgentArtifactType", System.Data.SqlDbType.Char)
+                    INSERT INTO [Agent] 
+                                ([Name], 
+                                 [Message], 
+                                 [MessageTime], 
+                                 [LastUpdate], 
+                                 [MessageType], 
+                                 [Enabled], 
+                                 [Interval], 
+                                 [DetailMessage], 
+                                 [ArtifactID], 
+                                 [AgentTypeArtifactID], 
+                                 [ServerArtifactID], 
+                                 [Updated], 
+                                 [Safe], 
+                                 [LoggingLevel]) 
+                    VALUES      (@AgentName, 
+                                 '', 
+                                 Getutcdate(), 
+                                 Getutcdate(), 
+                                 '', 
+                                 1, 
+                                 @RunInterval, 
+                                 '', 
+                                 @AgentArtifactID, 
+                                 @AgentTypeArtifactID, 
+                                 @ServerArtifactID, 
+                                 1, 
+                                 1, 
+                                 1) 
+                    SELECT @AgentArtifactID
+                    COMMIT TRANSACTION 
+
+                END TRY 
+
+                BEGIN CATCH 
+                    SELECT 0
+
+                    ROLLBACK TRANSACTION 
+                END CATCH ";
+
+            SqlParameter agentArtifactTypeIdParam = new SqlParameter("@AgentArtifactTypeID", System.Data.SqlDbType.Int)
             {
                 Value = _agentArtifactTypeId
             };
 
-            SqlParameter parentContainerID = new SqlParameter("@ParentContainerID", System.Data.SqlDbType.Char)
+            SqlParameter parentContainerIdParam = new SqlParameter("@ParentContainerID", System.Data.SqlDbType.Int)
             {
                 Value = _systemContainerId
             };
 
-            //Run SQL to create ArtifactID/Artifact table entry and return ArtifactID
-            int artifactId = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentName, agentArtifactTypeID, parentContainerID });
-
-            if (artifactId == 0)
-            {
-                throw new Exception("Artifact creation failed");
-            }
-            else
-            {
-                _agentArtifactId = artifactId;
-            }
-
-        }
-
-        //Insert row into the Artifact Ancestry table
-        private void InsertArtifactAncestry()
-        {
-            string SQL = @"
-                DECLARE @SQL NVARCHAR(255)
-                SET @SQL = '
-                INSERT INTO [ArtifactAncestry] 
-                           (ArtifactID, 
-                            AncestorArtifactID) 
-                VALUES     ('+@AgentArtifactID+', 
-                            '+@ParentContainerID+')'
-
-                EXEC SP_ExecuteSQL @SQL";
-
-            SqlParameter artifactID = new SqlParameter("@AgentArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = _agentArtifactId
-            };
-
-            SqlParameter parentContainerID = new SqlParameter("@ParentContainerID", System.Data.SqlDbType.Char)
-            {
-                Value = _systemContainerId
-            };
-
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { artifactID, parentContainerID });
-
-        }
-
-        //Insert row into the agent table
-        private void InsertAgentTable()
-        {
-            string SQL = @"
-                DECLARE @SQL NVARCHAR(2000)
-                SET @SQL = '
-                INSERT INTO [Agent] 
-                           ([Name], 
-                            [Message], 
-                            [MessageTime], 
-                            [LastUpdate], 
-                            [MessageType], 
-                            [Enabled], 
-                            [Interval], 
-                            [DetailMessage], 
-                            [ArtifactID], 
-                            [AgentTypeArtifactID], 
-                            [ServerArtifactID], 
-                            [Updated], 
-                            [Safe], 
-                            [LoggingLevel]) 
-                VALUES     ('''+@AgentName+''', 
-                            '''', 
-                            CONVERT(nvarchar(25), Getutcdate(), 121), 
-                            CONVERT(nvarchar(25), Getutcdate(), 121), 
-                            '''', 
-                            1, 
-                            '+@RunInterval+', 
-                            '''', 
-                            '+@AgentArtifactID+', 
-                            '+@AgentTypeArtifact+', 
-                            '+@ServerArtifactID+', 
-                            1, 
-                            1, 
-                            1)'
-
-                EXEC SP_ExecuteSQL @SQL";
-
-            //Gather values to input into above script
-            SqlParameter agentServerArtifactID = new SqlParameter("@ServerArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = _agentServerArtifactId
-            };
-
-            SqlParameter agentName = new SqlParameter("@AgentName", System.Data.SqlDbType.Char)
+            SqlParameter agentNameParam = new SqlParameter("@AgentName", System.Data.SqlDbType.NVarChar)
             {
                 Value = _agentName
             };
 
-            SqlParameter agentTypeArtifactID = new SqlParameter("@AgentTypeArtifact", System.Data.SqlDbType.Char)
-            {
-                Value = _agentTypeArtifactId
-            };
-
-            SqlParameter artifactID = new SqlParameter("@AgentArtifactID", System.Data.SqlDbType.Char)
-            {
-                Value = _agentArtifactId
-            };
-
-            SqlParameter runInterval = new SqlParameter("@RunInterval", System.Data.SqlDbType.Char)
+            SqlParameter runIntervalParam = new SqlParameter("@RunInterval", System.Data.SqlDbType.Char)
             {
                 Value = _runInterval
             };
 
-            _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentServerArtifactID, agentName, agentTypeArtifactID, runInterval, artifactID });
+            SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
+            {
+                Value = _agentTypeArtifactId
+            };
 
-            //Audit the agent's creation
-            InsertAuditRecord(_agentName);
-        }
+            SqlParameter agentServerArtifactIdParam = new SqlParameter("@ServerArtifactID", System.Data.SqlDbType.Int)
+            {
+                Value = _agentServerArtifactId
+            };
 
-        //Insert row into EDDS's AuditRecord table
+            _agentArtifactId = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] 
+            {
+                agentArtifactTypeIdParam,
+                parentContainerIdParam,
+                agentNameParam,
+                runIntervalParam,
+                agentTypeArtifactIdParam,
+                agentServerArtifactIdParam
+            });
+
+            if (_agentArtifactId > 0)
+            {
+                InsertAuditRecord(_agentName);
+            }
+            else
+            {
+                throw new Exception("SQL Agent creation Failed");
+            }
+        }      
+
         private void InsertAuditRecord(string agentName)
         {
             string SQL = @"
@@ -250,24 +222,6 @@ namespace AgentAgent.Agent
             string agentTypeName = _environment.GetTextIdByArtifactId(_agentTypeArtifactId);
             return string.Format("{0} ({1})", agentTypeName, agentCount + 1);
         }
-
-        //Run the methods to create the agent
-        public void Create(string agentTypeGuid, int agentServerArtifactId)
-        {
-            _agentTypeArtifactId = _environment.GetArtifactIdFromGuid(agentTypeGuid);
-            _agentServerArtifactId = agentServerArtifactId;
-            _runInterval = _environment.GetAgentRunIntervalByType(_agentTypeArtifactId);
-            _agentName = CreateAgentName();
-            _agentArtifactTypeId = _environment.GetAgentArtifactType();
-            _systemContainerId = _environment.GetSystemContainerId();
-
-            //These three methods must be ran in this order
-            //Or at the very least, InsertArtifact first
-            InsertArtifact();
-            InsertArtifactAncestry();
-            InsertAgentTable();
-        }
-
     }
 }
 

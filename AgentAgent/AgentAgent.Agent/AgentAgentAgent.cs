@@ -86,7 +86,7 @@ namespace AgentAgent.Agent
 
                 if (useApiCreate)
                 {
-                    createAgent = new CreateAgentApi(eddsDbContext, environment);
+                    createAgent = new CreateAgentApi(eddsDbContext, environment, agentHelper);
                 }
 
                 RunAgentCreate agentCreate = new RunAgentCreate(eddsDbContext, environment, createAgent, createList, spotsPerServerList, logger);

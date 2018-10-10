@@ -41,6 +41,7 @@ namespace AgentAgent.Agent
                        AND AG.[ServerArtifactID] = @ServerArtifactID 
                        AND A.[DeleteFlag] = 0";
 
+            
             SqlParameter agentTypeIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
             {
                 Value = agentTypeId
