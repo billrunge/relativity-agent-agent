@@ -1,26 +1,26 @@
 ﻿using Relativity.API;
 using System.Data.SqlClient;
+using AgentAgent.Agent.Interfaces;
 
 namespace AgentAgent.Agent
 {
-    class DeleteAgent
+    class DeleteAgent : IDeleteAgent
     {
         private readonly IDBContext _eddsDbContext;
 
         public DeleteAgent(IDBContext eddsDbContext)
         {
-            _eddsDbContext = eddsDbContext;        
+            _eddsDbContext = eddsDbContext;
         }
 
         public void Delete(int agentArtifactId)
-        {            
+        {
             string SQL = @"
                 UPDATE [Artifact]
                 SET [DeleteFlag] = 1
                 WHERE ArtifactID = @ArtifactID";
 
-            //Gather values to input into above script
-            SqlParameter agentArtifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter agentArtifactIdParam = new SqlParameter("@ArtifactID", System.Data.SqlDbType.Int)
             {
                 Value = agentArtifactId
             };
@@ -29,9 +29,12 @@ namespace AgentAgent.Agent
             //as Relativity will audit the delete if initiated by updating Artifact
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
         }
-        
-        public int GetAgentIdToDelete (int agentTypeId, int serverArtifactId)
+
+        public int GetAgentIdToDelete(int agentTypeId, int serverArtifactId)
         {
+            /*Ordering by LastUpdate descending under the assumption 
+             * that agents that are busy will check in less frequently */
+
             string SQL = @"
                 SELECT TOP 1 AG.[ArtifactID] 
                 FROM   [Agent] AG 
@@ -39,9 +42,9 @@ namespace AgentAgent.Agent
                                ON AG.[ArtifactID] = A.[ArtifactID] 
                 WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
                        AND AG.[ServerArtifactID] = @ServerArtifactID 
-                       AND A.[DeleteFlag] = 0";
+                       AND A.[DeleteFlag] = 0 
+                ORDER  BY AG.[LastUpdate] DESC";
 
-            
             SqlParameter agentTypeIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
             {
                 Value = agentTypeId
@@ -53,7 +56,7 @@ namespace AgentAgent.Agent
             };
 
             return _eddsDbContext.ExecuteSqlStatementAsScalar<int?>(SQL, new SqlParameter[] { agentTypeIdParam, serverArtifactIdParam }).GetValueOrDefault();
-       
+
         }
 
     }

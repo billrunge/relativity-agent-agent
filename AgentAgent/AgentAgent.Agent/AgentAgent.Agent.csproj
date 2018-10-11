@@ -81,6 +81,7 @@
     <Compile Include="CustomAgentTypes\TransformSetManager.cs" />
     <Compile Include="Interfaces\IAgentType.cs" />
     <Compile Include="Interfaces\ICreateAgent.cs" />
+    <Compile Include="Interfaces\IDeleteAgent.cs" />
     <Compile Include="Objects\AgentsDesired.cs" />
     <Compile Include="Objects\AgentObject.cs" />
     <Compile Include="Objects\AgentServer.cs" />

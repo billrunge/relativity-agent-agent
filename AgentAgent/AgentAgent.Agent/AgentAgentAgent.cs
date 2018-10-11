@@ -95,8 +95,9 @@ namespace AgentAgent.Agent
                 logger.LogVerbose("Completed {objectName}", "Agent Create");
 
                 logger.LogVerbose("Creating {objectName}", "Agent Delete");
-
-                RunAgentDelete agentDelete = new RunAgentDelete(eddsDbContext, environment, poolArtifactId, deleteList, logger);
+                IDeleteAgent deleteAgent = new DeleteAgent(eddsDbContext);
+                
+                RunAgentDelete agentDelete = new RunAgentDelete(eddsDbContext, environment, deleteAgent, poolArtifactId, deleteList, logger);
                 logger.LogVerbose("Running {objectName}", "Agent Delete");
                 agentDelete.Run();
                 logger.LogVerbose("Completed {objectName}", "Agent Delete");
