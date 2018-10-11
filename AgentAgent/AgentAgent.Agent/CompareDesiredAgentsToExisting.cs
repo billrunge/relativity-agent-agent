@@ -6,14 +6,14 @@ namespace AgentAgent.Agent
     class CompareDesiredAgentsToExisting
     {
         private List<AgentsDesired> _agentsDesiredList;
-        private readonly int _poolArtifactId;
+        private readonly int _poolId;
         private IEnvironmentHelper _environment;
         private IAPILog _logger;
 
-        public CompareDesiredAgentsToExisting(List<AgentsDesired> agentsDesiredList, int poolArtifactId, IEnvironmentHelper environment, IAPILog logger)
+        public CompareDesiredAgentsToExisting(List<AgentsDesired> agentsDesiredList, int poolId, IEnvironmentHelper environment, IAPILog logger)
         {
             _agentsDesiredList = agentsDesiredList;
-            _poolArtifactId = poolArtifactId;
+            _poolId = poolId;
             _environment = environment;
             _logger = logger;
         }
@@ -35,7 +35,7 @@ namespace AgentAgent.Agent
                 //Account for agents Resource Pool policy
                 if (_agentsDesiredList[counter].RespectsResourcePool)
                 {
-                    currentCount = _environment.GetAgentCountByPool(agentTypeId, _poolArtifactId);
+                    currentCount = _environment.GetAgentCountByPool(agentTypeId, _poolId);
                 }
                 else
                 {

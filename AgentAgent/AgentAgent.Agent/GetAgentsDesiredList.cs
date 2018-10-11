@@ -78,8 +78,14 @@ namespace AgentAgent.Agent
             ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(prodMan.GetAgentsDesired());
 
+            RelativityAnalyticsCategorizationManager relAnalyticsCatMan = new RelativityAnalyticsCategorizationManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(relAnalyticsCatMan.GetAgentsDesired());
+
             RelativityAnalyticsIndexManager relAnalyticsIndexMan = new RelativityAnalyticsIndexManager(_eddsDbContext, _environment, _resourcePoolId);
-            AgentsPerServerObjectList.Add(relAnalyticsIndexMan.GetAgentsDesired()); 
+            AgentsPerServerObjectList.Add(relAnalyticsIndexMan.GetAgentsDesired());
+
+            RelativityAnalyticsIndexProgressManager relAnalyticsIndexProgMan = new RelativityAnalyticsIndexProgressManager(_eddsDbContext, _environment, _resourcePoolId);
+            AgentsPerServerObjectList.Add(relAnalyticsIndexProgMan.GetAgentsDesired());
 
             SearchTermsReportManager STRMan = new SearchTermsReportManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(STRMan.GetAgentsDesired());

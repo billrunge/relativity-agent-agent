@@ -7,7 +7,6 @@ namespace AgentAgent.Agent
 {
     class CreateAgentSql : ICreateAgent
     {
-        //private AgentObject _agent;
         private readonly IDBContext _eddsDbContext;
         private readonly IEnvironmentHelper _environment;
         private string _agentName;
@@ -17,7 +16,6 @@ namespace AgentAgent.Agent
         private int _agentArtifactTypeId;
         private int _systemContainerId;
         private int _runInterval;
-
 
         public CreateAgentSql(IDBContext eddsDbContext, IEnvironmentHelper environment)
         {
@@ -65,8 +63,8 @@ namespace AgentAgent.Agent
                                   @ParentContainerID, 
                                   1, 
                                   1, 
-                                  Getutcdate(), 
-                                  Getutcdate(), 
+                                  GETUTCDATE(), 
+                                  GETUTCDATE(), 
                                   777, 
                                   777, 
                                   @AgentName, 
@@ -100,8 +98,8 @@ namespace AgentAgent.Agent
                                  [LoggingLevel]) 
                     VALUES      (@AgentName, 
                                  '', 
-                                 Getutcdate(), 
-                                 Getutcdate(), 
+                                 GETUTCDATE(), 
+                                 GETUTCDATE(), 
                                  '', 
                                  1, 
                                  @RunInterval, 

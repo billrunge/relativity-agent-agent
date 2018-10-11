@@ -24,8 +24,9 @@ namespace AgentAgent.Agent
     }
 
     /// <summary>
-    /// A helper class to hold a set of methods that allow you to get information about the Relativity environment
-    /// </summary>
+    /// A helper class to get information about the Relativity environment
+    ///</summary>
+
     class EnvironmentHelper : IEnvironmentHelper
     {
         private IDBContext _eddsDbContext;

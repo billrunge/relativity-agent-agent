@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace AgentAgent.Agent
 {
+    /// <summary>
+    /// This class outputs a list of SpotsPerServer objects
+    ///</summary>
     class GetSpotsPerServerList
     {
         private readonly IDBContext _eddsDbContext;

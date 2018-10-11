@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace AgentAgent.Agent
 {
+    /// <summary>
+    /// This class takes the input create list and determines the best agent server and creates the agents one at a time 
+    ///</summary>
     class RunAgentCreate
     {
         private List<AgentsDesired> _agentsDesired;

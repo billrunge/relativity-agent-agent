@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Relativity.API;
 using Relativity.Services.Agent;
 using Relativity.Services.ResourceServer;
-using Relativity.Services.ServiceProxy;
 using AgentAgent.Agent.Interfaces;
 
 
@@ -50,15 +49,6 @@ namespace AgentAgent.Agent
 
         public async Task<int> ApiCreate()
         {
-            //_helper.GetServicesManager().GetRESTServiceUrl();
-            //_helper.GetServicesManager().GetServicesURL();
-
-            //_helper.GetServicesManager().CreateProxy<IAgentManager>(ExecutionIdentity.CurrentUser)
-            //ServiceFactorySettings settings = new ServiceFactorySettings(
-            //                                                  new Uri("net.pipe://localhost/relativity.services/"),
-            //                                                  new Uri("http://localhost/Relativity.Rest/API"),
-            //                                                  new IntegratedAuthCredentials());
-
             using (IAgentManager agentManager = _helper.GetServicesManager().CreateProxy<IAgentManager>(ExecutionIdentity.CurrentUser))
             {
                 Relativity.Services.Agent.Agent newAgent = new Relativity.Services.Agent.Agent
@@ -73,9 +63,7 @@ namespace AgentAgent.Agent
                         ArtifactID = _agentServerArtifactId
                     }
                 };
-
                 return await agentManager.CreateSingleAsync(newAgent);
-
             }
         }
     }

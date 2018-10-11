@@ -25,14 +25,16 @@ namespace AgentAgent.Agent
                 Value = agentArtifactId
             };
 
-            //Auditing here would create duplicate delete records, 
-            //as Relativity will audit the delete if initiated by updating Artifact
             _eddsDbContext.ExecuteNonQuerySQLStatement(SQL, new SqlParameter[] { agentArtifactIdParam });
+
+            /* No need to audit the delete. 
+            * Relativity does it for you */
+
         }
 
         public int GetAgentIdToDelete(int agentTypeId, int serverArtifactId)
         {
-            /*Ordering by LastUpdate descending under the assumption 
+            /* Ordering by LastUpdate descending under the assumption 
              * that agents that are busy will check in less frequently */
 
             string SQL = @"

@@ -6,6 +6,10 @@ using AgentAgent.Agent.Interfaces;
 
 namespace AgentAgent.Agent
 {
+    /// <summary>
+    /// This class takes the input delete list and chooses and deletes its victims one at a time
+    ///</summary>
+
     class RunAgentDelete
     {
         private readonly int _resourcePoolId;

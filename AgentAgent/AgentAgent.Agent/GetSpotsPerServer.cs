@@ -3,6 +3,9 @@ using System;
 
 namespace AgentAgent.Agent
 {
+    /// <summary>
+    /// This class will tell you how many spots a specific agent server has
+    ///</summary>
     class GetSpotsPerServer
     {
         private AgentServer _agentServer;
