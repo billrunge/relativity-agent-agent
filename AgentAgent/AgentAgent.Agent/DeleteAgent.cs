@@ -37,8 +37,8 @@ namespace AgentAgent.Agent
 
             string SQL = @"
                 SELECT TOP 1 AG.[ArtifactID] 
-                FROM   [Agent] AG 
-                       INNER JOIN [Artifact] A 
+                FROM   [Agent] AG WITH(NOLOCK)
+                       INNER JOIN [Artifact] A WITH(NOLOCK)
                                ON AG.[ArtifactID] = A.[ArtifactID] 
                 WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
                        AND AG.[ServerArtifactID] = @ServerArtifactID 
