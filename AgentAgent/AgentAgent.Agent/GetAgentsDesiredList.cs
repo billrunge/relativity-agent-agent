@@ -25,7 +25,7 @@ namespace AgentAgent.Agent
 
         private void Run() {
 
-            //There has to be a better way to do this. Perhaps with a delegate?
+            /* There has to be a better way to do this. Perhaps with a delegate? */
 
             ApplicationInstallationManager appInstMan = new ApplicationInstallationManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(appInstMan.GetAgentsDesired());
@@ -80,6 +80,9 @@ namespace AgentAgent.Agent
 
             RelativityAnalyticsCategorizationManager relAnalyticsCatMan = new RelativityAnalyticsCategorizationManager(_eddsDbContext, _resourcePoolId);
             AgentsPerServerObjectList.Add(relAnalyticsCatMan.GetAgentsDesired());
+
+            RelativityAnalyticsClusterManager relAnalyticsClusterMan = new RelativityAnalyticsClusterManager(_eddsDbContext, _resourcePoolId);
+            AgentsPerServerObjectList.Add(relAnalyticsClusterMan.GetAgentsDesired());
 
             RelativityAnalyticsIndexManager relAnalyticsIndexMan = new RelativityAnalyticsIndexManager(_eddsDbContext, _environment, _resourcePoolId);
             AgentsPerServerObjectList.Add(relAnalyticsIndexMan.GetAgentsDesired());

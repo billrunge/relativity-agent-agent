@@ -74,6 +74,7 @@
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />
     <Compile Include="CustomAgentTypes\RelativityAnalyticsCategorizationManager.cs" />
+    <Compile Include="CustomAgentTypes\RelativityAnalyticsClusterManager.cs" />
     <Compile Include="CustomAgentTypes\RelativityAnalyticsIndexManager.cs" />
     <Compile Include="CustomAgentTypes\RelativityAnalyticsIndexProgressManager.cs" />
     <Compile Include="CustomAgentTypes\SearchTermsReportManager.cs" />
