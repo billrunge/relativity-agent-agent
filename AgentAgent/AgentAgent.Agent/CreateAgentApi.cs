@@ -47,7 +47,7 @@ namespace AgentAgent.Agent
             }
         }
 
-        public async Task<int> ApiCreate()
+        private async Task<int> ApiCreate()
         {
             using (IAgentManager agentManager = _helper.GetServicesManager().CreateProxy<IAgentManager>(ExecutionIdentity.CurrentUser))
             {
