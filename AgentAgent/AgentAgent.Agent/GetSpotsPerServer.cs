@@ -1,5 +1,6 @@
-﻿using Relativity.API;
-using System;
+﻿using System;
+using Relativity.API;
+using AgentAgent.Agent.Interfaces;
 
 namespace AgentAgent.Agent
 {

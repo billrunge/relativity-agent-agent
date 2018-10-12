@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AgentAgent.Agent.Interfaces;
 using Relativity.API;
 
 namespace AgentAgent.Agent
