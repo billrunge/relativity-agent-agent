@@ -70,7 +70,6 @@
     <Compile Include="CustomAgentTypes\AutoBatchManager.cs" />
     <Compile Include="CustomAgentTypes\DtSearchIndexJobManager.cs" />
     <Compile Include="CustomAgentTypes\DtSearchIndexWorker.cs" />
-    <Compile Include="CustomAgentTypes\FileDeletionManager.cs" />
     <Compile Include="CustomAgentTypes\IntegrationPointsAgent.cs" />
     <Compile Include="CustomAgentTypes\OCRWorker.cs" />
     <Compile Include="CustomAgentTypes\RelativityAnalyticsCategorizationManager.cs" />
