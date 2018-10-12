@@ -30,8 +30,9 @@ namespace AgentAgent.Agent
                  * Will eventually make this accessible in the UI*/
                 bool ignoreSearchServer = true;
 
-                /*Use API to create agents instead of manually creating in SQL*/
+                /*Use API to create/delete agents instead of manually creating in SQL*/
                 bool useApiCreate = true;
+                bool useApiDelete = true;
 
                 /* Making stuff */
                 logger.LogVerbose("Creating new {objectName}", "Agent Helper");
@@ -68,8 +69,12 @@ namespace AgentAgent.Agent
                     createAgent = new CreateAgentApi(eddsDbContext, environment, agentHelper);
                 }
                 
-                logger.LogVerbose("Creating {objectName}", "Agent Delete");
+                logger.LogVerbose("Creating {objectName}", "Agent Delete");          
                 IDeleteAgent deleteAgent = new DeleteAgent(eddsDbContext);
+                if (useApiDelete)
+                {
+                    deleteAgent = new DeleteAgentApi(eddsDbContext, agentHelper);
+                }
 
 
                 /* Log createList, deleteList, and spotsPerServerList contents */

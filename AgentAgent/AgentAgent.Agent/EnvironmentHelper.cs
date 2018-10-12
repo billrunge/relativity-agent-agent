@@ -9,18 +9,18 @@ namespace AgentAgent.Agent
 
     public interface IEnvironmentHelper
     {
-        List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
+        List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int poolId);
         int GetAgentArtifactType();
         int GetSystemContainerId();
         int GetArtifactIdFromGuid(string Guid);
         string GetTextIdByArtifactId(int artifactId);
         int GetAgentCount(int agentTypeArtifactId);
-        int GetAgentCountByPool(int agentTypeArtifactId, int resourcePoolArtifactId);
+        int GetAgentCountByPool(int agentTypeArtifactId, int poolId);
         int GetAgentRunIntervalByType(int agentTypeArtifactId);
         int GetAnalyticsServerCountByResourcePool(int poolId);
         AgentServer GetAgentServerObject(int agentServerArtifactId);
-        List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId);
-        List<AgentServer> GetPoolAgentServerListNoDtSearch(int resourcePoolArtifactId);
+        List<AgentServer> GetPoolAgentServerList(int poolId);
+        List<AgentServer> GetPoolAgentServerListNoDtSearch(int poolId);
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ namespace AgentAgent.Agent
         }
 
         //Get current deployed agent count for a specific agent type and resource pool
-        public int GetAgentCountByPool (int agentTypeArtifactId, int resourcePoolArtifactId)
+        public int GetAgentCountByPool (int agentTypeArtifactId, int poolId)
         {
             int agentCount;
 
@@ -165,7 +165,7 @@ namespace AgentAgent.Agent
                         INNER JOIN [Artifact] A WITH(NOLOCK) 
                                 ON AG.[ArtifactID] = A.[ArtifactID] 
                 WHERE  AG.[AgentTypeArtifactID] = @AgentTypeArtifactID 
-                        AND S.[ResourceGroupArtifactID] = @ResourcePoolArtifactID 
+                        AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID 
                         AND [DeleteFlag] = 0";
 
             SqlParameter agentTypeArtifactIdParam = new SqlParameter("@AgentTypeArtifactID", System.Data.SqlDbType.Char)
@@ -173,16 +173,16 @@ namespace AgentAgent.Agent
                 Value = agentTypeArtifactId
             };
 
-            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourcePoolArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = resourcePoolArtifactId
+                Value = poolId
             };
 
-            agentCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentTypeArtifactIdParam, poolArtifactIdParam });
+            agentCount = _eddsDbContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { agentTypeArtifactIdParam, poolIdParam });
             return agentCount;
         }
 
-        public List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int resourcePoolArtifactId)
+        public List<SpotsPerServer> GetAgentsPerServerByPool(int agentTypeArtifactId, int poolId)
         {
             List<SpotsPerServer> outputList = new List<SpotsPerServer>();
 
@@ -203,12 +203,12 @@ namespace AgentAgent.Agent
             {
                 Value = agentTypeArtifactId
             };
-            SqlParameter resourcePoolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = resourcePoolArtifactId
+                Value = poolId
             };
 
-            DataTable results = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { agentTypeArtifactIdParam, resourcePoolArtifactIdParam });
+            DataTable results = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { agentTypeArtifactIdParam, poolIdParam });
 
             if (results != null)
             {
@@ -364,7 +364,7 @@ namespace AgentAgent.Agent
         }
 
         //Get a list of AgentServerObjects by Resource Pool
-        public List<AgentServer> GetPoolAgentServerList(int resourcePoolArtifactId)
+        public List<AgentServer> GetPoolAgentServerList(int poolId)
         {
             List<AgentServer> outputList = new List<AgentServer>();
 
@@ -381,12 +381,12 @@ namespace AgentAgent.Agent
                 WHERE  [Type] = 'Agent' 
                        AND S.[ResourceGroupArtifactID] = @ResourceGroupArtifactID";
 
-            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = resourcePoolArtifactId
+                Value = poolId
             };
 
-            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolArtifactIdParam });
+            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolIdParam });
 
             if (agentServerDataTable == null)
             {
@@ -442,7 +442,7 @@ namespace AgentAgent.Agent
         }
 
         //Get a list of AgentServerObjects by Resource Pool that do not conatin the dtSearch search agent
-        public List<AgentServer> GetPoolAgentServerListNoDtSearch(int resourcePoolArtifactId)
+        public List<AgentServer> GetPoolAgentServerListNoDtSearch(int poolId)
         {
             List<AgentServer> outputList = new List<AgentServer>();
             //A0683637-4690-49CE-B8BE-156324FC64F0 is the GUID for the dtSearch Search Agent
@@ -466,12 +466,12 @@ namespace AgentAgent.Agent
                                                   WHERE 
                                AGT.[Guid] = 'A0683637-4690-49CE-B8BE-156324FC64F0')";
 
-            SqlParameter poolArtifactIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
+            SqlParameter poolIdParam = new SqlParameter("@ResourceGroupArtifactID", System.Data.SqlDbType.Char)
             {
-                Value = resourcePoolArtifactId
+                Value = poolId
             };
 
-            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolArtifactIdParam });
+            DataTable agentServerDataTable = _eddsDbContext.ExecuteSqlStatementAsDataTable(SQL, new SqlParameter[] { poolIdParam });
 
             if (agentServerDataTable == null)
             {

@@ -9,15 +9,15 @@ namespace AgentAgent.Agent
         private readonly IDBContext _eddsDbContext;
         private IAgentHelper _agentHelper;
         private readonly IEnvironmentHelper _environment;
-        private readonly int _resourcePoolId;
+        private readonly int _poolId;
         private readonly bool _isOffHours;
 
-        public GetAgentsDesiredList(IAgentHelper agentHelper, IEnvironmentHelper environment, int resourcePoolId, bool isOffHours)
+        public GetAgentsDesiredList(IAgentHelper agentHelper, IEnvironmentHelper environment, int poolId, bool isOffHours)
         {
            AgentsPerServerObjectList = new List<AgentsDesired>();
             _agentHelper = agentHelper;
             _eddsDbContext = _agentHelper.GetDBContext(-1);
-            _resourcePoolId = resourcePoolId;
+            _poolId = poolId;
             _environment = environment;
             _isOffHours = isOffHours;
             Run();
@@ -27,16 +27,16 @@ namespace AgentAgent.Agent
 
             /* There has to be a better way to do this. Perhaps with a delegate? */
 
-            ApplicationInstallationManager appInstMan = new ApplicationInstallationManager(_eddsDbContext, _resourcePoolId);
+            ApplicationInstallationManager appInstMan = new ApplicationInstallationManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(appInstMan.GetAgentsDesired());
 
             AssistedReviewManager assistRevMan = new AssistedReviewManager(_eddsDbContext);
             AgentsPerServerObjectList.Add(assistRevMan.GetAgentsDesired());
 
-            AutoBatchManager autoBatMan = new AutoBatchManager(_eddsDbContext, _resourcePoolId);
+            AutoBatchManager autoBatMan = new AutoBatchManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(autoBatMan.GetAgentsDesired());
 
-            BrandingManager brandMan = new BrandingManager(_eddsDbContext, _resourcePoolId);
+            BrandingManager brandMan = new BrandingManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(brandMan.GetAgentsDesired());
 
             CacheManager cacheMan = new CacheManager(_isOffHours);
@@ -54,43 +54,43 @@ namespace AgentAgent.Agent
             DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
             AgentsPerServerObjectList.Add(distJobMan.GetAgentsDesired());
 
-            DtSearchIndexJobManager dtJobMan = new DtSearchIndexJobManager(_eddsDbContext, _resourcePoolId);
+            DtSearchIndexJobManager dtJobMan = new DtSearchIndexJobManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(dtJobMan.GetAgentsDesired());
 
-            DtSearchIndexWorker dtJobWorker = new DtSearchIndexWorker(_agentHelper, _resourcePoolId);
+            DtSearchIndexWorker dtJobWorker = new DtSearchIndexWorker(_agentHelper, _poolId);
             AgentsPerServerObjectList.Add(dtJobWorker.GetAgentsDesired());
 
             FileDeletionManager fileDelMan = new FileDeletionManager(_isOffHours);
             AgentsPerServerObjectList.Add(fileDelMan.GetAgentsDesired());
 
-            IntegrationPointsAgent RipAgent = new IntegrationPointsAgent(_eddsDbContext, _resourcePoolId);
+            IntegrationPointsAgent RipAgent = new IntegrationPointsAgent(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(RipAgent.GetAgentsDesired());
 
-            OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _resourcePoolId);
+            OCRSetManager OcrSetMan = new OCRSetManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(OcrSetMan.GetAgentsDesired());
 
-            OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _resourcePoolId);
+            OCRWorker OcrWorker = new OCRWorker(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(OcrWorker.GetAgentsDesired());
 
-            ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _resourcePoolId);
+            ProcessingSetManager procMan = new ProcessingSetManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(procMan.GetAgentsDesired());
 
-            ProductionManager prodMan = new ProductionManager(_eddsDbContext, _resourcePoolId);
+            ProductionManager prodMan = new ProductionManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(prodMan.GetAgentsDesired());
 
-            RelativityAnalyticsCategorizationManager relAnalyticsCatMan = new RelativityAnalyticsCategorizationManager(_eddsDbContext, _resourcePoolId);
+            RelativityAnalyticsCategorizationManager relAnalyticsCatMan = new RelativityAnalyticsCategorizationManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(relAnalyticsCatMan.GetAgentsDesired());
 
-            RelativityAnalyticsClusterManager relAnalyticsClusterMan = new RelativityAnalyticsClusterManager(_eddsDbContext, _resourcePoolId);
+            RelativityAnalyticsClusterManager relAnalyticsClusterMan = new RelativityAnalyticsClusterManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(relAnalyticsClusterMan.GetAgentsDesired());
 
-            RelativityAnalyticsIndexManager relAnalyticsIndexMan = new RelativityAnalyticsIndexManager(_eddsDbContext, _environment, _resourcePoolId);
+            RelativityAnalyticsIndexManager relAnalyticsIndexMan = new RelativityAnalyticsIndexManager(_eddsDbContext, _environment, _poolId);
             AgentsPerServerObjectList.Add(relAnalyticsIndexMan.GetAgentsDesired());
 
-            RelativityAnalyticsIndexProgressManager relAnalyticsIndexProgMan = new RelativityAnalyticsIndexProgressManager(_eddsDbContext, _environment, _resourcePoolId);
+            RelativityAnalyticsIndexProgressManager relAnalyticsIndexProgMan = new RelativityAnalyticsIndexProgressManager(_eddsDbContext, _environment, _poolId);
             AgentsPerServerObjectList.Add(relAnalyticsIndexProgMan.GetAgentsDesired());
 
-            SearchTermsReportManager STRMan = new SearchTermsReportManager(_eddsDbContext, _resourcePoolId);
+            SearchTermsReportManager STRMan = new SearchTermsReportManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(STRMan.GetAgentsDesired());
 
             ServerManager servMan = new ServerManager();
@@ -99,13 +99,13 @@ namespace AgentAgent.Agent
             TelemetryMetricsTransmissionAgent telMetTransAgent = new TelemetryMetricsTransmissionAgent();
             AgentsPerServerObjectList.Add(telMetTransAgent.GetAgentsDesired());
 
-            TextExtractionManager textExMan = new TextExtractionManager(_eddsDbContext, _resourcePoolId);
+            TextExtractionManager textExMan = new TextExtractionManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(textExMan.GetAgentsDesired());
 
-            TranscriptManager transcriptMan = new TranscriptManager(_eddsDbContext, _resourcePoolId);
+            TranscriptManager transcriptMan = new TranscriptManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(transcriptMan.GetAgentsDesired());
 
-            TransformSetManager transformMan = new TransformSetManager(_eddsDbContext, _resourcePoolId);
+            TransformSetManager transformMan = new TransformSetManager(_eddsDbContext, _poolId);
             AgentsPerServerObjectList.Add(transformMan.GetAgentsDesired());
 
         }
