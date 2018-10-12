@@ -527,5 +527,51 @@ namespace AgentAgent.Agent
                 return outputList;
             }
         }
+
+        
+        public bool IsTableNameSafe(IDBContext dBContext, string tableName)
+        {        
+            string SQL = @"
+                SELECT Count(*) 
+                FROM   [sys].[tables] WITH(NOLOCK)
+                WHERE  [name] = @TableName 
+                       AND [type] = 'U'";
+
+            SqlParameter tableNameParam = new SqlParameter("@TableName", SqlDbType.NVarChar)
+            {
+                Value = tableName
+            };
+
+            int result = dBContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { });
+
+            if (result > 0)
+            {
+                return true;
+            }
+                return false;           
+        }
+
+
+        public bool IsColumnNameSafe(IDBContext dBContext, string columnName)
+        {
+
+            string SQL = @"
+                SELECT Count(*) 
+                FROM   [sys].[columns] WITH(NOLOCK)
+                WHERE  [name] = @ColumnName";
+
+            SqlParameter columnNameParam = new SqlParameter("@ColumnName", SqlDbType.NVarChar)
+            {
+                Value = columnName
+            };
+
+            int results = dBContext.ExecuteSqlStatementAsScalar<int>(SQL, new SqlParameter[] { columnNameParam });
+
+            if (results > 0)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

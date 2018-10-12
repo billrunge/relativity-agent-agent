@@ -44,7 +44,9 @@ namespace AgentAgent.Agent
                 EnvironmentHelper environment = new EnvironmentHelper(eddsDbContext);
 
                 logger.LogVerbose("Creating new {objectName}", "Desired Agents List");
-                List<AgentsDesired> desiredAgentsList = new GetAgentsDesiredList(agentHelper, environment, poolId, IsOffHours()).AgentsPerServerObjectList;
+                //List<AgentsDesired> desiredAgentsList = new GetAgentsDesiredList(agentHelper, environment, poolId, IsOffHours()).AgentsPerServerObjectList;
+                List<AgentsDesired> desiredAgentsList = new GetSqlAgentsDesiredList(agentHelper, environment, poolId, IsOffHours()).AgentsDesiredList;
+
 
                 logger.LogVerbose("Creating new {objectName}", "Compared List");
                 List<AgentsDesired> comparedList = new CompareDesiredAgentsToExisting(desiredAgentsList, poolId, environment, logger).Compare();
