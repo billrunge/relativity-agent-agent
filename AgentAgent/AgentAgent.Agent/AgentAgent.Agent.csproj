@@ -99,6 +99,7 @@
     <Compile Include="CustomAgentTypes\TranscriptManager.cs" />
     <Compile Include="CustomAgentTypes\TransformSetManager.cs" />
     <Compile Include="DeleteAgentApi.cs" />
+    <Compile Include="DynamicGetAgentsDesiredList.cs" />
     <Compile Include="Interfaces\IAgentType.cs" />
     <Compile Include="Interfaces\ICreateAgent.cs" />
     <Compile Include="Interfaces\IDeleteAgent.cs" />

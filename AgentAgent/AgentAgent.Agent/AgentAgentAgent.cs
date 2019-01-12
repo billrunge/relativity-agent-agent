@@ -31,8 +31,8 @@ namespace AgentAgent.Agent
                 bool ignoreSearchServer = true;
 
                 /*Use API to create/delete agents instead of manually creating in SQL*/
-                bool useApiCreate = true;
-                bool useApiDelete = true;
+                bool useApiCreate = false;
+                bool useApiDelete = false;
 
                 /* Making stuff */
                 logger.LogVerbose("Creating new {objectName}", "Agent Helper");

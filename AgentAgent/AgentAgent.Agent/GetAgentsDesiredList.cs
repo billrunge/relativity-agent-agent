@@ -49,8 +49,8 @@ namespace AgentAgent.Agent
             CaseStatisticsManager caseStatsMan = new CaseStatisticsManager(_isOffHours);
             AgentsPerServerObjectList.Add(caseStatsMan.GetAgentsDesired());
 
-            ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
-            AgentsPerServerObjectList.Add(clustUpWork.GetAgentsDesired());
+            //ClusterUpgradeWorker clustUpWork = new ClusterUpgradeWorker(_eddsDbContext);
+            //AgentsPerServerObjectList.Add(clustUpWork.GetAgentsDesired());
 
             DistributedJobManager distJobMan = new DistributedJobManager(_eddsDbContext);
             AgentsPerServerObjectList.Add(distJobMan.GetAgentsDesired());
